@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7f9">
+  <meta name="description" content="你有多了解 Apple？海量原创题、四档难度、随机组卷、详细解析，一次发现你的 Apple 知识版图。">
+  <meta property="og:title" content="Apple Product Knowledge Quiz">
+  <meta property="og:description" content="从第一台 Macintosh 到 Apple 芯片。测测你的 Apple 知识。">
+  <title>Apple Product Knowledge Quiz</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="stylesheet" href="./assets/style.css?v=1.0.0">
+  <script type="module" src="./assets/app.mjs?v=1.0.0"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至主要内容</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Apple Quiz 首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>Apple <b>Quiz</b><small>PRODUCT KNOWLEDGE</small></span></a>
+    <nav aria-label="主导航">
+      <button type="button" class="nav-link active" data-action="home">知识测验</button>
+      <button type="button" class="nav-link" data-action="wrongbook">错题本 <span id="wrong-count" class="tiny-count">0</span></button>
+      <button type="button" class="nav-link" data-action="history">答题记录</button>
+    </nav>
+    <button class="icon-button" type="button" id="theme-toggle" aria-label="切换深色外观" title="切换外观"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13.5A8.8 8.8 0 0 1 10.5 3.5a8.8 8.8 0 1 0 10 10Z"/></svg></button>
+  </header>
+  <main id="main" tabindex="-1">
+    <div class="initial-state"><span class="loader"></span><p>正在准备你的知识挑战…</p><button type="button" class="text-button" data-action="reload">重新加载</button></div>
+  </main>
+  <footer class="site-footer"><span>为好奇心而作。<span class="footer-en">Made for the curious.</span></span><span><button type="button" class="text-button" data-action="about">关于题库</button><a href="https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><span>v1.0.0</span></span></footer>
+  <dialog id="modal" aria-labelledby="modal-title"><div id="modal-content"></div><button type="button" class="modal-close icon-button" data-action="close-modal" aria-label="关闭对话框">×</button></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">请启用 JavaScript 以进行随机组卷和答题。题库与网站代码均可在 GitHub 仓库查看。</p></noscript>
+</body>
+</html>

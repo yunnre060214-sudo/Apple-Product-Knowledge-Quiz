@@ -1,0 +1,21 @@
+import { readFile, mkdir, rm, cp, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { resolve, dirname } from 'node:path';
+import { buildBank, REVIEWED_AT } from '../src/bank.mjs';
+import { VERSION, validateBank } from '../src/engine.mjs';
+
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const catalog=JSON.parse(await readFile(resolve(root,'src/catalog.json'),'utf8'));
+const questions=buildBank(catalog);
+const statistics=validateBank(questions);
+if(questions.length<1000)throw new Error('The release must contain at least 1,000 distinct questions.');
+const destination=resolve(root,'dist');
+await rm(destination,{recursive:true,force:true});
+await mkdir(resolve(destination,'src'),{recursive:true});
+await cp(resolve(root,'index.html'),resolve(destination,'index.html'));
+await cp(resolve(root,'assets'),resolve(destination,'assets'),{recursive:true});
+await cp(resolve(root,'src/engine.mjs'),resolve(destination,'src/engine.mjs'));
+await writeFile(resolve(destination,'questions.json'),JSON.stringify({version:VERSION,reviewedAt:REVIEWED_AT,statistics,questions}));
+await writeFile(resolve(destination,'.nojekyll'),'');
+await writeFile(resolve(destination,'version.json'),JSON.stringify({version:VERSION,questions:questions.length,reviewedAt:REVIEWED_AT})+'\n');
+console.log(JSON.stringify({version:VERSION,reviewedAt:REVIEWED_AT,...statistics},null,2));

@@ -1,0 +1,2621 @@
+[
+  {
+    "id": "148591",
+    "model": "iPhone 18 Pro Max",
+    "category": "iphone",
+    "source": "https://support.apple.com/en-us/148591",
+    "facts": {
+      "year": 2026,
+      "screen": 6.9,
+      "resolution": "2868 × 1320",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A20 Pro",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 48.0,
+      "videoHours": 45,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "148590",
+    "model": "iPhone 18 Pro",
+    "category": "iphone",
+    "source": "https://support.apple.com/en-us/148590",
+    "facts": {
+      "year": 2026,
+      "screen": 6.3,
+      "resolution": "2622 × 1206",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A20 Pro",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 48.0,
+      "videoHours": 36,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "126470",
+    "model": "iPhone 17e",
+    "category": "iphone",
+    "source": "https://support.apple.com/126470",
+    "facts": {
+      "year": 2026,
+      "screen": 6.1,
+      "resolution": "2532 × 1170",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A19",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 48.0,
+      "videoHours": 26,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C"
+    }
+  },
+  {
+    "id": "125091",
+    "model": "iPhone 17 Pro Max",
+    "category": "iphone",
+    "source": "https://support.apple.com/125091",
+    "facts": {
+      "year": 2025,
+      "screen": 6.9,
+      "resolution": "2868 × 1320",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A19 Pro",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 48.0,
+      "videoHours": 39,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "125090",
+    "model": "iPhone 17 Pro",
+    "category": "iphone",
+    "source": "https://support.apple.com/125090",
+    "facts": {
+      "year": 2025,
+      "screen": 6.3,
+      "resolution": "2622 × 1206",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A19 Pro",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 48.0,
+      "videoHours": 33,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "125089",
+    "model": "iPhone 17",
+    "category": "iphone",
+    "source": "https://support.apple.com/125089",
+    "facts": {
+      "year": 2025,
+      "screen": 6.3,
+      "resolution": "2622 × 1206",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A19",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 48.0,
+      "videoHours": 30,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "125092",
+    "model": "iPhone Air",
+    "category": "iphone",
+    "source": "https://support.apple.com/125092",
+    "facts": {
+      "year": 2025,
+      "screen": 6.5,
+      "resolution": "2736 × 1260",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A19 Pro",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 48.0,
+      "videoHours": 27,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "122208",
+    "model": "iPhone 16e",
+    "category": "iphone",
+    "source": "https://support.apple.com/122208",
+    "facts": {
+      "year": 2025,
+      "screen": 6.1,
+      "resolution": "2532 × 1170",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A18",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 48.0,
+      "videoHours": 26,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C"
+    }
+  },
+  {
+    "id": "121032",
+    "model": "iPhone 16 Pro Max",
+    "category": "iphone",
+    "source": "https://support.apple.com/121032",
+    "facts": {
+      "year": 2024,
+      "screen": 6.9,
+      "resolution": "2868 × 1320",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A18 Pro",
+      "bluetooth": "5.3",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 48.0,
+      "videoHours": 33,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "121031",
+    "model": "iPhone 16 Pro",
+    "category": "iphone",
+    "source": "https://support.apple.com/121031",
+    "facts": {
+      "year": 2024,
+      "screen": 6.3,
+      "resolution": "2622 × 1206",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A18 Pro",
+      "bluetooth": "5.3",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 48.0,
+      "videoHours": 27,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "121030",
+    "model": "iPhone 16 Plus",
+    "category": "iphone",
+    "source": "https://support.apple.com/121030",
+    "facts": {
+      "year": 2024,
+      "screen": 6.7,
+      "resolution": "2796 × 1290",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A18",
+      "bluetooth": "5.3",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 48.0,
+      "videoHours": 27,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C"
+    }
+  },
+  {
+    "id": "121029",
+    "model": "iPhone 16",
+    "category": "iphone",
+    "source": "https://support.apple.com/121029",
+    "facts": {
+      "year": 2024,
+      "screen": 6.1,
+      "resolution": "2556 × 1179",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A18",
+      "bluetooth": "5.3",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 48.0,
+      "videoHours": 22,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C"
+    }
+  },
+  {
+    "id": "sp904",
+    "model": "iPhone 15 Pro Max",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP904",
+    "facts": {
+      "year": 2023,
+      "screen": 6.7,
+      "resolution": "2796 × 1290",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A17 Pro",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 48.0,
+      "videoHours": 29,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "sp903",
+    "model": "iPhone 15 Pro",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP903",
+    "facts": {
+      "year": 2023,
+      "screen": 6.1,
+      "resolution": "2556 × 1179",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A17 Pro",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 48.0,
+      "videoHours": 23,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "sp902",
+    "model": "iPhone 15 Plus",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP902",
+    "facts": {
+      "year": 2023,
+      "screen": 6.7,
+      "resolution": "2796 × 1290",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A16 Bionic",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 48.0,
+      "videoHours": 26,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C"
+    }
+  },
+  {
+    "id": "sp901",
+    "model": "iPhone 15",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP901",
+    "facts": {
+      "year": 2023,
+      "screen": 6.1,
+      "resolution": "2556 × 1179",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A16 Bionic",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 48.0,
+      "videoHours": 20,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "USB-C"
+    }
+  },
+  {
+    "id": "sp876",
+    "model": "iPhone 14 Pro Max",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP876",
+    "facts": {
+      "year": 2022,
+      "screen": 6.7,
+      "resolution": "2796 × 1290",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A16 Bionic",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 48.0,
+      "videoHours": 29,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "refresh": 120
+    }
+  },
+  {
+    "id": "sp875",
+    "model": "iPhone 14 Pro",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP875",
+    "facts": {
+      "screen": 6.1,
+      "resolution": "2556 × 1179",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A16 Bionic",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 48.0,
+      "videoHours": 23,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "refresh": 120,
+      "year": 2022
+    }
+  },
+  {
+    "id": "sp874",
+    "model": "iPhone 14 Plus",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP874",
+    "facts": {
+      "screen": 6.7,
+      "resolution": "2778 × 1284",
+      "ppi": 458,
+      "display": "OLED",
+      "chip": "A15 Bionic",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 12.0,
+      "videoHours": 26,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "year": 2022
+    }
+  },
+  {
+    "id": "sp873",
+    "model": "iPhone 14",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP873",
+    "facts": {
+      "screen": 6.1,
+      "resolution": "2532 × 1170",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A15 Bionic",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 12.0,
+      "videoHours": 20,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "year": 2022
+    }
+  },
+  {
+    "id": "sp867",
+    "model": "iPhone SE (3rd generation)",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP867",
+    "facts": {
+      "year": 2022,
+      "screen": 4.7,
+      "resolution": "1334 × 750",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A15 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "ip": "IP67",
+      "depth": 1,
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "sp848",
+    "model": "iPhone 13 Pro Max",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP848",
+    "facts": {
+      "screen": 6.7,
+      "resolution": "2778 × 1284",
+      "ppi": 458,
+      "display": "OLED",
+      "chip": "A15 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "videoHours": 28,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "refresh": 120,
+      "year": 2021
+    }
+  },
+  {
+    "id": "sp852",
+    "model": "iPhone 13 Pro",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP852",
+    "facts": {
+      "screen": 6.1,
+      "resolution": "2532 × 1170",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A15 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "videoHours": 22,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "refresh": 120,
+      "year": 2021
+    }
+  },
+  {
+    "id": "sp851",
+    "model": "iPhone 13",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP851",
+    "facts": {
+      "year": 2021,
+      "screen": 6.1,
+      "resolution": "2532 × 1170",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A15 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 12.0,
+      "videoHours": 19,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "sp847",
+    "model": "iPhone 13 mini",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP847",
+    "facts": {
+      "screen": 5.4,
+      "resolution": "2340 × 1080",
+      "ppi": 476,
+      "display": "OLED",
+      "chip": "A15 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 12.0,
+      "videoHours": 17,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "year": 2021
+    }
+  },
+  {
+    "id": "sp832",
+    "model": "iPhone 12 Pro Max",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP832",
+    "facts": {
+      "screen": 6.7,
+      "resolution": "2778 × 1284",
+      "ppi": 458,
+      "display": "OLED",
+      "chip": "A14 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 12.0,
+      "videoHours": 20,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "year": 2020
+    }
+  },
+  {
+    "id": "sp831",
+    "model": "iPhone 12 Pro",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP831",
+    "facts": {
+      "screen": 6.1,
+      "resolution": "2532 × 1170",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A14 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 12.0,
+      "videoHours": 17,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "year": 2020
+    }
+  },
+  {
+    "id": "sp830",
+    "model": "iPhone 12",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP830",
+    "facts": {
+      "screen": 6.1,
+      "resolution": "2532 × 1170",
+      "ppi": 460,
+      "display": "OLED",
+      "chip": "A14 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 256,
+      "camera": 12.0,
+      "videoHours": 17,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "year": 2020
+    }
+  },
+  {
+    "id": "sp829",
+    "model": "iPhone 12 mini",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP829",
+    "facts": {
+      "screen": 5.4,
+      "resolution": "2340 × 1080",
+      "ppi": 476,
+      "display": "OLED",
+      "chip": "A14 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 256,
+      "camera": 12.0,
+      "videoHours": 15,
+      "ip": "IP68",
+      "depth": 6,
+      "connector": "Lightning",
+      "year": 2020
+    }
+  },
+  {
+    "id": "sp820",
+    "model": "iPhone SE (2nd generation)",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP820",
+    "facts": {
+      "screen": 4.7,
+      "resolution": "1334 × 750",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A13 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "videoHours": 13,
+      "ip": "IP67",
+      "depth": 1,
+      "connector": "Lightning",
+      "year": 2020
+    }
+  },
+  {
+    "id": "sp805",
+    "model": "iPhone 11 Pro",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP805",
+    "facts": {
+      "screen": 5.8,
+      "resolution": "2436 × 1125",
+      "ppi": 458,
+      "display": "OLED",
+      "chip": "A13 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 12.0,
+      "videoHours": 18,
+      "ip": "IP68",
+      "depth": 4,
+      "connector": "Lightning",
+      "year": 2019
+    }
+  },
+  {
+    "id": "sp806",
+    "model": "iPhone 11 Pro Max",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP806",
+    "facts": {
+      "screen": 6.5,
+      "resolution": "2688 × 1242",
+      "ppi": 458,
+      "display": "OLED",
+      "chip": "A13 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 12.0,
+      "videoHours": 20,
+      "ip": "IP68",
+      "depth": 4,
+      "connector": "Lightning",
+      "year": 2019
+    }
+  },
+  {
+    "id": "sp804",
+    "model": "iPhone 11",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP804",
+    "facts": {
+      "screen": 6.1,
+      "resolution": "1792 × 828",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A13 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 256,
+      "camera": 12.0,
+      "videoHours": 17,
+      "ip": "IP68",
+      "depth": 2,
+      "connector": "Lightning",
+      "year": 2019
+    }
+  },
+  {
+    "id": "sp779",
+    "model": "iPhone XS",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP779",
+    "facts": {
+      "screen": 5.8,
+      "resolution": "2436 × 1125",
+      "ppi": 458,
+      "display": "OLED",
+      "chip": "A12 Bionic",
+      "bluetooth": "5.0",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 12.0,
+      "ip": "IP68",
+      "depth": 2,
+      "connector": "Lightning",
+      "year": 2018
+    }
+  },
+  {
+    "id": "sp780",
+    "model": "iPhone XS Max",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP780",
+    "facts": {
+      "screen": 6.5,
+      "resolution": "2688 × 1242",
+      "ppi": 458,
+      "display": "OLED",
+      "chip": "A12 Bionic",
+      "bluetooth": "5.0",
+      "biometric": "Face ID",
+      "storage": 512,
+      "camera": 12.0,
+      "ip": "IP68",
+      "depth": 2,
+      "connector": "Lightning",
+      "year": 2018
+    }
+  },
+  {
+    "id": "sp781",
+    "model": "iPhone XR",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP781",
+    "facts": {
+      "year": 2018,
+      "screen": 6.1,
+      "resolution": "1792 × 828",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A12 Bionic",
+      "bluetooth": "5.0",
+      "biometric": "Face ID",
+      "storage": 256,
+      "camera": 12.0,
+      "ip": "IP67",
+      "depth": 1,
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "sp770",
+    "model": "iPhone X",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP770",
+    "facts": {
+      "year": 2017,
+      "screen": 5.8,
+      "resolution": "2436 × 1125",
+      "ppi": 458,
+      "display": "OLED",
+      "chip": "A11 Bionic",
+      "bluetooth": "5.0",
+      "biometric": "Face ID",
+      "storage": 256,
+      "camera": 12.0,
+      "ip": "IP67",
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "sp767",
+    "model": "iPhone 8",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP767",
+    "facts": {
+      "screen": 4.7,
+      "resolution": "1334 × 750",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A11 Bionic",
+      "bluetooth": "5.0",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "ip": "IP67",
+      "depth": 1,
+      "connector": "Lightning",
+      "year": 2017
+    }
+  },
+  {
+    "id": "sp768",
+    "model": "iPhone 8 Plus",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP768",
+    "facts": {
+      "screen": 5.5,
+      "resolution": "1920 × 1080",
+      "ppi": 401,
+      "display": "LCD",
+      "chip": "A11 Bionic",
+      "bluetooth": "5.0",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "ip": "IP67",
+      "depth": 1,
+      "connector": "Lightning",
+      "year": 2017
+    }
+  },
+  {
+    "id": "sp743",
+    "model": "iPhone 7",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP743",
+    "facts": {
+      "screen": 4.7,
+      "resolution": "1334 × 750",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A10 Fusion",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "videoHours": 13,
+      "ip": "IP67",
+      "depth": 1,
+      "connector": "Lightning",
+      "year": 2016
+    }
+  },
+  {
+    "id": "sp744",
+    "model": "iPhone 7 Plus",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP744",
+    "facts": {
+      "screen": 5.5,
+      "resolution": "1920 × 1080",
+      "ppi": 401,
+      "display": "LCD",
+      "chip": "A10 Fusion",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "videoHours": 14,
+      "ip": "IP67",
+      "depth": 1,
+      "connector": "Lightning",
+      "year": 2016
+    }
+  },
+  {
+    "id": "sp738",
+    "model": "iPhone SE (第 1 代)",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP738",
+    "facts": {
+      "screen": 4.0,
+      "resolution": "1136 × 640",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A9",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 128,
+      "camera": 12.0,
+      "videoHours": 13,
+      "connector": "Lightning",
+      "year": 2016
+    }
+  },
+  {
+    "id": "sp726",
+    "model": "iPhone 6s",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP726",
+    "facts": {
+      "screen": 4.7,
+      "resolution": "1334 × 750",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A9",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 128,
+      "camera": 12.0,
+      "videoHours": 11,
+      "connector": "Lightning",
+      "year": 2015
+    }
+  },
+  {
+    "id": "sp727",
+    "model": "iPhone 6s Plus",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP727",
+    "facts": {
+      "screen": 5.5,
+      "resolution": "1920 × 1080",
+      "ppi": 401,
+      "display": "LCD",
+      "chip": "A9",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 128,
+      "camera": 12.0,
+      "videoHours": 14,
+      "connector": "Lightning",
+      "year": 2015
+    }
+  },
+  {
+    "id": "sp705",
+    "model": "iPhone 6",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP705",
+    "facts": {
+      "screen": 4.7,
+      "resolution": "1334 × 750",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A8",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "videoHours": 11,
+      "connector": "Lightning",
+      "year": 2014
+    }
+  },
+  {
+    "id": "sp706",
+    "model": "iPhone 6 Plus",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP706",
+    "facts": {
+      "screen": 5.5,
+      "resolution": "1920 × 1080",
+      "ppi": 401,
+      "display": "LCD",
+      "chip": "A8",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "videoHours": 14,
+      "connector": "Lightning",
+      "year": 2014
+    }
+  },
+  {
+    "id": "sp685",
+    "model": "iPhone 5s",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP685",
+    "facts": {
+      "screen": 4.0,
+      "resolution": "1136 × 640",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A7",
+      "bluetooth": "4.0",
+      "biometric": "Touch ID",
+      "videoHours": 10,
+      "connector": "Lightning",
+      "year": 2013
+    }
+  },
+  {
+    "id": "sp684",
+    "model": "iPhone 5c",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP684",
+    "facts": {
+      "screen": 4.0,
+      "resolution": "1136 × 640",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A6",
+      "bluetooth": "4.0",
+      "biometric": "无内置生物识别",
+      "videoHours": 10,
+      "connector": "Lightning",
+      "year": 2013
+    }
+  },
+  {
+    "id": "sp655",
+    "model": "iPhone 5",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP655",
+    "facts": {
+      "screen": 4.0,
+      "resolution": "1136 × 640",
+      "ppi": 326,
+      "display": "LCD",
+      "bluetooth": "4.0",
+      "biometric": "无内置生物识别",
+      "videoHours": 10,
+      "connector": "Lightning",
+      "year": 2012
+    }
+  },
+  {
+    "id": "sp643",
+    "model": "iPhone 4s",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP643",
+    "facts": {
+      "screen": 3.5,
+      "resolution": "960 × 640",
+      "ppi": 326,
+      "display": "LCD",
+      "bluetooth": "4.0",
+      "biometric": "无内置生物识别",
+      "videoHours": 10,
+      "connector": "30 针 Dock",
+      "year": 2011
+    }
+  },
+  {
+    "id": "sp587",
+    "model": "iPhone 4",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP587",
+    "facts": {
+      "screen": 3.5,
+      "resolution": "960 × 640",
+      "ppi": 326,
+      "display": "LCD",
+      "bluetooth": "2.1",
+      "biometric": "无内置生物识别",
+      "videoHours": 10,
+      "connector": "30 针 Dock",
+      "year": 2010
+    }
+  },
+  {
+    "id": "sp565",
+    "model": "iPhone 3GS",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP565",
+    "facts": {
+      "screen": 3.5,
+      "resolution": "480 × 320",
+      "ppi": 163,
+      "display": "LCD",
+      "bluetooth": "2.1",
+      "biometric": "无内置生物识别",
+      "videoHours": 10,
+      "connector": "30 针 Dock",
+      "year": 2009
+    }
+  },
+  {
+    "id": "sp495",
+    "model": "iPhone 3G",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP495",
+    "facts": {
+      "screen": 3.5,
+      "resolution": "480 × 320",
+      "ppi": 163,
+      "display": "LCD",
+      "bluetooth": "2.0",
+      "biometric": "无内置生物识别",
+      "connector": "30 针 Dock",
+      "year": 2008
+    }
+  },
+  {
+    "id": "sp2",
+    "model": "iPhone (第 1 代)",
+    "category": "iphone",
+    "source": "https://support.apple.com/kb/SP2",
+    "facts": {
+      "screen": 3.5,
+      "resolution": "480 × 320",
+      "ppi": 163,
+      "display": "LCD",
+      "bluetooth": "2.0",
+      "biometric": "无内置生物识别",
+      "camera": 2.0,
+      "connector": "30 针 Dock",
+      "year": 2007
+    }
+  },
+  {
+    "id": "125407",
+    "model": "iPad Pro 13-inch (M5)",
+    "category": "ipad",
+    "source": "https://support.apple.com/125407",
+    "facts": {
+      "year": 2025,
+      "screen": 13.0,
+      "resolution": "2752 × 2064",
+      "ppi": 264,
+      "display": "双层串联 OLED",
+      "chip": "M5",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "Pro + USB-C",
+      "gpu": 10,
+      "bandwidth": 153
+    }
+  },
+  {
+    "id": "125406",
+    "model": "iPad Pro 11-inch (M5)",
+    "category": "ipad",
+    "source": "https://support.apple.com/125406",
+    "facts": {
+      "year": 2025,
+      "screen": 11.0,
+      "resolution": "2420 × 1668",
+      "ppi": 264,
+      "display": "双层串联 OLED",
+      "chip": "M5",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "Pro + USB-C",
+      "gpu": 10,
+      "bandwidth": 153
+    }
+  },
+  {
+    "id": "119891",
+    "model": "iPad Pro 13-inch (M4)",
+    "category": "ipad",
+    "source": "https://support.apple.com/119891",
+    "facts": {
+      "year": 2024,
+      "screen": 13.0,
+      "resolution": "2752 × 2064",
+      "ppi": 264,
+      "display": "双层串联 OLED",
+      "chip": "M4",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "Pro + USB-C",
+      "gpu": 10,
+      "bandwidth": 120
+    }
+  },
+  {
+    "id": "119892",
+    "model": "iPad Pro 11-inch (M4)",
+    "category": "ipad",
+    "source": "https://support.apple.com/119892",
+    "facts": {
+      "year": 2024,
+      "screen": 11.0,
+      "resolution": "2420 × 1668",
+      "ppi": 264,
+      "display": "双层串联 OLED",
+      "chip": "M4",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "Pro + USB-C",
+      "gpu": 10,
+      "bandwidth": 120
+    }
+  },
+  {
+    "id": "sp883",
+    "model": "iPad Pro 12.9-inch (6th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP883",
+    "facts": {
+      "year": 2022,
+      "screen": 12.9,
+      "resolution": "2732 × 2048",
+      "ppi": 264,
+      "display": "Mini-LED 背光 LCD",
+      "chip": "M2",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "第 2 代 + USB-C",
+      "gpu": 10,
+      "bandwidth": 100
+    }
+  },
+  {
+    "id": "sp882",
+    "model": "iPad Pro 11-inch (4th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP882",
+    "facts": {
+      "year": 2022,
+      "screen": 11.0,
+      "resolution": "2388 × 1668",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "M2",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "第 2 代 + USB-C",
+      "gpu": 10,
+      "bandwidth": 100
+    }
+  },
+  {
+    "id": "sp844",
+    "model": "iPad Pro 12.9-inch (5th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP844",
+    "facts": {
+      "screen": 12.9,
+      "resolution": "2732 × 2048",
+      "ppi": 264,
+      "display": "Mini-LED 背光 LCD",
+      "chip": "M1",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "第 2 代 + USB-C",
+      "gpu": 8
+    }
+  },
+  {
+    "id": "sp843",
+    "model": "iPad Pro 11-inch (3rd generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP843",
+    "facts": {
+      "screen": 11.0,
+      "resolution": "2388 × 1668",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "M1",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 2048,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "第 2 代 + USB-C",
+      "gpu": 8
+    }
+  },
+  {
+    "id": "sp815",
+    "model": "iPad Pro 12.9-inch (4th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP815",
+    "facts": {
+      "screen": 12.9,
+      "resolution": "2732 × 2048",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A12Z Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "第 2 代 + USB-C"
+    }
+  },
+  {
+    "id": "sp814",
+    "model": "iPad Pro 11-inch (2nd generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP814",
+    "facts": {
+      "screen": 11.0,
+      "resolution": "2388 × 1668",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A12Z Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "第 2 代 + USB-C"
+    }
+  },
+  {
+    "id": "sp785",
+    "model": "iPad Pro 12.9-inch (3rd generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP785",
+    "facts": {
+      "screen": 12.9,
+      "resolution": "2732 × 2048",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A12X Bionic",
+      "bluetooth": "5.0",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "第 2 代 + USB-C"
+    }
+  },
+  {
+    "id": "sp784",
+    "model": "iPad Pro 11-inch",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP784",
+    "facts": {
+      "screen": 11.0,
+      "resolution": "2388 × 1668",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A12X Bionic",
+      "bluetooth": "5.0",
+      "biometric": "Face ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "refresh": 120,
+      "pencil": "第 2 代 + USB-C"
+    }
+  },
+  {
+    "id": "sp761",
+    "model": "iPad Pro 12.9-inch (2nd generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP761",
+    "facts": {
+      "screen": 12.9,
+      "resolution": "2732 × 2048",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A10X Fusion",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 512,
+      "camera": 12.0,
+      "connector": "Lightning",
+      "refresh": 120,
+      "pencil": "第 1 代"
+    }
+  },
+  {
+    "id": "sp762",
+    "model": "iPad Pro (10.5-inch)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP762",
+    "facts": {
+      "screen": 10.5,
+      "resolution": "2224 × 1668",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A10X Fusion",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 512,
+      "camera": 12.0,
+      "connector": "Lightning",
+      "refresh": 120,
+      "pencil": "第 1 代"
+    }
+  },
+  {
+    "id": "sp739",
+    "model": "iPad Pro (9.7-inch)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP739",
+    "facts": {
+      "screen": 9.7,
+      "resolution": "2048 × 1536",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A9X",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "connector": "Lightning",
+      "pencil": "第 1 代"
+    }
+  },
+  {
+    "id": "sp723",
+    "model": "iPad Pro (12.9-inch)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP723",
+    "facts": {
+      "screen": 12.9,
+      "resolution": "2732 × 2048",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A9X",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 8.0,
+      "connector": "Lightning",
+      "pencil": "第 1 代"
+    }
+  },
+  {
+    "id": "126472",
+    "model": "iPad Air 13-inch (M4)",
+    "category": "ipad",
+    "source": "https://support.apple.com/126472",
+    "facts": {
+      "year": 2026,
+      "screen": 13.0,
+      "resolution": "2732 × 2048",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "M4",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Touch ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "Pro + USB-C",
+      "gpu": 9,
+      "bandwidth": 120
+    }
+  },
+  {
+    "id": "126471",
+    "model": "iPad Air 11-inch (M4)",
+    "category": "ipad",
+    "source": "https://support.apple.com/126471",
+    "facts": {
+      "year": 2026,
+      "screen": 11.0,
+      "resolution": "2360 × 1640",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "M4",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Touch ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "Pro + USB-C",
+      "gpu": 9,
+      "bandwidth": 120
+    }
+  },
+  {
+    "id": "122242",
+    "model": "iPad Air 13-inch (M3)",
+    "category": "ipad",
+    "source": "https://support.apple.com/122242",
+    "facts": {
+      "year": 2025,
+      "screen": 13.0,
+      "resolution": "2732 × 2048",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "M3",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "Pro + USB-C",
+      "gpu": 9
+    }
+  },
+  {
+    "id": "122241",
+    "model": "iPad Air 11-inch (M3)",
+    "category": "ipad",
+    "source": "https://support.apple.com/122241",
+    "facts": {
+      "year": 2025,
+      "screen": 11.0,
+      "resolution": "2360 × 1640",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "M3",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "Pro + USB-C",
+      "gpu": 9
+    }
+  },
+  {
+    "id": "119893",
+    "model": "iPad Air 13-inch (M2)",
+    "category": "ipad",
+    "source": "https://support.apple.com/119893",
+    "facts": {
+      "year": 2024,
+      "screen": 13.0,
+      "resolution": "2732 × 2048",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "M2",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "Pro + USB-C",
+      "gpu": 9
+    }
+  },
+  {
+    "id": "119894",
+    "model": "iPad Air 11-inch (M2)",
+    "category": "ipad",
+    "source": "https://support.apple.com/119894",
+    "facts": {
+      "year": 2024,
+      "screen": 11.0,
+      "resolution": "2360 × 1640",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "M2",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "storage": 1024,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "Pro + USB-C",
+      "gpu": 9
+    }
+  },
+  {
+    "id": "sp866",
+    "model": "iPad Air (5th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP866",
+    "facts": {
+      "year": 2022,
+      "screen": 10.9,
+      "resolution": "2360 × 1640",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "M1",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "第 2 代 + USB-C",
+      "gpu": 8
+    }
+  },
+  {
+    "id": "sp828",
+    "model": "iPad Air (4th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP828",
+    "facts": {
+      "screen": 10.9,
+      "resolution": "2360 × 1640",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A14 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "第 2 代 + USB-C"
+    }
+  },
+  {
+    "id": "sp787",
+    "model": "iPad Air (3rd generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP787",
+    "facts": {
+      "screen": 10.5,
+      "resolution": "2224 × 1668",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A12 Bionic",
+      "bluetooth": "5.0",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 8.0,
+      "connector": "Lightning",
+      "pencil": "第 1 代"
+    }
+  },
+  {
+    "id": "sp708",
+    "model": "iPad Air 2",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP708",
+    "facts": {
+      "screen": 9.7,
+      "resolution": "2048 × 1536",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A8X",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 128,
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "sp692",
+    "model": "iPad Air",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP692",
+    "facts": {
+      "screen": 9.7,
+      "resolution": "2048 × 1536",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A7",
+      "bluetooth": "4.0",
+      "biometric": "无内置生物识别",
+      "storage": 128,
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "121456",
+    "model": "iPad mini (A17 Pro)",
+    "category": "ipad",
+    "source": "https://support.apple.com/121456",
+    "facts": {
+      "year": 2024,
+      "resolution": "2266 × 1488",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A17 Pro",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "storage": 512,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "Pro + USB-C",
+      "gpu": 5
+    }
+  },
+  {
+    "id": "sp850",
+    "model": "iPad mini (6th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP850",
+    "facts": {
+      "resolution": "2266 × 1488",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A15 Bionic",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "第 2 代 + USB-C",
+      "gpu": 5
+    }
+  },
+  {
+    "id": "sp788",
+    "model": "iPad mini (5th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP788",
+    "facts": {
+      "screen": 7.9,
+      "resolution": "2048 × 1536",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A12 Bionic",
+      "bluetooth": "5.0",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 8.0,
+      "connector": "Lightning",
+      "pencil": "第 1 代"
+    }
+  },
+  {
+    "id": "sp725",
+    "model": "iPad mini 4",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP725",
+    "facts": {
+      "screen": 7.9,
+      "resolution": "2048 × 1536",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A8",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 128,
+      "camera": 8.0,
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "sp709",
+    "model": "iPad mini 3",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP709",
+    "facts": {
+      "screen": 7.9,
+      "resolution": "2048 × 1536",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A7",
+      "bluetooth": "4.0",
+      "biometric": "Touch ID",
+      "storage": 128,
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "sp693",
+    "model": "iPad mini 2",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP693",
+    "facts": {
+      "screen": 7.9,
+      "resolution": "2048 × 1536",
+      "ppi": 326,
+      "display": "LCD",
+      "chip": "A7",
+      "bluetooth": "4.0",
+      "biometric": "无内置生物识别",
+      "storage": 128,
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "sp661",
+    "model": "iPad mini",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP661",
+    "facts": {
+      "screen": 7.9,
+      "resolution": "1024 × 768",
+      "ppi": 163,
+      "display": "LCD",
+      "bluetooth": "4.0",
+      "biometric": "无内置生物识别",
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "122240",
+    "model": "iPad (A16)",
+    "category": "ipad",
+    "source": "https://support.apple.com/122240",
+    "facts": {
+      "year": 2025,
+      "resolution": "2360 × 1640",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A16",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Touch ID",
+      "storage": 512,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "第 1 代 + USB-C",
+      "gpu": 4
+    }
+  },
+  {
+    "id": "sp884",
+    "model": "iPad (10th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP884",
+    "facts": {
+      "resolution": "2360 × 1640",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A14 Bionic",
+      "bluetooth": "5.2",
+      "wifi": "6",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 12.0,
+      "connector": "USB-C",
+      "pencil": "第 1 代 + USB-C"
+    }
+  },
+  {
+    "id": "sp849",
+    "model": "iPad (9th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP849",
+    "facts": {
+      "screen": 10.2,
+      "resolution": "2160 × 1620",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A13 Bionic",
+      "bluetooth": "4.2",
+      "wifi": "5",
+      "biometric": "Touch ID",
+      "storage": 256,
+      "camera": 8.0,
+      "connector": "Lightning",
+      "pencil": "第 1 代"
+    }
+  },
+  {
+    "id": "sp822",
+    "model": "iPad (8th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP822",
+    "facts": {
+      "screen": 10.2,
+      "resolution": "2160 × 1620",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A12 Bionic",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 128,
+      "camera": 8.0,
+      "connector": "Lightning",
+      "pencil": "第 1 代"
+    }
+  },
+  {
+    "id": "sp807",
+    "model": "iPad (7th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP807",
+    "facts": {
+      "screen": 10.2,
+      "resolution": "2160 × 1620",
+      "display": "LCD",
+      "chip": "A10 Fusion",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 128,
+      "camera": 8.0,
+      "connector": "Lightning",
+      "pencil": "第 1 代"
+    }
+  },
+  {
+    "id": "sp774",
+    "model": "iPad (6th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP774",
+    "facts": {
+      "screen": 9.7,
+      "resolution": "2048 × 1536",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A10 Fusion",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 128,
+      "camera": 8.0,
+      "connector": "Lightning",
+      "pencil": "第 1 代"
+    }
+  },
+  {
+    "id": "sp751",
+    "model": "iPad (5th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP751",
+    "facts": {
+      "screen": 9.7,
+      "resolution": "2048 × 1536",
+      "ppi": 264,
+      "display": "LCD",
+      "chip": "A9",
+      "bluetooth": "4.2",
+      "biometric": "Touch ID",
+      "storage": 128,
+      "camera": 8.0,
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "sp662",
+    "model": "iPad (4th generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP662",
+    "facts": {
+      "screen": 9.7,
+      "resolution": "2048 × 1536",
+      "ppi": 264,
+      "display": "LCD",
+      "bluetooth": "4.0",
+      "biometric": "无内置生物识别",
+      "connector": "Lightning"
+    }
+  },
+  {
+    "id": "sp647",
+    "model": "iPad (3rd generation)",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP647",
+    "facts": {
+      "screen": 9.7,
+      "resolution": "2048 × 1536",
+      "ppi": 264,
+      "display": "LCD",
+      "bluetooth": "4.0",
+      "biometric": "无内置生物识别",
+      "connector": "30 针 Dock"
+    }
+  },
+  {
+    "id": "sp622",
+    "model": "iPad 2",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/sp622",
+    "facts": {
+      "screen": 9.7,
+      "resolution": "1024 × 768",
+      "ppi": 132,
+      "display": "LCD",
+      "bluetooth": "2.1",
+      "biometric": "无内置生物识别",
+      "connector": "30 针 Dock"
+    }
+  },
+  {
+    "id": "sp580",
+    "model": "iPad",
+    "category": "ipad",
+    "source": "https://support.apple.com/kb/SP580",
+    "facts": {
+      "screen": 9.7,
+      "resolution": "1024 × 768",
+      "ppi": 132,
+      "display": "LCD",
+      "bluetooth": "2.1",
+      "biometric": "无内置生物识别",
+      "storage": 64,
+      "connector": "30 针 Dock"
+    }
+  },
+  {
+    "id": "126318",
+    "model": "MacBook Pro (14-inch, M5 Pro / M5 Max) [M5 Pro / M5 Max]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/126318",
+    "facts": {
+      "year": 2026,
+      "screen": 14.2,
+      "ppi": 254,
+      "chipOptions": "M5 Pro / M5 Max",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "126319",
+    "model": "MacBook Pro (16-inch, M5 Pro / M5 Max) [M5 Pro / M5 Max]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/126319",
+    "facts": {
+      "year": 2026,
+      "screen": 16.2,
+      "ppi": 254,
+      "chipOptions": "M5 Pro / M5 Max",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "125405",
+    "model": "MacBook Pro (14-inch, M5)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/125405",
+    "facts": {
+      "year": 2025,
+      "screen": 14.2,
+      "ppi": 254,
+      "chip": "M5",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "121552",
+    "model": "MacBook Pro (14-inch, M4, 2024)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/121552",
+    "facts": {
+      "year": 2024,
+      "screen": 14.2,
+      "ppi": 254,
+      "chip": "M4",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "121553",
+    "model": "MacBook Pro (14-inch, M4 Pro or M4 Max, 2024) [M4 Pro / M4 Max]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/121553",
+    "facts": {
+      "year": 2024,
+      "screen": 14.2,
+      "ppi": 254,
+      "chipOptions": "M4 Pro / M4 Max",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "121554",
+    "model": "MacBook Pro (16-inch, 2024) [M4 Pro / M4 Max]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/121554",
+    "facts": {
+      "year": 2024,
+      "screen": 16.2,
+      "ppi": 254,
+      "chipOptions": "M4 Pro / M4 Max",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "117735",
+    "model": "MacBook Pro (14-inch, M3, Nov 2023)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/117735",
+    "facts": {
+      "year": 2023,
+      "screen": 14.2,
+      "ppi": 254,
+      "chip": "M3",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "117736",
+    "model": "MacBook Pro (14-inch, M3 Pro or M3 Max, Nov 2023) [M3 Pro / M3 Max]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/117736",
+    "facts": {
+      "year": 2023,
+      "screen": 14.2,
+      "ppi": 254,
+      "chipOptions": "M3 Pro / M3 Max",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "117737",
+    "model": "MacBook Pro (16-inch, Nov 2023) [M3 Pro / M3 Max]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/117737",
+    "facts": {
+      "year": 2023,
+      "screen": 16.2,
+      "ppi": 254,
+      "chipOptions": "M3 Pro / M3 Max",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "111340",
+    "model": "MacBook Pro (14-inch, 2023) [M2 Pro / M2 Max]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111340",
+    "facts": {
+      "screen": 14.2,
+      "ppi": 254,
+      "chipOptions": "M2 Pro / M2 Max",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "111838",
+    "model": "MacBook Pro (16-inch, 2023) [M2 Pro / M2 Max]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111838",
+    "facts": {
+      "year": 2023,
+      "screen": 16.2,
+      "ppi": 254,
+      "chipOptions": "M2 Pro / M2 Max",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "111869",
+    "model": "MacBook Pro (13-inch, M2, 2022)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111869",
+    "facts": {
+      "year": 2022,
+      "screen": 13.3,
+      "ppi": 227,
+      "display": "LCD",
+      "chip": "M2",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Touch ID"
+    }
+  },
+  {
+    "id": "111902",
+    "model": "MacBook Pro (14-inch, 2021)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111902",
+    "facts": {
+      "year": 2021,
+      "screen": 14.2,
+      "ppi": 254,
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD",
+      "chipOptions": "M1 Pro / M1 Max"
+    }
+  },
+  {
+    "id": "111901",
+    "model": "MacBook Pro (16-inch, 2021) [M1 Pro / M1 Max]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111901",
+    "facts": {
+      "year": 2021,
+      "screen": 16.2,
+      "ppi": 254,
+      "chipOptions": "M1 Pro / M1 Max",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Touch ID",
+      "refresh": 120,
+      "display": "Mini-LED 背光 LCD"
+    }
+  },
+  {
+    "id": "111893",
+    "model": "MacBook Pro (13-inch, M1, 2020)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111893",
+    "facts": {
+      "year": 2020,
+      "screen": 13.3,
+      "ppi": 227,
+      "display": "LCD",
+      "chip": "M1",
+      "bluetooth": "5.0",
+      "wifi": "6"
+    }
+  },
+  {
+    "id": "126321",
+    "model": "MacBook Air (15-inch, M5)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/126321",
+    "facts": {
+      "year": 2026,
+      "screen": 15.3,
+      "ppi": 224,
+      "display": "LCD",
+      "chip": "M5",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Touch ID"
+    }
+  },
+  {
+    "id": "126320",
+    "model": "MacBook Air (13-inch, M5)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/126320",
+    "facts": {
+      "year": 2026,
+      "screen": 13.6,
+      "ppi": 224,
+      "display": "LCD",
+      "chip": "M5",
+      "bluetooth": "6",
+      "wifi": "7",
+      "biometric": "Touch ID"
+    }
+  },
+  {
+    "id": "122210",
+    "model": "MacBook Air (15-inch, M4, 2025)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/122210",
+    "facts": {
+      "year": 2025,
+      "screen": 15.3,
+      "ppi": 224,
+      "display": "LCD",
+      "chip": "M4",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID"
+    }
+  },
+  {
+    "id": "122209",
+    "model": "MacBook Air (13-inch, M4, 2025)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/122209",
+    "facts": {
+      "year": 2025,
+      "screen": 13.6,
+      "ppi": 224,
+      "display": "LCD",
+      "chip": "M4",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID"
+    }
+  },
+  {
+    "id": "118552",
+    "model": "MacBook Air (15-inch, M3, 2024)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/118552",
+    "facts": {
+      "year": 2024,
+      "screen": 15.3,
+      "ppi": 224,
+      "display": "LCD",
+      "chip": "M3",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID"
+    }
+  },
+  {
+    "id": "118551",
+    "model": "MacBook Air (13-inch, M3, 2024)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/118551",
+    "facts": {
+      "year": 2024,
+      "screen": 13.6,
+      "ppi": 224,
+      "display": "LCD",
+      "chip": "M3",
+      "bluetooth": "5.3",
+      "wifi": "6E",
+      "biometric": "Touch ID"
+    }
+  },
+  {
+    "id": "111346",
+    "model": "MacBook Air (15-inch, M2, 2023)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111346",
+    "facts": {
+      "year": 2023,
+      "screen": 15.3,
+      "ppi": 224,
+      "display": "LCD",
+      "chip": "M2",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Touch ID"
+    }
+  },
+  {
+    "id": "111867",
+    "model": "MacBook Air (M2, 2022)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111867",
+    "facts": {
+      "year": 2022,
+      "screen": 13.6,
+      "ppi": 224,
+      "display": "LCD",
+      "chip": "M2",
+      "bluetooth": "5.3",
+      "wifi": "6",
+      "biometric": "Touch ID"
+    }
+  },
+  {
+    "id": "111883",
+    "model": "MacBook Air (M1, 2020)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111883",
+    "facts": {
+      "year": 2020,
+      "screen": 13.3,
+      "ppi": 227,
+      "display": "LCD",
+      "chip": "M1",
+      "bluetooth": "5.0",
+      "wifi": "6",
+      "biometric": "Touch ID"
+    }
+  },
+  {
+    "id": "121557",
+    "model": "iMac (24-inch, 2024, Four ports) [M4]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/121557",
+    "facts": {
+      "year": 2024,
+      "screen": 24.0,
+      "resolution": "4480 × 2520",
+      "ppi": 218,
+      "display": "LCD",
+      "chip": "M4",
+      "bluetooth": "5.3",
+      "wifi": "6E"
+    }
+  },
+  {
+    "id": "121556",
+    "model": "iMac (24-inch, 2024, Two ports) [M4]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/121556",
+    "facts": {
+      "year": 2024,
+      "screen": 24.0,
+      "resolution": "4480 × 2520",
+      "ppi": 218,
+      "display": "LCD",
+      "chip": "M4",
+      "bluetooth": "5.3",
+      "wifi": "6E"
+    }
+  },
+  {
+    "id": "117734",
+    "model": "iMac (24-inch, 2023, Four ports) [M3]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/117734",
+    "facts": {
+      "year": 2023,
+      "screen": 24.0,
+      "resolution": "4480 × 2520",
+      "ppi": 218,
+      "display": "LCD",
+      "chip": "M3",
+      "bluetooth": "5.3",
+      "wifi": "6E"
+    }
+  },
+  {
+    "id": "117733",
+    "model": "iMac (24-inch, 2023, Two ports) [M3]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/117733",
+    "facts": {
+      "year": 2023,
+      "screen": 24.0,
+      "resolution": "4480 × 2520",
+      "ppi": 218,
+      "display": "LCD",
+      "chip": "M3",
+      "bluetooth": "5.3",
+      "wifi": "6E"
+    }
+  },
+  {
+    "id": "111895",
+    "model": "iMac (24-inch, M1, 2021)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111895",
+    "facts": {
+      "screen": 24.0,
+      "resolution": "4480 × 2520",
+      "ppi": 218,
+      "display": "LCD",
+      "chip": "M1",
+      "bluetooth": "5.0",
+      "wifi": "6"
+    }
+  },
+  {
+    "id": "121555",
+    "model": "Mac mini (2024) [M4 / M4 Pro]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/121555",
+    "facts": {
+      "year": 2024,
+      "chipOptions": "M4 / M4 Pro",
+      "bluetooth": "5.3",
+      "wifi": "6E"
+    }
+  },
+  {
+    "id": "111837",
+    "model": "Mac mini (2023) [M2 / M2 Pro]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111837",
+    "facts": {
+      "year": 2023,
+      "chipOptions": "M2 / M2 Pro",
+      "bluetooth": "5.3",
+      "wifi": "6E"
+    }
+  },
+  {
+    "id": "111894",
+    "model": "Mac mini (M1, 2020)",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111894",
+    "facts": {
+      "year": 2020,
+      "chip": "M1",
+      "bluetooth": "5.0",
+      "wifi": "6"
+    }
+  },
+  {
+    "id": "122211",
+    "model": "Mac Studio (2025) [M4 Max / M3 Ultra]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/122211",
+    "facts": {
+      "year": 2025,
+      "chipOptions": "M4 Max / M3 Ultra",
+      "bluetooth": "5.3",
+      "wifi": "6E"
+    }
+  },
+  {
+    "id": "111835",
+    "model": "Mac Studio (2023) [M2 Max / M2 Ultra]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111835",
+    "facts": {
+      "year": 2023,
+      "chipOptions": "M2 Max / M2 Ultra",
+      "bluetooth": "5.3",
+      "wifi": "6E"
+    }
+  },
+  {
+    "id": "111900",
+    "model": "Mac Studio (2022) [M1 Max / M1 Ultra]",
+    "category": "mac",
+    "source": "https://support.apple.com/en-us/111900",
+    "facts": {
+      "year": 2022,
+      "chipOptions": "M1 Max / M1 Ultra",
+      "bluetooth": "5.0",
+      "wifi": "6"
+    }
+  }
+]
