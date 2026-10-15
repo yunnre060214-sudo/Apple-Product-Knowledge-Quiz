@@ -97,6 +97,10 @@ function factQuestion(product,key,products) {
   if(key==='pencil')explanation=`${product.model} 可搭配 ${answer} 使用。${spec[3]}`;
   if(key==='caseSize')explanation=`${product.model} 的表壳尺寸为 ${answer}。${spec[3]}`;
   const sources=[product.source];if(key==='pencil')sources.push('https://support.apple.com/en-us/108937');
+  if(product.category==='silicon'&&key==='memory') {
+    const memorySpecs={M1:'111883',M4:'121552',M5:'125405'};
+    if(memorySpecs[product.model])sources.push(`https://support.apple.com/en-us/${memorySpecs[product.model]}`);
+  }
   let prompt=`${product.model} ${spec[2]}`;
   if(product.category==='silicon') {
     if(key==='gpu')prompt=`${product.model} 的最高 GPU 配置有多少核心？`;

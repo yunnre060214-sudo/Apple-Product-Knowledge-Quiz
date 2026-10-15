@@ -2,7 +2,7 @@ const newsroom = path => `https://www.apple.com/newsroom/${path}/`;
 const support = ref => `https://support.apple.com/${ref.startsWith('SP') ? 'kb/' : 'en-us/'}${ref}`;
 const chipSources = {
   m1: newsroom('2020/11/apple-unleashes-m1'),
-  m1pro: newsroom('2021/10/apple-unleashes-m1-pro-and-m1-max-the-most-powerful-chips-for-a-personal-computer'),
+  m1pro: newsroom('2021/10/introducing-m1-pro-and-m1-max-the-most-powerful-chips-apple-has-ever-built'),
   m1ultra: newsroom('2022/03/apple-unveils-m1-ultra-the-worlds-most-powerful-chip-for-a-personal-computer'),
   m2: newsroom('2022/06/apple-unveils-m2-with-breakthrough-performance-and-capabilities'),
   m2pro: newsroom('2023/01/apple-unveils-m2-pro-and-m2-max-next-generation-chips-for-next-level-workflows'),
