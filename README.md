@@ -2,7 +2,9 @@
 
 一个为 Apple 产品爱好者制作的中文知识测验网站。**1,866 道原创单选题，8 个知识领域，4 档难度**。题目、选项及解析由本项目编写，产品事实依据题目附带的 Apple 官方资料。
 
-[进入测验](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/) · [报告题目问题](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
+[进入测验](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=1.0.1) · [报告题目问题](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
+
+当前版本：**1.0.1**。优化手机端切题滚动：上一题、下一题保留阅读位置；从解析或答题卡切题时将新题题干带回视野。兼容 1.0.0 的未完成答题进度。
 
 ## 可以做什么
 
@@ -78,7 +80,7 @@ python3 -m http.server 8080 --directory dist
 - 兼容性题说明具体型号；区分物理接口和传输协议、内存和存储、显示尺寸口径、光学放大和变焦范围。
 - 芯片题采用完整配置上限时明确说明，不能由核心数量或带宽倍数直接推断性能。
 - 修改题库后运行 `npm test` 与 `npm run build`，将最新统计同步到本 README。
-- 发布升级时同时修改 `package.json`、`src/engine.mjs`、HTML 的资源版本参数、页脚版本和说明，防止新旧缓存混用。
+- 发布升级时同时修改 `package.json`、`src/engine.mjs`、HTML 与应用模块的资源版本参数、页脚版本和说明，防止新旧缓存混用。
 - `/version.json` 可查看已部署版本、题目数量和资料核对日期。
 
 本项目与 Apple Inc. 无隶属或赞助关系。产品名称归对应权利人所有。

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { buildBank } from '../src/bank.mjs';
-import { CATEGORIES, LEVELS, drawQuestions, filterBank, createSession, hydrateSession, grade, updateWrongBook, validateBank, shuffle, seeded } from '../src/engine.mjs';
+import { VERSION, CATEGORIES, LEVELS, drawQuestions, filterBank, createSession, hydrateSession, grade, updateWrongBook, validateBank, shuffle, seeded } from '../src/engine.mjs';
 const catalog=JSON.parse(await readFile(new URL('../src/catalog.json',import.meta.url),'utf8'));
 const bank=buildBank(catalog);
 const config={difficulty:'mixed',categories:Object.keys(CATEGORIES),count:100,mode:'exam',secondsPerQuestion:0};
@@ -57,10 +57,12 @@ test('resume preserves chosen option order, answers, flags and total-paper deadl
   const qs=drawQuestions(bank,{...config,count:10},14);
   const s=createSession(qs,{...config,count:10,secondsPerQuestion:30},14,1000);
   s.answers[qs[0].id]=qs[0].answer;s.flags=[qs[1].id];s.index=4;
-  const restored=hydrateSession(JSON.parse(JSON.stringify(s)),bank);
-  assert.equal(restored.deadline,301000);assert.equal(restored.index,4);assert.deepEqual(restored.answers,s.answers);
-  assert.deepEqual(restored.hydratedQuestions.map(q=>q.options),qs.map(q=>q.options));
-  assert.deepEqual(restored.flags,s.flags);
+  for (const version of ['1.0.0', VERSION]) {
+    const restored=hydrateSession(JSON.parse(JSON.stringify({...s,version})),bank);
+    assert.equal(restored.deadline,301000);assert.equal(restored.index,4);assert.deepEqual(restored.answers,s.answers);
+    assert.deepEqual(restored.hydratedQuestions.map(q=>q.options),qs.map(q=>q.options));
+    assert.deepEqual(restored.flags,s.flags);
+  }
 });
 test('practice sessions are untimed and a correct retry clears a previous mistake',()=>{
   const qs=drawQuestions(bank,{...config,count:5},7);

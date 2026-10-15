@@ -1,4 +1,4 @@
-import { VERSION, CATEGORIES, LEVELS, drawQuestions, filterBank, createSession, hydrateSession, grade, updateWrongBook } from '../src/engine.mjs';
+import { VERSION, CATEGORIES, LEVELS, drawQuestions, filterBank, createSession, hydrateSession, grade, updateWrongBook } from '../src/engine.mjs?v=1.0.1';
 
 const $ = s => document.querySelector(s);
 const main = $('#main');
@@ -110,7 +110,17 @@ function selectAnswer(index) {
   const focusedIndex = index;
   renderQuiz(); document.querySelector(`[data-answer="${focusedIndex}"]`)?.focus({ preventScroll: true });
 }
-function moveQuestion(index) { session.index = Math.max(0, Math.min(questions.length - 1, index)); saveSession(); renderQuiz(); $('#question-prompt').setAttribute('tabindex', '-1'); $('#question-prompt').focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); }
+function moveQuestion(index) {
+  const { scrollX, scrollY } = window;
+  session.index = Math.max(0, Math.min(questions.length - 1, index));
+  saveSession(); renderQuiz();
+  const prompt = $('#question-prompt');
+  prompt.setAttribute('tabindex', '-1');
+  prompt.focus({ preventScroll: true });
+  // Keep the reading position; reveal the new prompt when leaving a lower section.
+  const promptTop = Math.max(0, prompt.getBoundingClientRect().top + window.scrollY - 24);
+  window.scrollTo({ left: scrollX, top: Math.min(scrollY, promptTop), behavior: 'instant' });
+}
 function confirmAnswer() {
   const q = questions[session.index];
   if (!session.answers[q.id]) return;

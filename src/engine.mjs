@@ -1,4 +1,4 @@
-export const VERSION = '1.0.0';
+export const VERSION = '1.0.1';
 export const CATEGORIES = {
   iphone: { name: 'iPhone', short: 'iP', color: '#3478e7' },
   ipad: { name: 'iPad', short: 'iD', color: '#8958c7' },
@@ -77,7 +77,7 @@ export function createSession(questions, config, seed, now = Date.now()) {
   };
 }
 export function hydrateSession(saved, bank) {
-  if (!saved || saved.schema !== 1 || saved.version !== VERSION || !Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(saved.startedAt)) return null;
+  if (!saved || saved.schema !== 1 || !['1.0.0', VERSION].includes(saved.version) || !Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(saved.startedAt)) return null;
   if (!saved.config || !['exam', 'practice'].includes(saved.config.mode)) return null;
   const lookup = new Map(bank.map(q => [q.id, q]));
   const ids = new Set();
