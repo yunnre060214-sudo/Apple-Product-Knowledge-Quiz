@@ -1,8 +1,9 @@
-import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=2.2.3';
-import {icon,scene} from './icons.mjs?v=2.2.3';
-import {replayHello} from './hello.mjs?v=2.2.3';
-import {createThemeSwitcher} from './theme.mjs?v=2.2.3';
-import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=2.2.3';
+import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=3.0.0';
+import {icon} from './icons.mjs?v=3.0.0';
+import {archiveMarkup,mountArchive} from './gallery.mjs?v=3.0.0';
+import {replayHello} from './hello.mjs?v=3.0.0';
+import {createThemeSwitcher} from './theme.mjs?v=3.0.0';
+import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=3.0.0';
 const $=s=>document.querySelector(s), main=$('#main'), modal=$('#modal');
 const KEY='apple-quiz:v1:';
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -20,22 +21,23 @@ config.count=Math.min(500,Math.max(5,Math.floor(Number(config.count)||20)));
 if(![0,30,60,90].includes(Number(config.secondsPerQuestion)))config.secondsPerQuestion=0;
 let bank=[], meta={}, questions=[], session=null, report=null, view='home', seen=arr(read('seen',[])).filter(x=>typeof x==='string');
 let autoTimer, clockTimer, toastTimer, shareUrl, shareBlob, generation=0, paused=false, finishPending=false;
+let disposeArchive=()=>{}, questionDirection=1;
 const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fmt=n=>`${Math.floor(n/60)}:${String(n%60).padStart(2,'0')}`;
 const quickConfig=topic=>({count:5,difficulty:'mixed',categories:Object.keys(CATEGORIES),mode:'quick',casual:true,secondsPerQuestion:0,...(topic?{topic}: {})});
 const sourceLinks=q=>q.sources.map((s,i)=>`<a href="${esc(s)}" target="_blank" rel="noopener noreferrer">${s.includes('macrumors.com')?'历史声明存档':'Apple 资料'}${q.sources.length>1?` ${i+1}`:''}${icon('external')}</a>`).join('');
 function toast(s){$('#toast').textContent=s;$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),3500);}
 function dialog(title,body){$('#modal-content').innerHTML=`<h2 id="modal-title">${title}</h2>${body}`;if(!modal.open)modal.showModal();}
-function cancelAuto(){clearTimeout(autoTimer);autoTimer=null;generation++;}
+function cancelAuto(){clearTimeout(autoTimer);autoTimer=null;generation++;$('.quick-controls')?.classList.remove('counting');}
 function save(){if(session&&!finishPending)write('session',session);}
 function visit(q){seen=updateRecent(seen,[q.id],Math.max(3000,Math.floor(bank.length*.75)));write('seen',seen);}
-function enter(next){view=next;document.body.dataset.view=next;cancelAuto();clearInterval(clockTimer);if(!document.documentElement.classList.contains('hello-pending'))main.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
-function animate(el){if(!reduced())el?.animate([{opacity:0,transform:'translateY(10px) scale(.995)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:330,easing:'cubic-bezier(.2,.75,.25,1)'});}
+function enter(next){disposeArchive();disposeArchive=()=>{};view=next;document.body.dataset.view=next;cancelAuto();clearInterval(clockTimer);if(!document.documentElement.classList.contains('hello-pending'))main.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
+function animate(el,{x=0,y=8,duration=260}={}){if(!reduced())el?.animate([{opacity:0,transform:`translate(${x}px,${y}px)`},{opacity:1,transform:'translate(0,0)'}],{duration,easing:'cubic-bezier(.22,1,.36,1)'});}
 function home(){
   enter('home');if(shareUrl){URL.revokeObjectURL(shareUrl);shareUrl=null;}
   const saved=hydrateSession(read('session',null),bank);
-  main.innerHTML=`<section class="hero"><div class="hero-copy"><h1>你以为你<br>很懂 <span class="gradient-text">Apple？</span></h1><div class="hero-actions"><button class="primary-button hero-start" data-action="quick">${icon('shuffle')}随机来 5 题${icon('arrow')}</button><button class="custom-link" data-action="custom">自定义${icon('sliders')}</button></div>${saved?`<button class="resume-link" data-action="resume">${icon('history')}接着上次玩 · ${Object.keys(saved.answers).length}/${saved.questions.length} 题${icon('arrow')}</button>`:''}</div>${scene}</section><section class="topic-section"><div class="section-label"><span>分类挑战</span></div><div class="topic-grid"><button class="topic-card lavender" data-topic="surprise"><span class="topic-icon">${icon('bulb')}</span><span class="topic-copy"><strong>反直觉</strong></span>${icon('arrow','topic-arrow')}</button><button class="topic-card peach" data-topic="stories"><span class="topic-icon">${icon('history')}</span><span class="topic-copy"><strong>产品历史</strong></span>${icon('arrow','topic-arrow')}</button><button class="topic-card mint" data-topic="timeline"><span class="topic-icon">${icon('clock')}</span><span class="topic-copy"><strong>发布年份</strong></span>${icon('arrow','topic-arrow')}</button></div></section><div class="home-bottom"><span class="bank-count">${icon('apple')}<b>${bank.length.toLocaleString('en-US')}</b> 题</span><button class="text-button" data-action="about">题库${icon('external')}</button></div>`;
-  animate($('.hero-copy'));
+  main.innerHTML=`<section class="hero"><div class="hero-copy"><h1><span class="hero-title-line">你有多懂</span><span class="hero-title-apple">Apple?</span></h1><div class="hero-actions"><button class="primary-button hero-start" data-action="quick">${icon('shuffle')}<span>随机来 5 题</span><span class="button-disc">${icon('arrow')}</span></button><button class="custom-link" data-action="custom">自定义${icon('sliders')}</button></div>${saved?`<button class="resume-link" data-action="resume">${icon('history')}接着上次玩 · ${Object.keys(saved.answers).length}/${saved.questions.length} 题${icon('arrow')}</button>`:''}</div>${archiveMarkup(VERSION)}</section><section class="topic-section" aria-labelledby="topics-title"><div class="section-label"><h2 id="topics-title">分类挑战</h2><button class="bank-count" data-action="about" aria-label="关于题库，${bank.length} 题"><b>${bank.length.toLocaleString('en-US')}</b> 题${icon('external')}</button></div><div class="topic-grid">${[['surprise','反直觉','bulb'],['stories','产品历史','history'],['timeline','发布年份','clock']].map(([topic,label,symbol],i)=>`<button class="topic-link" data-topic="${topic}"><span class="topic-number" aria-hidden="true">0${i+1}</span><span class="topic-copy"><span class="topic-symbol">${icon(symbol)}</span><strong>${label}</strong></span>${icon('arrow','topic-arrow')}</button>`).join('')}</div></section>`;
+  disposeArchive=mountArchive($('.archive'),{reducedMotion:reduced});
 }
 function custom(){
   dialog('自定义',`<form id="custom-form"><fieldset><legend>题数</legend><div class="segments counts">${[5,10,20,50,100,200,500].map(n=>`<button type="button" data-count="${n}" aria-pressed="${config.count===n}" class="${config.count===n?'selected':''}">${n}</button>`).join('')}</div><label class="custom-number">自定题数<input name="count" id="count-input" type="number" min="5" max="500" value="${config.count}" required inputmode="numeric"></label></fieldset><div class="form-row"><label>难度<select name="difficulty">${[['mixed','混合'],['easy','简单'],['medium','中等'],['hard','困难'],['expert','专家']].map(([v,t])=>`<option value="${v}" ${config.difficulty===v?'selected':''}>${t}</option>`).join('')}</select></label><label>玩法<select name="mode" id="mode-select">${[['quick','选完自动下一题'],['exam','自由切题，最后揭晓'],['practice','每题确认，随时看解析']].map(([v,t])=>`<option value="${v}" ${config.mode===v?'selected':''}>${t}</option>`).join('')}</select></label></div><fieldset><legend>领域<span class="muted">可多选</span></legend><div class="category-pills">${Object.entries(CATEGORIES).map(([id,c])=>`<label><input type="checkbox" name="category" value="${id}" ${config.categories.includes(id)?'checked':''}><span>${c.name}</span></label>`).join('')}</div></fieldset><label class="timer-setting" ${config.mode!=='exam'?'hidden':''}>限时<select name="timer">${[[0,'不限时'],[30,'总时间 = 题数 × 30 秒'],[60,'总时间 = 题数 × 60 秒'],[90,'总时间 = 题数 × 90 秒']].map(([v,t])=>`<option value="${v}" ${Number(config.secondsPerQuestion)===v?'selected':''}>${t}</option>`).join('')}</select></label><p id="pool-hint" class="muted" aria-live="polite"></p><button type="submit" class="primary-button full-width">开始${icon('arrow')}</button></form>`);updatePool();
@@ -46,7 +48,7 @@ function start(next){
   if(!bank.length)return;
   cancelAuto();modal.close();const seed=crypto.getRandomValues(new Uint32Array(1))[0];
   questions=drawQuestions(bank,next,seed,seen);if(!questions.length){toast('该分类暂无题目');return;}
-  session=createSession(questions,{...next,count:questions.length},seed);report=null;finishPending=false;shareBlob=null;save();quiz();
+  session=createSession(questions,{...next,count:questions.length},seed);questionDirection=1;report=null;finishPending=false;shareBlob=null;save();quiz();
 }
 function resume(){modal.close();const s=hydrateSession(read('session',null),bank);if(!s){remove('session');toast('进度已过期');home();return;}questions=s.hydratedQuestions;delete s.hydratedQuestions;session=s;finishPending=false;if(s.deadline&&s.deadline<=Date.now()){finish(true);return;}quiz();}
 function quiz(){
@@ -58,7 +60,7 @@ function renderQuestion(){
   cancelAuto();paused=false;const q=questions[session.index],answer=session.answers[q.id],quick=session.config.mode==='quick';visit(q);
   const locked=session.confirmed.includes(q.id);
   $('#question-stage').innerHTML=`<article class="question-card" aria-labelledby="question-prompt"><div class="question-meta"><span class="question-topic">${icon(q.kind==='timeline'?'clock':q.topic==='stories'?'history':'apple')}${esc(q.tag||CATEGORIES[q.category].name)}</span>${quick?'':`<button class="flag-button" data-action="flag" aria-pressed="${session.flags.includes(q.id)}" aria-label="${session.flags.includes(q.id)?'取消标记':'标记题目'}">${icon('flag')}</button>`}</div><h1 id="question-prompt" tabindex="-1">${esc(q.prompt)}</h1><div class="answers" role="group" aria-label="选择一个答案">${q.options.map((o,i)=>`<button class="answer" data-answer="${i}" aria-pressed="${answer===o}"><span class="letter">${'ABCD'[i]}</span><span class="answer-text">${esc(o)}</span><span class="answer-mark"></span></button>`).join('')}</div><div id="answer-feedback" class="feedback" aria-live="polite"></div><div id="explanation-area"></div><div class="question-nav" ${quick?'hidden':''}><button class="text-button" data-action="previous" ${session.index===0?'disabled':''}>${icon('back')}上一题</button><button class="primary-button" id="advance" data-action="${session.config.mode==='practice'&&!locked?'confirm':'next'}">${session.config.mode==='practice'&&!locked?'确认':session.index===questions.length-1?'查看结果':'下一题'}${icon('arrow')}</button></div><div class="quick-controls" ${quick?'':'hidden'}><label class="auto-switch"><input id="auto-toggle" type="checkbox" ${read('auto',true)?'checked':''}>自动下一题</label><span id="auto-label"></span></div></article>`;
-  updateOptions();updateProgress();if(locked)showFeedback(false);animate($('.question-card'));
+  updateOptions();updateProgress();if(locked)showFeedback(false);animate($('.question-card'),{x:questionDirection*12,y:0,duration:220});
   $('#question-prompt').focus({preventScroll:true});
 }
 // Selection changes four option nodes and the progress label. The shell, navigation and prompt survive.
@@ -76,7 +78,7 @@ function updateOptions(){
   const advance=$('#advance');if(advance&&session.config.mode==='practice')advance.disabled=!locked&&!answer;
 }
 function updateProgress(){
-  const n=Object.keys(session.answers).length,track=$('.progress-track');track.setAttribute('aria-valuenow',n);track.setAttribute('aria-valuetext',`已答 ${n} 题，共 ${questions.length} 题`);track.firstElementChild.style.width=`${n/questions.length*100}%`;$('#progress-label').textContent=`${session.index+1} / ${questions.length}`;
+  const n=Object.keys(session.answers).length,track=$('.progress-track');track.setAttribute('aria-valuenow',n);track.setAttribute('aria-valuetext',`已答 ${n} 题，共 ${questions.length} 题`);track.firstElementChild.style.width=`${n/questions.length*100}%`;$('#progress-label').innerHTML=`<b>${String(session.index+1).padStart(2,'0')}</b> / ${String(questions.length).padStart(2,'0')}`;
   const btn=$(`[data-jump="${session.index}"]`);btn?.classList.toggle('answered',!!session.answers[questions[session.index].id]);
 }
 function confirmAnswer(){const q=questions[session.index];if(!session.answers[q.id])return;if(!session.confirmed.includes(q.id))session.confirmed.push(q.id);save();updateOptions();showFeedback(true);const b=$('#advance');b.dataset.action='next';b.innerHTML=`${session.index===questions.length-1?'查看结果':'下一题'}${icon('arrow')}`;b.disabled=false;}
@@ -91,7 +93,7 @@ function showFeedback(fresh){
 function scheduleNext(){
   cancelAuto();if(view!=='quiz'||session.config.mode!=='quick')return;const q=questions[session.index];if(!session.confirmed.includes(q.id)||paused)return;
   const enabled=$('#auto-toggle')?.checked;if(!enabled){$('#auto-label').textContent='手动切题';return;}
-  const token=generation;$('#auto-label').textContent='自动切题…';autoTimer=setTimeout(()=>{if(token===generation&&view==='quiz'&&!modal.open&&!document.hidden)nextQuestion();},1650);
+  const token=generation;$('#auto-label').textContent='自动切题…';$('.quick-controls')?.classList.add('counting');autoTimer=setTimeout(()=>{if(token===generation&&view==='quiz'&&!modal.open&&!document.hidden)nextQuestion();},1650);
 }
 function explain(){
   cancelAuto();paused=true;$('#auto-label').textContent='已暂停';
@@ -100,7 +102,7 @@ function explain(){
 function moveQuestion(index){
   if(!session||view!=='quiz')return;if(session.deadline&&session.deadline<=Date.now()){finish(true);return;}
   const stage=$('#question-stage');stage.style.minHeight=`${Math.max(stage.getBoundingClientRect().height,parseFloat(stage.style.minHeight)||0)}px`;
-  session.index=Math.max(0,Math.min(questions.length-1,index));save();renderQuestion();
+  questionDirection=index<session.index?-1:1;session.index=Math.max(0,Math.min(questions.length-1,index));save();renderQuestion();
   const prompt=$('#question-prompt');if(prompt.getBoundingClientRect().top<24)window.scrollTo({top:Math.max(0,prompt.getBoundingClientRect().top+window.scrollY-24),behavior:'instant'});
   // Small scroll offsets survive; only deep explanation scrolling is brought back to the new prompt.
 }
@@ -117,7 +119,8 @@ function finish(timed=false){
 }
 function results(){
   enter('result');const t=resultTitle(report),eggs=easterEggs(report),palette=resultPalette(report);
-  main.innerHTML=`<section class="result-shell" style="--result-a:${palette.title[0]};--result-b:${palette.title[1]};--result-dark-a:${palette.darkTitle[0]};--result-dark-b:${palette.darkTitle[1]};--result-soft:${palette.wash[0]};--result-ink:${palette.ink}"><div class="result-emblem ${t.tone}">${icon(report.correct===report.total?'trophy':'apple')}</div><h1 class="result-title">${t.title}</h1><div class="score-row"><div class="result-score"><strong data-final="${report.score}">0</strong><span>分</span></div><span class="score-divider"></span><div class="result-stats"><span>猜对 <b>${report.correct} / ${report.total}</b> 题</span><span>用时 <b>${fmt(report.duration)}</b></span></div></div>${eggs.length?`<div class="egg-note">${icon('apple')}<span>${eggs.map(esc).join('<br>')}</span></div>`:''}<div class="result-actions"><button class="primary-button" data-action="quick">${icon('shuffle')}再来 5 题</button><button class="secondary-button" data-action="share-card">${icon('share')}分享结果</button></div><div class="result-links"><button class="text-button" data-action="review">查看解析${icon('arrow')}</button><button class="text-button" data-action="home">回到首页</button></div></section>`;
+  const trail=questions.length<=10?`<div class="result-trail" role="list" aria-label="每题结果">${questions.map((q,i)=>{const correct=session.answers[q.id]===q.answer;return `<span class="${correct?'good':'oops'}" role="listitem" aria-label="第 ${i+1} 题，${correct?'答对':'未答对'}"><span aria-hidden="true">${String(i+1).padStart(2,'0')}</span>${icon(correct?'check':'close')}</span>`;}).join('')}</div>`:'';
+  main.innerHTML=`<section class="result-shell" style="--result-a:${palette.title[0]};--result-b:${palette.title[1]};--result-dark-a:${palette.darkTitle[0]};--result-dark-b:${palette.darkTitle[1]};--result-soft:${palette.wash[0]};--result-ink:${palette.ink}"><div class="result-ticket"><div class="result-topline"><span>本局成绩</span><div class="result-emblem ${t.tone}">${icon(report.correct===report.total?'trophy':'apple')}</div></div><h1 class="result-title">${t.title}</h1><div class="score-row"><div class="result-score"><strong data-final="${report.score}">0</strong><span>分</span></div><span class="score-divider" aria-hidden="true"></span><div class="result-stats"><span>答对 <b>${report.correct} / ${report.total}</b> 题</span><span>用时 <b>${fmt(report.duration)}</b></span></div></div>${trail}</div>${eggs.length?`<div class="egg-note">${icon('apple')}<span>${eggs.map(esc).join('<br>')}</span></div>`:''}<div class="result-actions"><button class="primary-button" data-action="quick">${icon('shuffle')}再来 5 题</button><button class="secondary-button" data-action="share-card">${icon('share')}分享结果</button></div><div class="result-links"><button class="text-button" data-action="review">查看解析${icon('arrow')}</button><button class="text-button" data-action="home">回到首页</button></div></section>`;
   animate($('.result-shell'));countUp($('.result-score strong'),report.score);if(report.correct===report.total)celebrate(64);
 }
 function countUp(el,value){if(reduced()){el.textContent=value;return;}const start=performance.now();function frame(now){const p=Math.min(1,(now-start)/850);el.textContent=Math.round(value*(1-Math.pow(1-p,3)));if(p<1&&el.isConnected)requestAnimationFrame(frame);else el.textContent=value;}requestAnimationFrame(frame);}
@@ -150,7 +153,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAuto(
 modal.addEventListener('close',()=>{if(view==='quiz'&&session?.config.mode==='quick'&&$('#auto-label'))$('#auto-label').textContent='手动切题';});
 window.addEventListener('pagehide',()=>{save();cancelAuto();});
 const systemTheme=matchMedia('(prefers-color-scheme: dark)');
-function syncBrowserTheme(theme){$('meta[name="theme-color"]').content=theme==='dark'?'#0b0e15':'#f7f8fb';}
+function syncBrowserTheme(theme){$('meta[name="theme-color"]').content=theme==='dark'?'#101216':'#f5f4f0';}
 function applyTheme(theme,{syncChrome=true}={}){
   const dark=theme==='dark';
   document.documentElement.dataset.theme=dark?'dark':'light';

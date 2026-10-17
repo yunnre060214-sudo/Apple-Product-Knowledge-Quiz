@@ -1,50 +1,55 @@
-import {APPLE_PATH} from './brand.mjs?v=2.2.3';
+import {APPLE_PATH} from './brand.mjs?v=3.0.0';
 export const SITE_URL = 'https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/';
 const PALETTES = {
-  perfect: {title:['#9d4e20','#ad3563'],darkTitle:['#f5c57e','#f1a9ca'],wash:['#fff3da','#fbe5ee'],ink:'#9d4e20'},
-  regular: {title:['#5c45b1','#416cb6'],darkTitle:['#c5b4ff','#a9c6ff'],wash:['#efecff','#e7efff'],ink:'#5c45b1'},
-  curious: {title:['#ac4636','#a04479'],darkTitle:['#ffb9a5','#eab1d5'],wash:['#ffede6','#f7e8f2'],ink:'#ac4636'},
+  perfect:{title:['#88632d','#997645'],darkTitle:['#dec392','#e3cfaa'],wash:['#f3eddf','#f7f2e7'],ink:'#88632d'},
+  regular:{title:['#39664c','#55785e'],darkTitle:['#aac7af','#bbd1bb'],wash:['#ebefe6','#f3f5ef'],ink:'#39664c'},
+  curious:{title:['#a04f3a','#ad6a53'],darkTitle:['#e8b5a1','#edc6b4'],wash:['#f5eae1','#f8f0e8'],ink:'#a04f3a'},
 };
 export function resultPalette(report) {
   return PALETTES[report.total>0&&report.correct===report.total?'perfect':report.score>=60?'regular':'curious'];
 }
-export function shareText(report, title) {
+export function shareText(report,title) {
   return `Apple 冷知识 · ${report.correct}/${report.total} 题 · ${report.score} 分\n「${title}」\n不服来战！\n${SITE_URL}`;
 }
-export async function createShareCard(report, title) {
+export async function createShareCard(report,title) {
   await document.fonts?.ready;
   const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1440;
   const c=canvas.getContext('2d');if(!c)throw new Error('Canvas unavailable');
-  const palette=resultPalette(report);
-  const gradient=(colors,x=86,y=0,endX=994,endY=0)=>{
-    const g=c.createLinearGradient(x,y,endX,endY);colors.forEach((color,i)=>g.addColorStop(i/(colors.length-1),color));return g;
+  const ink='#222622',muted='#656b65',line='#d9dcd3';
+  const spectrum=['#68a65b','#d7b945','#d88b49','#ce6263','#9a6b9d','#5f91bd'];
+  const font=(size,weight=400)=>{c.font=`${weight} ${size}px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif`;};
+  const text=(value,x,y,size,weight=400,color=ink,align='left',max=880)=>{
+    value=String(value);font(size,weight);
+    while(c.measureText(value).width>max&&size>16)font(--size,weight);
+    c.fillStyle=color;c.textAlign=align;c.fillText(value,x,y);
   };
-  // All content sits inside the same 8% safe area as the rounded panel.
-  c.fillStyle=gradient(palette.wash,0,0,1080,1440);c.fillRect(0,0,1080,1440);
-  c.fillStyle='#ffffff';c.beginPath();c.roundRect(86,86,908,1268,44);c.fill();
-  c.save();c.beginPath();c.roundRect(86,86,908,1268,44);c.clip();
-  const wash=c.createLinearGradient(0,86,0,680);wash.addColorStop(0,palette.wash[0]);wash.addColorStop(1,'#ffffff');c.fillStyle=wash;c.fillRect(86,86,908,594);c.restore();
-  const font=(size,weight=400)=>{c.font=`${weight} ${size}px -apple-system, "SF Pro", "PingFang SC", BlinkMacSystemFont, "Segoe UI", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif`;};
-  const center=(text,y,size,weight=400,color='#242735',max=800)=>{
-    text=String(text);font(size,weight);while(c.measureText(text).width>max&&size>16)font(--size,weight);
-    c.fillStyle=color;c.textAlign='center';c.fillText(text,540,y);
-  };
-  const apple=(x,y,scale,fill)=>{c.save();c.translate(x,y);c.scale(scale,scale);c.translate(0,-9);c.fillStyle=fill;c.fill(new Path2D(APPLE_PATH));c.restore();};
-  font(32,600);const brandText='Apple Trivia',brandWidth=c.measureText(brandText).width,brandLeft=(1080-brandWidth-48)/2;
-  apple(brandLeft,153,1.6,gradient(['#7b60d7','#d88c99'],0,9,20,31));
-  c.fillStyle='#242735';c.textAlign='left';c.fillText(brandText,brandLeft+48,182);
-  c.strokeStyle='#e1e4ec';c.lineWidth=2;c.beginPath();c.moveTo(166,246);c.lineTo(914,246);c.stroke();
-  c.fillStyle=palette.wash[0];c.beginPath();c.roundRect(484,306,112,112,30);c.fill();apple(514,330,2.6,palette.ink);
-  center(title,536,82,700,gradient(palette.title));
-  center(report.score,740,128,600);center('分',788,28,400,'#616779');
-  center(`猜对 ${report.correct} / ${report.total} 题`,898,34,500);
+  const rule=y=>{c.strokeStyle=line;c.lineWidth=2;c.beginPath();c.moveTo(88,y);c.lineTo(992,y);c.stroke();};
+  const stripe=(x,y,width,height)=>{spectrum.forEach((color,i)=>{c.fillStyle=color;c.fillRect(x+i*width/6,y,width/6,height);});};
+  c.fillStyle='#f5f4f0';c.fillRect(0,0,1080,1440);
+  c.save();c.translate(86,111);c.scale(2.2,2.2);c.translate(0,-9);
+  const logoGradient=c.createLinearGradient(0,10,0,31);
+  spectrum.forEach((color,i)=>{logoGradient.addColorStop(i/6,color);logoGradient.addColorStop((i+1)/6,color);});
+  c.fillStyle=logoGradient;c.fill(new Path2D(APPLE_PATH));c.restore();
+  text('Apple Trivia',145,155,34,600);
+  rule(210);
+  text('本局成绩',88,286,28,400,muted);
+  text(title,88,414,76,600,ink,'left',900);
+  stripe(92,450,108,6);
+  text(report.score,80,781,286,500,ink,'left',780);
+  text('分',966,781,34,400,muted,'right');
+  rule(858);
+  text('答对',88,935,28,400,muted);
+  text(`${report.correct} / ${report.total}`,992,935,42,500,ink,'right');
   const duration=`${Math.floor(report.duration/60)}:${String(report.duration%60).padStart(2,'0')}`;
-  center(`用时 ${duration}`,954,28,400,'#616779');
-  c.fillStyle='#6550c7';c.beginPath();c.roundRect(300,1040,480,96,24);c.fill();center('不服来战',1102,36,600,'#ffffff');
-  center('yunnre060214-sudo.github.io',1230,26,500,'#616779');
-  center('/Apple-Product-Knowledge-Quiz/',1274,24,400,'#616779');
+  text('用时',88,1018,28,400,muted);
+  text(duration,992,1018,42,500,ink,'right');
+  rule(1074);
+  text('不服来战',88,1180,42,600);
+  text('yunnre060214-sudo.github.io',88,1292,24,400,muted);
+  text('/Apple-Product-Knowledge-Quiz/',88,1332,24,400,muted);
+  stripe(88,1370,66,3);
   return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('PNG encoding failed')),'image/png'));
 }
-export function downloadBlob(blob, filename) {
+export function downloadBlob(blob,filename) {
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
 }
