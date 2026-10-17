@@ -1,9 +1,10 @@
-import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=3.0.2';
-import {icon} from './icons.mjs?v=3.0.2';
-import {archiveMarkup,mountArchive} from './gallery.mjs?v=3.0.2';
-import {replayHello} from './hello.mjs?v=3.0.2';
-import {createThemeSwitcher,setBrowserTheme} from './theme.mjs?v=3.0.2';
-import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=3.0.2';
+import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=3.1.0';
+import {icon} from './icons.mjs?v=3.1.0';
+import {archiveMarkup,mountArchive} from './gallery.mjs?v=3.1.0';
+import {replayHello} from './hello.mjs?v=3.1.0';
+import {createThemeSwitcher,setBrowserTheme} from './theme.mjs?v=3.1.0';
+import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=3.1.0';
+import {createInteractionMotion} from './motion.mjs?v=3.1.0';
 const $=s=>document.querySelector(s), main=$('#main'), modal=$('#modal');
 const KEY='apple-quiz:v1:';
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -23,11 +24,12 @@ let bank=[], meta={}, questions=[], session=null, report=null, view='home', seen
 let autoTimer, clockTimer, toastTimer, shareUrl, shareBlob, generation=0, paused=false, finishPending=false;
 let disposeArchive=()=>{}, questionDirection=1;
 const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+const motion=createInteractionMotion({document,window,reducedMotion:reduced});
 const fmt=n=>`${Math.floor(n/60)}:${String(n%60).padStart(2,'0')}`;
 const quickConfig=topic=>({count:5,difficulty:'mixed',categories:Object.keys(CATEGORIES),mode:'quick',casual:true,secondsPerQuestion:0,...(topic?{topic}: {})});
 const sourceLinks=q=>q.sources.map((s,i)=>`<a href="${esc(s)}" target="_blank" rel="noopener noreferrer">${s.includes('macrumors.com')?'历史声明存档':'Apple 资料'}${q.sources.length>1?` ${i+1}`:''}${icon('external')}</a>`).join('');
 function toast(s){$('#toast').textContent=s;$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),3500);}
-function dialog(title,body){$('#modal-content').innerHTML=`<h2 id="modal-title">${title}</h2>${body}`;if(!modal.open)modal.showModal();}
+function dialog(title,body){motion.prepareDialog(modal);$('#modal-content').innerHTML=`<h2 id="modal-title">${title}</h2>${body}`;if(!modal.open)modal.showModal();motion.enter(modal,'dialog');}
 function cancelAuto(){clearTimeout(autoTimer);autoTimer=null;generation++;$('.quick-controls')?.classList.remove('counting');}
 function save(){if(session&&!finishPending)write('session',session);}
 function visit(q){seen=updateRecent(seen,[q.id],Math.max(3000,Math.floor(bank.length*.75)));write('seen',seen);}
@@ -60,7 +62,7 @@ function renderQuestion(){
   cancelAuto();paused=false;const q=questions[session.index],answer=session.answers[q.id],quick=session.config.mode==='quick';visit(q);
   const locked=session.confirmed.includes(q.id);
   $('#question-stage').innerHTML=`<article class="question-card" aria-labelledby="question-prompt"><div class="question-meta"><span class="question-topic">${icon(q.kind==='timeline'?'clock':q.topic==='stories'?'history':'apple')}${esc(q.tag||CATEGORIES[q.category].name)}</span>${quick?'':`<button class="flag-button" data-action="flag" aria-pressed="${session.flags.includes(q.id)}" aria-label="${session.flags.includes(q.id)?'取消标记':'标记题目'}">${icon('flag')}</button>`}</div><h1 id="question-prompt" tabindex="-1">${esc(q.prompt)}</h1><div class="answers" role="group" aria-label="选择一个答案">${q.options.map((o,i)=>`<button class="answer" data-answer="${i}" aria-pressed="${answer===o}"><span class="letter">${'ABCD'[i]}</span><span class="answer-text">${esc(o)}</span><span class="answer-mark"></span></button>`).join('')}</div><div id="answer-feedback" class="feedback" aria-live="polite"></div><div id="explanation-area"></div><div class="question-nav" ${quick?'hidden':''}><button class="text-button" data-action="previous" ${session.index===0?'disabled':''}>${icon('back')}上一题</button><button class="primary-button" id="advance" data-action="${session.config.mode==='practice'&&!locked?'confirm':'next'}">${session.config.mode==='practice'&&!locked?'确认':session.index===questions.length-1?'查看结果':'下一题'}${icon('arrow')}</button></div><div class="quick-controls" ${quick?'':'hidden'}><label class="auto-switch"><input id="auto-toggle" type="checkbox" ${read('auto',true)?'checked':''}>自动下一题</label><span id="auto-label"></span></div></article>`;
-  updateOptions();updateProgress();if(locked)showFeedback(false);animate($('.question-card'),{x:questionDirection*12,y:0,duration:220});
+  updateOptions();updateProgress();if(locked)showFeedback(false);animate($('.question-card'),{x:questionDirection*12,y:0,duration:220});motion.enter($('.answers'),'answers');
   $('#question-prompt').focus({preventScroll:true});
 }
 // Selection changes four option nodes and the progress label. The shell, navigation and prompt survive.
@@ -86,7 +88,7 @@ function showFeedback(fresh){
   const q=questions[session.index],correct=session.answers[q.id]===q.answer,quick=session.config.mode==='quick';
   let streak=0;for(let i=session.index;i>=0;i--){if(session.answers[questions[i].id]!==questions[i].answer)break;streak++;}
   const line=correct?(streak>=3?`${streak} 连对`:'答对了'):'答错了';
-  const f=$('#answer-feedback');f.className=`feedback visible ${correct?'good':'oops'}`;f.innerHTML=`<div class="feedback-line">${icon(correct?'check':'bulb')}<strong>${line}</strong><button class="text-button" data-action="explain">解析${icon('arrow')}</button></div>${quick?`<button class="quick-next" data-action="next">${session.index===questions.length-1?'查看结果':'下一题'}${icon('arrow')}</button>`:''}`;
+  const f=$('#answer-feedback');f.className=`feedback visible ${correct?'good':'oops'}`;f.innerHTML=`<div class="feedback-line">${icon(correct?'check':'bulb')}<strong>${line}</strong><button class="text-button" data-action="explain" aria-expanded="false" aria-controls="explanation-area">解析${icon('arrow')}</button></div>${quick?`<button class="quick-next" data-action="next">${session.index===questions.length-1?'查看结果':'下一题'}${icon('arrow')}</button>`:''}`;
   if(fresh&&correct&&[3,5,10,20,50,100].includes(streak)){toast(`${streak} 连对`);if(streak===3)celebrate(12);}
   if(quick&&fresh)scheduleNext();else if(quick)$('#auto-label').textContent='手动切题';
 }
@@ -97,7 +99,7 @@ function scheduleNext(){
 }
 function explain(){
   cancelAuto();paused=true;$('#auto-label').textContent='已暂停';
-  const q=questions[session.index];$('#explanation-area').innerHTML=`<div class="explanation"><p>${esc(q.explanation)}</p><div class="source-links">${sourceLinks(q)}</div></div>`;animate($('.explanation'));
+  const q=questions[session.index];$('#explanation-area').innerHTML=`<div class="explanation"><p>${esc(q.explanation)}</p><div class="source-links">${sourceLinks(q)}</div></div>`;$('[data-action="explain"]').setAttribute('aria-expanded','true');animate($('.explanation'));motion.enter($('#explanation-area'),'explanation');
 }
 function moveQuestion(index){
   if(!session||view!=='quiz')return;if(session.deadline&&session.deadline<=Date.now()){finish(true);return;}
@@ -121,7 +123,7 @@ function results(){
   enter('result');const t=resultTitle(report),eggs=easterEggs(report),palette=resultPalette(report);
   const trail=questions.length<=10?`<div class="result-trail" role="list" aria-label="每题结果">${questions.map((q,i)=>{const correct=session.answers[q.id]===q.answer;return `<span class="${correct?'good':'oops'}" role="listitem" aria-label="第 ${i+1} 题，${correct?'答对':'未答对'}"><span aria-hidden="true">${String(i+1).padStart(2,'0')}</span>${icon(correct?'check':'close')}</span>`;}).join('')}</div>`:'';
   main.innerHTML=`<section class="result-shell" style="--result-a:${palette.title[0]};--result-b:${palette.title[1]};--result-dark-a:${palette.darkTitle[0]};--result-dark-b:${palette.darkTitle[1]};--result-soft:${palette.wash[0]};--result-ink:${palette.ink}"><div class="result-ticket"><div class="result-topline"><span>本局成绩</span><div class="result-emblem ${t.tone}">${icon(report.correct===report.total?'trophy':'apple')}</div></div><h1 class="result-title">${t.title}</h1><div class="score-row"><div class="result-score"><strong data-final="${report.score}">0</strong><span>分</span></div><span class="score-divider" aria-hidden="true"></span><div class="result-stats"><span>答对 <b>${report.correct} / ${report.total}</b> 题</span><span>用时 <b>${fmt(report.duration)}</b></span></div></div>${trail}</div>${eggs.length?`<div class="egg-note">${icon('apple')}<span>${eggs.map(esc).join('<br>')}</span></div>`:''}<div class="result-actions"><button class="primary-button" data-action="quick">${icon('shuffle')}再来 5 题</button><button class="secondary-button" data-action="share-card">${icon('share')}分享结果</button></div><div class="result-links"><button class="text-button" data-action="review">查看解析${icon('arrow')}</button><button class="text-button" data-action="home">回到首页</button></div></section>`;
-  animate($('.result-shell'));countUp($('.result-score strong'),report.score);if(report.correct===report.total)celebrate(64);
+  animate($('.result-shell'));motion.enter($('.result-shell'),'result');countUp($('.result-score strong'),report.score);if(report.correct===report.total)celebrate(64);
 }
 function countUp(el,value){if(reduced()){el.textContent=value;return;}const start=performance.now();function frame(now){const p=Math.min(1,(now-start)/850);el.textContent=Math.round(value*(1-Math.pow(1-p,3)));if(p<1&&el.isConnected)requestAnimationFrame(frame);else el.textContent=value;}requestAnimationFrame(frame);}
 function review(){
@@ -132,10 +134,10 @@ async function showShare(){
   const currentReport=report;
   try{const generated=shareBlob || await createShareCard(report,title.title);if(report!==currentReport||!modal.open||!$('#share-preview'))return;shareBlob=generated;if(shareUrl)URL.revokeObjectURL(shareUrl);shareUrl=URL.createObjectURL(shareBlob);$('#share-preview').innerHTML=`<img src="${shareUrl}" alt="Apple 冷知识战绩：${report.score} 分，${esc(title.title)}，猜对 ${report.correct}/${report.total} 题，不服来战。">`;document.querySelectorAll('.share-buttons button').forEach(b=>b.disabled=false);}catch{if($('#share-preview'))$('#share-preview').innerHTML='<p>图片生成失败，请重试或复制文字。</p>';}
 }
-async function nativeShare(){if(!shareBlob)return;try{const file=new File([shareBlob],'apple-trivia.png',{type:'image/png'});if(navigator.canShare?.({files:[file]}))await navigator.share({files:[file],title:'Apple 冷知识，不服来战'});else if(navigator.share)await navigator.share({title:'Apple 冷知识',text:shareText(report,resultTitle(report).title),url:SITE_URL});else{downloadBlob(shareBlob,`apple-trivia-${report.score}.png`);toast('图片已生成');}}catch(e){if(e.name!=='AbortError')toast('分享失败，请保存图片后重试。');}}
-async function copy(){const s=shareText(report,resultTitle(report).title);try{await navigator.clipboard.writeText(s);toast('已复制');}catch{dialog('复制结果',`<textarea class="copy-text" readonly aria-label="战绩文字">${esc(s)}</textarea><p class="muted">长按或全选，即可复制。</p>`);$('.copy-text').select();}}
+async function nativeShare(){if(!shareBlob)return;try{const file=new File([shareBlob],'apple-trivia.png',{type:'image/png'});if(navigator.canShare?.({files:[file]}))await navigator.share({files:[file],title:'Apple 冷知识，不服来战'});else if(navigator.share)await navigator.share({title:'Apple 冷知识',text:shareText(report,resultTitle(report).title),url:SITE_URL});else{downloadBlob(shareBlob,`apple-trivia-${report.score}.png`);toast('图片已生成');}motion.feedback($('[data-action="native-share"]'));}catch(e){if(e.name!=='AbortError')toast('分享失败，请保存图片后重试。');}}
+async function copy(){const s=shareText(report,resultTitle(report).title);try{await navigator.clipboard.writeText(s);toast('已复制');motion.feedback($('[data-action="copy"]'));}catch{dialog('复制结果',`<textarea class="copy-text" readonly aria-label="战绩文字">${esc(s)}</textarea><p class="muted">长按或全选，即可复制。</p>`);$('.copy-text').select();}}
 function celebrate(n){if(reduced())return;const box=$('#celebration');box.replaceChildren();for(let i=0;i<n;i++){const p=document.createElement('i');p.style.cssText=`--x:${Math.random()*100}vw;--drift:${(Math.random()-.5)*280}px;--r:${Math.random()*900}deg;--delay:${Math.random()*.4}s;--c:${['#af9bff','#ffbd9f','#9adacb','#f0cf74','#83b9fb'][i%5]}`;box.append(p);}setTimeout(()=>box.replaceChildren(),2500);}
-function about(){dialog('关于',`<p>Apple 冷知识小游戏。默认每局 5 题。</p><p>目前有 <b>${bank.length.toLocaleString('en-US')}</b> 道题，包含产品故事、反直觉小知识、系统功能、发布年份和时间线。时间线题由产品与系统的年份记录组合生成，短局会优先抽趣味题。</p><p>每题都保留解析和 Apple 资料链接。年份采用首次发布或首次预览的公历年份，具体口径写在题目中。不同地区的上市时间可能不同。</p><p class="muted">进度仅保存在当前浏览器。与 Apple Inc. 无关联。v${VERSION}</p><a class="text-button" href="https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz" target="_blank" rel="noopener noreferrer">查看题库与源代码${icon('external')}</a><button class="secondary-button replay-intro" data-action="replay-hello">重播 hello</button>`);}
+function about(){dialog('关于',`<p>Apple 冷知识小游戏。默认每局 5 题。</p><p>目前有 <b>${bank.length.toLocaleString('en-US')}</b> 道题，包含产品故事、反直觉小知识、系统功能、发布年份和时间线。时间线题由产品与系统的年份记录组合生成，短局会优先抽趣味题。</p><p>每题都保留解析和 Apple 资料链接。年份采用首次发布或首次预览的公历年份，具体口径写在题目中。不同地区的上市时间可能不同。</p><p class="muted">进度仅保存在当前浏览器。与 Apple Inc. 无关联。v${VERSION}</p><a class="text-button" href="https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz" target="_blank" rel="noopener noreferrer">查看题库与源代码${icon('external')}</a><button class="secondary-button replay-intro" data-action="replay-hello">${icon('history')}重播 hello</button>`);}
 
 document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b||b.disabled)return;
@@ -143,7 +145,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.topic){start(quickConfig(b.dataset.topic));return;}
   if(b.dataset.count){config.count=Number(b.dataset.count);$('#count-input').value=b.dataset.count;document.querySelectorAll('[data-count]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b));});updatePool();return;}
   if(b.dataset.jump!==undefined){modal.close();moveQuestion(Number(b.dataset.jump));return;}
-  const actions={home,'replay-hello':()=>{modal.close();replayHello();},quick:()=>start(quickConfig()),custom,resume,about,close:()=>{modal.close();},theme:()=>{void switchTheme(b);},next:nextQuestion,previous:()=>moveQuestion(session.index-1),confirm:confirmAnswer,explain,map,'end-round':requestFinish,finish:()=>finish(),results,review,'share-card':showShare,download:()=>shareBlob&&downloadBlob(shareBlob,`apple-trivia-${report.score}.png`),'native-share':nativeShare,copy,flag:()=>{const id=questions[session.index].id;session.flags=session.flags.includes(id)?session.flags.filter(x=>x!==id):[...session.flags,id];save();b.setAttribute('aria-pressed',String(session.flags.includes(id)));b.setAttribute('aria-label',session.flags.includes(id)?'取消标记':'标记题目');},reload:()=>location.reload()};actions[b.dataset.action]?.();
+  const actions={home,'replay-hello':()=>{modal.close();replayHello();},quick:()=>start(quickConfig()),custom,resume,about,close:()=>motion.closeDialog(modal),theme:()=>{void switchTheme(b);},next:nextQuestion,previous:()=>moveQuestion(session.index-1),confirm:confirmAnswer,explain,map,'end-round':requestFinish,finish:()=>finish(),results,review,'share-card':showShare,download:()=>{if(shareBlob){downloadBlob(shareBlob,`apple-trivia-${report.score}.png`);motion.feedback(b);}},'native-share':nativeShare,copy,flag:()=>{const id=questions[session.index].id;session.flags=session.flags.includes(id)?session.flags.filter(x=>x!==id):[...session.flags,id];save();b.setAttribute('aria-pressed',String(session.flags.includes(id)));b.setAttribute('aria-label',session.flags.includes(id)?'取消标记':'标记题目');},reload:()=>location.reload()};actions[b.dataset.action]?.();
 });
 document.addEventListener('submit',e=>{if(e.target.id!=='custom-form')return;e.preventDefault();const next=formConfig();if(!Number.isInteger(next.count)||next.count<5||next.count>500||!next.categories.length)return;config=next;write('config',config);start(config);});
 document.addEventListener('change',e=>{if(e.target.closest('#custom-form')){if(e.target.id==='mode-select')$('.timer-setting').hidden=e.target.value!=='exam';updatePool();}if(e.target.id==='auto-toggle'){write('auto',e.target.checked);paused=false;scheduleNext();}});

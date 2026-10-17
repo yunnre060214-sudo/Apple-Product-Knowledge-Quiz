@@ -2,9 +2,9 @@
 
 一个轻松的中文 Apple 冷知识小游戏。点「随机来 5 题」直接开玩，猜完领个趣味称号，生成战绩图片，邀请朋友「不服来战」。
 
-[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=3.0.2) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
+[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=3.1.0) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
 
-当前版本 **3.0.2**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
+当前版本 **3.1.0**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
 
 ## 界面
 
@@ -17,6 +17,8 @@
 结算与 1080 × 1440 分享图共用档案单页构图：大分数、清晰的称号和两行统计。短局结算展示逐题对错。手机上的自定义、关于与分享使用底部面板，明确重置浏览器原生弹窗的最大宽度，确保左右边缘对齐；按钮保留 44px 以上触控高度，输入字体保留 16px。深色单独配置背景、文字、状态与分隔线。
 
 每次进入必播的 hello 与按钮原点扩散明暗切换继续保留。手机主题色分别为 `#f5f4f0` 和 `#101216`；页面内容层使用新外观参与扩散，`html`、`body` 的底色与根 `color-scheme` 保持原状态，扩散结束后再与浏览器主题色一同提交。这样避免 Safari 工具栏周围的底层区域抢先整块变色；浏览器原生工具栏本身由 Safari 绘制，网页无法对其应用圆形裁剪。首屏、减少动态效果和不支持 View Transition 时直接同步两层状态。更多研究来源与取舍见 [设计研究与迭代记录](docs/design-research.md)。
+
+全站交互采用分场景动效：品牌轻摆、开始按钮的洗牌与推进、主题图标转动、产品切换的方向响应、分类图标动作、答案判定描线、题数滑块跨行移动、领域开关回弹、原生选择器指示、解析折叠、弹窗退出，以及复制／保存／分享成功后的短暂对勾。触摸按压保持到松手，滑动或取消时回正；键盘操作复用相同反馈。动态生成的控件自动接入，链接与按钮保留原语义和点击区域，导航及原生分享调用不等待装饰动画。启用减少动态效果时停止非必要运动，保留结果反馈。详细映射与边界见 [交互动效规范](docs/interaction-motion.md)。
 
 ## 玩法
 
@@ -60,6 +62,7 @@
 - `src/engine.mjs`：抽题、近期记录、恢复进度、结算和彩蛋规则。
 - `assets/app.mjs`：界面与玩法，选答案时局部更新按钮和进度，切题时只替换题目区域。
 - `assets/theme.mjs`：明暗外观的圆形扩散过渡与兼容处理。扩散半径包含移动端完整快照范围；页面外观与浏览器底色分别使用 `data-theme`、`data-browser-theme`，动画完成后同步底色、根配色方案和浏览器主题色。
+- `assets/motion.mjs`、`assets/motion.css`：全站交互分类、按压保持与回弹、图标语义动作、表单选择、高度折叠、弹窗退出和真实操作完成后的反馈；减少动态效果及清理机制。
 - `assets/hello.mjs`、`assets/hello.css`：每次进入必播的开场控制与关键样式，在构建时内联。手写路径改编自 [Chánh Đại Apple Hello Effect](https://github.com/ncdai/chanhdai.com/blob/main/src/registry/components/apple-hello-effect/apple-hello-effect-english.tsx)，MIT 许可保留于 `assets/hello-LICENSE.txt`。
 - `assets/icons.mjs`、`assets/brand.mjs`：统一线性 SVG 图标与 Apple 官网咬口苹果轮廓。品牌沿用轮廓，配以六色条纹。
 - `assets/gallery.mjs`、九份产品 SVG：原创经典产品展陈与手动切换、指针响应。
