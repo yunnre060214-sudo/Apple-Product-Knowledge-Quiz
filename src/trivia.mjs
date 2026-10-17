@@ -445,7 +445,7 @@ iPad 的截屏缩略图，点开后通常可以做什么？|标记和裁剪截�
 iPad 上的辅助触控，主要能提供什么？|屏幕上的辅助操作菜单|给屏幕装机械按钮|自动修复破裂玻璃|增加摄像头数量|AssistiveTouch 帮助用户以屏幕菜单等方式完成手势和按钮操作。
 Apple Pencil 悬浮指向，笔尖需要先碰到屏幕吗？|支持的设备上可在接近屏幕时预览|必须先用力压下|必须把笔接到充电线|必须把屏幕关掉|在兼容 iPad 与笔的组合上，悬浮指向可在笔尖靠近时显示预览。
 `);
-export function buildTrivia(){return rows.map(({source,category,topic,family,cells},i)=>{const [prompt,answer,...rest]=cells,explanation=rest.pop(),rng=seeded(`trivia-${i}`);return {id:`trivia-${String(i+1).padStart(3,'0')}`,category,difficulty:topic==='stories'?'medium':'easy',prompt,answer,options:shuffle([answer,...rest],rng),explanation,sources:[S[source]||source],kind:'trivia',topic,family,tag:topic==='stories'?'苹果旧事':'有点反直觉'};});}
+export function buildTrivia(){return rows.map(({source,category,topic,family,cells},i)=>{const [prompt,answer,...rest]=cells,explanation=rest.pop(),rng=seeded(`trivia-${i}`);return {id:`trivia-${String(i+1).padStart(3,'0')}`,category,difficulty:topic==='stories'?'medium':'easy',prompt,answer,options:shuffle([answer,...rest],rng),explanation,sources:[S[source]||source],kind:'trivia',topic,family,...(family.startsWith('ios-')?{families:[family,'ios-features']}:{}),tag:topic==='stories'?'苹果旧事':'有点反直觉'};});}
 add('https://www.macrumors.com/2019/03/29/apple-officially-cancels-airpower/','history','stories','airpower',`
 哪款 Apple 配件公开预告后，最终在 2019 年宣布取消？|AirPower|AirTag|HomePod mini|第一代 AirPods|AirPower 在正式发售前取消；资料页保存了 Apple 硬件负责人向媒体提供的声明。
 `);

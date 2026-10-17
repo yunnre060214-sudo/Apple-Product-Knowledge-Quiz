@@ -5,7 +5,7 @@ import {buildBank} from '../src/bank.mjs';
 import {CATEGORIES,drawQuestions,updateRecent,createSession,hydrateSession,resultTitle,easterEggs} from '../src/engine.mjs';
 import {iosReleases,iosFeatures} from '../src/trivia.mjs';
 const catalog=JSON.parse(await readFile(new URL('../src/catalog.json',import.meta.url),'utf8'));
-const bank=buildBank(catalog),cfg={mode:'quick',count:5,difficulty:'mixed',categories:Object.keys(CATEGORIES)};
+const bank=buildBank(catalog),cfg={mode:'quick',casual:true,count:5,difficulty:'mixed',categories:Object.keys(CATEGORIES)};
 test('release has >4000 distinct questions and substantial authored trivia + timeline content',()=>{
  assert.ok(bank.length>4000);assert.ok(bank.filter(q=>q.kind==='trivia').length>=240);
  assert.equal(bank.filter(q=>q.id.startsWith('timeline-')).length,2400);
@@ -17,6 +17,8 @@ test('quick rounds favor stories and surprises, with one timeline and one wildca
   const qs=drawQuestions(bank,cfg,seed);assert.equal(qs.length,5);
   assert.equal(qs.filter(q=>q.kind==='trivia').length,3);
   assert.equal(qs.filter(q=>q.kind==='timeline').length,1);
+  assert.ok(qs.every(q=>!q.id.startsWith('spec-')&&!q.id.startsWith('ratio-')&&!q.id.startsWith('compare-')));
+  assert.ok(qs.filter(q=>q.families?.includes('ios-features')).length<=1);
   const families=qs.flatMap(q=>q.families||[q.family||q.id]);assert.equal(new Set(families).size,families.length);
  }
 });
@@ -31,7 +33,7 @@ test('recent history keeps the actual visit order, moves repeats to tail and tri
  assert.deepEqual(updateRecent(['a','b','c'],['b','d'],3),['c','b','d']);
  assert.deepEqual(updateRecent(['a'],['b'],0),[]);
  const pool=bank.slice(0,20),seen=pool.map(q=>q.id);
- const qs=drawQuestions(pool,{...cfg,mode:'exam',count:5},7,seen);
+ const qs=drawQuestions(pool,{...cfg,mode:'exam',casual:false,count:5},7,seen);
  assert.deepEqual(new Set(qs.map(q=>q.id)),new Set(seen.slice(0,5)));
 });
 test('a quick game can resume with locked answers, options and index intact',()=>{

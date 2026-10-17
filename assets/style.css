@@ -18,3 +18,5 @@ dialog{background:var(--surface);color:var(--ink);border:1px solid var(--line);b
 .primary-button:active:not(:disabled),.secondary-button:active:not(:disabled){transform:scale(.97)}
 @media(max-width:760px){.hero{grid-template-columns:minmax(0,1fr)}.playground{width:100%;max-width:420px;height:287px;transform:none;margin:-4px auto 0;overflow:clip}.scene-items{width:420px;height:340px;left:50%;top:-14px;transform:translateX(-50%) scale(.75);transform-origin:50% 45%}}
 @media(max-width:380px){.playground{height:265px;margin-top:-8px;margin-bottom:0}.scene-items{transform:translateX(-50%) scale(.67);top:-10px}}
+
+@media(max-width:760px){.phone-device{right:22px}}

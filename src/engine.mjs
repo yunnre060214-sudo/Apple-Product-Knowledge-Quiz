@@ -1,4 +1,4 @@
-export const VERSION = '2.0.0';
+export const VERSION = '2.0.1';
 export const CATEGORIES = {
   iphone: { name: 'iPhone', short: 'iP', color: '#3478e7' },
   ipad: { name: 'iPad', short: 'iD', color: '#8958c7' },
@@ -38,10 +38,10 @@ export function shuffle(items, rng = Math.random) {
   }
   return result;
 }
-export function filterBank(bank, { categories = Object.keys(CATEGORIES), difficulty = 'mixed', ids, topic } = {}) {
+export function filterBank(bank, { categories = Object.keys(CATEGORIES), difficulty = 'mixed', ids, topic, casual = false } = {}) {
   const allowed = new Set(categories);
   const allowedIds = ids ? new Set(ids) : null;
-  return bank.filter(q => allowed.has(q.category) && (difficulty === 'mixed' || q.difficulty === difficulty) && (!allowedIds || allowedIds.has(q.id)) && (!topic || (topic === 'timeline' ? q.kind === 'timeline' : q.topic === topic)));
+  return bank.filter(q => allowed.has(q.category) && (difficulty === 'mixed' || q.difficulty === difficulty) && (!allowedIds || allowedIds.has(q.id)) && (!topic || (topic === 'timeline' ? q.kind === 'timeline' : q.topic === topic)) && (!casual || q.kind || (!/^(spec|ratio|compare)-/.test(q.id) && ['easy','medium'].includes(q.difficulty))));
 }
 // Round-robin across shuffled category/level buckets gives small topics a fair place in a paper.
 export function drawQuestions(bank, config, seed, seen = []) {
@@ -79,7 +79,7 @@ export function createSession(questions, config, seed, now = Date.now()) {
   };
 }
 export function hydrateSession(saved, bank) {
-  if (!saved || saved.schema !== 1 || !['1.0.0', '1.0.1', VERSION].includes(saved.version) || !Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(saved.startedAt)) return null;
+  if (!saved || saved.schema !== 1 || !['1.0.0', '1.0.1', '2.0.0', VERSION].includes(saved.version) || !Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(saved.startedAt)) return null;
   if (!saved.config || !['quick', 'exam', 'practice'].includes(saved.config.mode)) return null;
   const lookup = new Map(bank.map(q => [q.id, q]));
   const ids = new Set();

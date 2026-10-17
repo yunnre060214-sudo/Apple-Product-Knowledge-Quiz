@@ -1,6 +1,6 @@
-import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=2.0.0';
-import {icon,scene} from './icons.mjs?v=2.0.0';
-import {SITE_URL,shareText,createShareCard,downloadBlob} from './share.mjs?v=2.0.0';
+import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=2.0.1';
+import {icon,scene} from './icons.mjs?v=2.0.1';
+import {SITE_URL,shareText,createShareCard,downloadBlob} from './share.mjs?v=2.0.1';
 const $=s=>document.querySelector(s), main=$('#main'), modal=$('#modal');
 const KEY='apple-quiz:v1:';
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -20,7 +20,7 @@ let bank=[], meta={}, questions=[], session=null, report=null, view='home', seen
 let autoTimer, clockTimer, toastTimer, shareUrl, shareBlob, generation=0, paused=false, finishPending=false;
 const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fmt=n=>`${Math.floor(n/60)}:${String(n%60).padStart(2,'0')}`;
-const quickConfig=topic=>({count:5,difficulty:'mixed',categories:Object.keys(CATEGORIES),mode:'quick',secondsPerQuestion:0,...(topic?{topic}: {})});
+const quickConfig=topic=>({count:5,difficulty:'mixed',categories:Object.keys(CATEGORIES),mode:'quick',casual:true,secondsPerQuestion:0,...(topic?{topic}: {})});
 const sourceLinks=q=>q.sources.map((s,i)=>`<a href="${esc(s)}" target="_blank" rel="noopener noreferrer">${s.includes('macrumors.com')?'历史声明存档':'Apple 资料'}${q.sources.length>1?` ${i+1}`:''}${icon('external')}</a>`).join('');
 function toast(s){$('#toast').textContent=s;$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),3500);}
 function dialog(title,body){$('#modal-content').innerHTML=`<h2 id="modal-title">${title}</h2>${body}`;if(!modal.open)modal.showModal();}
@@ -99,7 +99,7 @@ function moveQuestion(index){
   if(!session||view!=='quiz')return;if(session.deadline&&session.deadline<=Date.now()){finish(true);return;}
   const stage=$('#question-stage');stage.style.minHeight=`${Math.max(stage.getBoundingClientRect().height,parseFloat(stage.style.minHeight)||0)}px`;
   session.index=Math.max(0,Math.min(questions.length-1,index));save();renderQuestion();
-  const prompt=$('#question-prompt');if(prompt.getBoundingClientRect().bottom<24)window.scrollTo({top:Math.max(0,prompt.getBoundingClientRect().top+window.scrollY-24),behavior:'instant'});
+  const prompt=$('#question-prompt');if(prompt.getBoundingClientRect().top<24)window.scrollTo({top:Math.max(0,prompt.getBoundingClientRect().top+window.scrollY-24),behavior:'instant'});
   // Small scroll offsets survive; only deep explanation scrolling is brought back to the new prompt.
 }
 function nextQuestion(){if(session.config.mode==='quick'&&!session.confirmed.includes(questions[session.index].id))return;if(session.index===questions.length-1)requestFinish();else moveQuestion(session.index+1);}
