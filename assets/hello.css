@@ -1,0 +1,17 @@
+/* Inlined into HTML so the mandatory intro has no stylesheet dependency. */
+.hello-intro { display:none; position:fixed; inset:0; z-index:100; place-items:center; background:var(--bg,#f7f8fb); isolation:isolate; outline:none; }
+[data-theme=dark] .hello-intro { background:var(--bg,#0b0e15); }
+.hello-pending { overflow:hidden; }
+.hello-pending .hello-intro { display:grid; }
+.hello-pending #site-content { visibility:hidden; pointer-events:none; }
+.hello-word { width:min(560px,78vw); height:auto; overflow:visible; transform:translateY(-12px); }
+.hello-stroke { stroke-dasharray:var(--hello-length,4000); stroke-dashoffset:var(--hello-length,4000); opacity:0; }
+/* Explicitly mandatory on every visit, including reduced-motion preferences. */
+.hello-playing .hello-first { animation:hello-write .9s .15s cubic-bezier(.45,0,.25,1) both!important; }
+.hello-playing .hello-rest { animation:hello-write 2.8s .8s cubic-bezier(.45,0,.25,1) both!important; }
+.hello-intro.hello-complete .hello-stroke { animation:none!important; stroke-dashoffset:0; opacity:1; }
+.hello-intro.hello-leaving { animation:hello-out .48s ease both!important; }
+.hello-pending:has(.hello-leaving) #site-content { visibility:visible; }
+.hello-intro.hello-paused,.hello-paused .hello-stroke { animation-play-state:paused!important; }
+@keyframes hello-write { 0% { stroke-dashoffset:var(--hello-length,4000); opacity:0; } 1% { opacity:1; } 100% { stroke-dashoffset:0; opacity:1; } }
+@keyframes hello-out { to { opacity:0; } }

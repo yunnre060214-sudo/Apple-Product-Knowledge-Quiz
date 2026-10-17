@@ -1,68 +1,101 @@
-export const HELLO_KEY = 'apple-trivia:hello:v1';
-
-// Independent of the question-bank request: the intro must never block playing.
-export function createHelloController({document, storage, reducedMotion = () => false, setTimer = setTimeout, clearTimer = clearTimeout}) {
+// This self-contained controller is inlined into the built HTML, before any
+// question-bank/module requests complete. Keep all runtime dependencies local.
+export function createHelloController({document, setTimer = setTimeout, clearTimer = clearTimeout, now = () => Date.now(), requestFrame = requestAnimationFrame, cancelFrame = cancelAnimationFrame}) {
   const root = document.documentElement;
   const overlay = document.getElementById('hello-intro');
   const content = document.getElementById('site-content');
-  const skip = document.getElementById('hello-skip');
-  let active = false, leaving = false, played = false, timers = [], previousFocus;
-  const clear = () => { timers.forEach(clearTimer); timers = []; };
-  const later = (fn, ms) => timers.push(setTimer(fn, ms));
-  const seen = () => { try { return storage?.getItem(HELLO_KEY) === '1'; } catch { return false; } };
-  const remember = () => { played = true; try { storage?.setItem(HELLO_KEY, '1'); } catch {} };
-  const onKey = e => {
-    if (e.key === 'Escape') { e.preventDefault(); dismiss(); }
-    if (e.key === 'Tab') { e.preventDefault(); skip.focus({preventScroll:true}); }
+  const strokes = [...overlay.querySelectorAll('.hello-stroke')];
+  const timers = new Set();
+  let active = false, leaving = false, completed = false, previousFocus, frame, generation = 0;
+  function clear() {
+    for (const timer of timers) clearTimer(timer.id);
+    timers.clear();
+  }
+  function arm(timer) {
+    timer.started = now();
+    timer.id = setTimer(() => { timers.delete(timer); timer.fn(); }, timer.remaining);
+  }
+  function later(fn, ms) {
+    const timer = {fn, remaining:ms, id:null, started:0};
+    timers.add(timer);
+    if (!document.hidden) arm(timer);
+  }
+  const onKey = event => {
+    if (!active || !['Tab', 'Escape'].includes(event.key)) return;
+    event.preventDefault();
+    event.stopPropagation?.();
+    overlay.focus({preventScroll:true});
   };
-  function cleanup() {
-    clear();
-    root.classList.remove('hello-pending', 'hello-booting');
-    overlay.classList.remove('hello-playing', 'hello-leaving');
-    overlay.hidden = true;
+  function cleanup(restoreFocus = true) {
+    clear(); cancelFrame(frame); generation++;
+    root.classList.remove('hello-pending');
+    overlay.classList.remove('hello-playing', 'hello-leaving', 'hello-paused', 'hello-complete');
+    overlay.hidden = true; overlay.setAttribute('aria-busy', 'false');
     content.inert = false;
     document.removeEventListener('keydown', onKey, true);
-    skip.removeEventListener('click', dismiss);
-    active = false; leaving = false;
-    const target = previousFocus && previousFocus !== document.body && previousFocus.isConnected ? previousFocus : document.getElementById('main');
-    target?.focus({preventScroll:true});
-  }
-  function dismiss() {
-    if (!active || leaving) return;
-    leaving = true; remember(); clear();
-    overlay.classList.add('hello-leaving');
-    if (reducedMotion()) cleanup(); else later(cleanup, 480);
-  }
-  function play({force = false} = {}) {
-    if (active) return false;
-    if (!force && (played || seen() || reducedMotion())) {
-      root.classList.remove('hello-pending', 'hello-booting');
-      overlay.hidden = true; content.inert = false;
-      return false;
+    overlay.removeEventListener('animationend', onAnimationEnd);
+    active = false; leaving = false; completed = false;
+    if (restoreFocus) {
+      const target = previousFocus && previousFocus !== document.body && previousFocus.isConnected ? previousFocus : document.getElementById('main');
+      target?.focus({preventScroll:true});
     }
+  }
+  function finish() {
+    if (!active || leaving) return;
+    leaving = true; clear();
+    overlay.classList.add('hello-complete', 'hello-leaving');
+    later(cleanup, 480);
+  }
+  function onAnimationEnd(event) {
+    if (!active || completed || event.target !== strokes[strokes.length - 1] || event.animationName !== 'hello-write') return;
+    completed = true; clear();
+    later(finish, 500);
+  }
+  function onVisibility() {
+    if (!active) return;
+    overlay.classList.toggle('hello-paused', document.hidden);
+    for (const timer of timers) {
+      if (document.hidden && timer.id !== null) {
+        clearTimer(timer.id);
+        timer.remaining = Math.max(0, timer.remaining - (now() - timer.started));
+        timer.id = null;
+      } else if (!document.hidden && timer.id === null) arm(timer);
+    }
+  }
+  function play({restart = false} = {}) {
+    if (active && !restart) return false;
+    if (active) cleanup(false);
     previousFocus = document.activeElement;
-    active = true; overlay.hidden = false; content.inert = true;
+    active = true; leaving = false; completed = false;
+    overlay.hidden = false; content.inert = true;
+    overlay.setAttribute('aria-busy', 'true');
     root.classList.add('hello-pending');
-    overlay.classList.remove('hello-playing', 'hello-leaving');
-    // Reset the path animation when the user explicitly replays it.
-    void overlay.offsetWidth;
-    overlay.classList.add('hello-playing');
-    skip.addEventListener('click', dismiss);
+    overlay.classList.remove('hello-playing', 'hello-leaving', 'hello-complete');
+    overlay.classList.toggle('hello-paused', document.hidden);
+    // Actual SVG lengths avoid normalized pathLength/dash rendering differences.
+    for (const stroke of strokes) {
+      let length = 4000;
+      try { length = stroke.getTotalLength() || length; } catch {}
+      stroke.style.setProperty('--hello-length', String(length));
+    }
     document.addEventListener('keydown', onKey, true);
-    skip.focus({preventScroll:true});
-    later(dismiss, reducedMotion() ? 1200 : 4100);
-    later(() => { remember(); cleanup(); }, 6000);
-    root.classList.remove('hello-booting');
+    overlay.addEventListener('animationend', onAnimationEnd);
+    overlay.focus({preventScroll:true});
+    const token = ++generation;
+    // Paint the hidden strokes before beginning, including refresh/BFCache replay.
+    frame = requestFrame(() => {
+      if (!active || token !== generation) return;
+      frame = requestFrame(() => {
+        if (!active || token !== generation) return;
+        overlay.classList.add('hello-playing');
+        // Missing animation events recover only after a full visible playback window.
+        later(finish, 6000);
+      });
+    });
     return true;
   }
-  return {play, dismiss};
+  document.addEventListener('visibilitychange', onVisibility);
+  return {play};
 }
 
-let controller;
-export function replayHello() { return controller?.play({force:true}); }
-if (typeof document !== 'undefined') {
-  let storage;
-  try { storage = window.localStorage; } catch {}
-  controller = createHelloController({document, storage, reducedMotion: () => matchMedia('(prefers-reduced-motion: reduce)').matches});
-  if (document.documentElement.classList.contains('hello-pending')) controller.play();
-}
+export function replayHello() { return window.appleTriviaHello?.play(); }

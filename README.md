@@ -2,9 +2,9 @@
 
 一个轻松的中文 Apple 冷知识小游戏。点「随机来 5 题」直接开玩，猜完领个趣味称号，生成战绩图片，邀请朋友「不服来战」。
 
-[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=2.2.0) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
+[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=2.2.1) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
 
-当前版本 **2.2.0**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
+当前版本 **2.2.1**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
 
 ## 界面
 
@@ -14,7 +14,7 @@
 
 ## 玩法
 
-首次访问展示彩色手写 hello 开场，支持跳过或按 Escape 进入首页；之后不自动重复。在「关于」中可以重播。系统开启减少动态效果时跳过自动开场。
+每次进入、刷新或从浏览器往返缓存返回网站，均完整播放彩色手写 hello 开场。没有跳过按钮，Escape 和点击也无法提前结束，播放后自动进入。开场代码和关键样式在构建时内联到 HTML，不依赖题库及外部模块下载；切到后台时暂停，返回前台继续。系统的减少动态效果设置不会跳过强制开场。在「关于」中仍可重播。
 
 - **随手一局**：无需配置，随机 5 题。默认三道手写趣味题、一道年份题、一道既有轻松题，避开规格细节，尽量避免同一局重复相同主题。
 - **分类挑战**：反直觉、产品历史、发布年份，点击就开玩。
@@ -53,7 +53,7 @@
 - `src/bank.mjs`：构建完整题库。
 - `src/engine.mjs`：抽题、近期记录、恢复进度、结算和彩蛋规则。
 - `assets/app.mjs`：界面与玩法，选答案时局部更新按钮和进度，切题时只替换题目区域。
-- `assets/hello.mjs`：首次访问开场与播放状态。手写路径改编自 [Chánh Đại Apple Hello Effect](https://github.com/ncdai/chanhdai.com/blob/main/src/registry/components/apple-hello-effect/apple-hello-effect-english.tsx)，MIT 许可保留于 `assets/hello-LICENSE.txt`。
+- `assets/hello.mjs`、`assets/hello.css`：每次进入必播的开场控制与关键样式，在构建时内联。手写路径改编自 [Chánh Đại Apple Hello Effect](https://github.com/ncdai/chanhdai.com/blob/main/src/registry/components/apple-hello-effect/apple-hello-effect-english.tsx)，MIT 许可保留于 `assets/hello-LICENSE.txt`。
 - `assets/icons.mjs`、`assets/share.mjs`：统一 SVG 图标、首页设备插画和 PNG 分享卡。品牌标识基于 Apple 官网的咬口苹果矢量轮廓，配以柔和渐变；不使用四角星。
 
 题库在构建时生成，运行时不调用 AI 或第三方题库。分数为每题等权的百分制，未猜计错。引擎保留旧版计算字段以兼容已有逻辑，界面不再展示难度加权分或复杂领域统计。
