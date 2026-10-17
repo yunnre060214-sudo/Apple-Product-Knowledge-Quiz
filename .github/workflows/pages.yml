@@ -48,3 +48,16 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Diagnose Pages URLs
+        shell: bash
+        run: |
+          for url in \
+            "https://yunnre060214-sudo.github.io/Apple-Trivia/" \
+            "https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/"; do
+            echo "Checking $url"
+            http_code="$(curl --silent --show-error --location --output /tmp/pages-response.html --write-out '%{http_code}' --connect-timeout 10 --max-time 20 "$url" || true)"
+            echo "HTTP status: $http_code"
+            if [ "$http_code" = "200" ]; then
+              grep -o '<title>[^<]*</title>' /tmp/pages-response.html | head -n 1 || true
+            fi
+          done
