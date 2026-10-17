@@ -1,7 +1,9 @@
 import { hash, seeded, shuffle, validateBank } from './engine.mjs';
+import { buildTrivia } from './trivia.mjs';
+import { buildTimeline } from './timeline.mjs';
 import { editorialQuestions, extraProducts, silicon } from './editorial.mjs';
 
-export const REVIEWED_AT = '2026-10-15';
+export const REVIEWED_AT = '2026-10-17';
 const unique = items => [...new Set(items)];
 const number = value => Number.isInteger(Number(value)) ? String(Number(value)) : String(value);
 export const pretty = (key,value) => ({
@@ -156,6 +158,6 @@ export function buildBank(catalog) {
   const products=[...catalog,...extraProducts];
   const facts=products.flatMap(p=>Object.keys(p.facts).map(k=>factQuestion(p,k,products))).filter(Boolean);
   const editorial=editorialQuestions.map((q,i)=>question(q.id||`original-${String(i+1).padStart(3,'0')}`,q.category,q.difficulty,q.prompt,q.answer,q.wrong,q.explanation,q.sources,q.tag||'原创情境'));
-  const bank=[...facts,...chipQuestions(),...constraintQuestions(catalog),...editorial];
+  const bank=[...facts,...chipQuestions(),...constraintQuestions(catalog),...editorial,...buildTrivia(),...buildTimeline(catalog)];
   validateBank(bank);return bank;
 }

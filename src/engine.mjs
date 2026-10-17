@@ -1,4 +1,4 @@
-export const VERSION = '1.0.1';
+export const VERSION = '2.0.0';
 export const CATEGORIES = {
   iphone: { name: 'iPhone', short: 'iP', color: '#3478e7' },
   ipad: { name: 'iPad', short: 'iD', color: '#8958c7' },
@@ -38,10 +38,10 @@ export function shuffle(items, rng = Math.random) {
   }
   return result;
 }
-export function filterBank(bank, { categories = Object.keys(CATEGORIES), difficulty = 'mixed', ids } = {}) {
+export function filterBank(bank, { categories = Object.keys(CATEGORIES), difficulty = 'mixed', ids, topic } = {}) {
   const allowed = new Set(categories);
   const allowedIds = ids ? new Set(ids) : null;
-  return bank.filter(q => allowed.has(q.category) && (difficulty === 'mixed' || q.difficulty === difficulty) && (!allowedIds || allowedIds.has(q.id)));
+  return bank.filter(q => allowed.has(q.category) && (difficulty === 'mixed' || q.difficulty === difficulty) && (!allowedIds || allowedIds.has(q.id)) && (!topic || (topic === 'timeline' ? q.kind === 'timeline' : q.topic === topic)));
 }
 // Round-robin across shuffled category/level buckets gives small topics a fair place in a paper.
 export function drawQuestions(bank, config, seed, seen = []) {
@@ -64,8 +64,10 @@ export function drawQuestions(bank, config, seed, seen = []) {
     return picked;
   };
   const fresh = takeBalanced(pool.filter(q => !recent.has(q.id)), wanted);
-  const old = takeBalanced(pool.filter(q => recent.has(q.id)), wanted - fresh.length);
-  return shuffle([...fresh, ...old], rng).map(q => ({ ...q, options: shuffle(q.options, rng) }));
+  const positions = new Map(seen.map((id, i) => [id, i]));
+  const old = pool.filter(q => recent.has(q.id)).sort((a,b) => positions.get(a.id)-positions.get(b.id)).slice(0,wanted-fresh.length);
+  const selected = config.mode === 'quick' ? quickDraw(pool, wanted, rng, recent, positions) : shuffle([...fresh, ...old], rng);
+  return selected.map(q => ({ ...q, options: shuffle(q.options, rng) }));
 }
 export function createSession(questions, config, seed, now = Date.now()) {
   const seconds = config.mode === 'exam' ? Number(config.secondsPerQuestion || 0) : 0;
@@ -77,8 +79,8 @@ export function createSession(questions, config, seed, now = Date.now()) {
   };
 }
 export function hydrateSession(saved, bank) {
-  if (!saved || saved.schema !== 1 || !['1.0.0', VERSION].includes(saved.version) || !Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(saved.startedAt)) return null;
-  if (!saved.config || !['exam', 'practice'].includes(saved.config.mode)) return null;
+  if (!saved || saved.schema !== 1 || !['1.0.0', '1.0.1', VERSION].includes(saved.version) || !Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(saved.startedAt)) return null;
+  if (!saved.config || !['quick', 'exam', 'practice'].includes(saved.config.mode)) return null;
   const lookup = new Map(bank.map(q => [q.id, q]));
   const ids = new Set();
   const questions = [];
@@ -142,8 +144,51 @@ export function validateBank(bank) {
     if (!CATEGORIES[q.category] || !LEVELS[q.difficulty]) throw new Error(`Invalid taxonomy: ${q.id}`);
     if (q.options.length !== 4 || new Set(q.options).size !== 4 || !q.options.every(o => typeof o === 'string' && o.trim())) throw new Error(`Invalid options: ${q.id}`);
     if (!q.options.includes(q.answer) || !q.explanation?.trim()) throw new Error(`Missing answer/explanation: ${q.id}`);
-    if (!q.sources?.length || !q.sources.every(u => /^https:\/\/(?:[\w-]+\.)?apple\.com(?:\.cn)?\//.test(u))) throw new Error(`Missing official source: ${q.id}`);
+    if (!q.sources?.length || !q.sources.every(u => /^https:\/\/(?:(?:[\w-]+\.)?apple\.com(?:\.cn)?|www\.macrumors\.com)\//.test(u))) throw new Error(`Missing cited source: ${q.id}`);
     ids.add(q.id); prompts.add(q.prompt);
   }
   return { total: bank.length, categories: Object.fromEntries(Object.keys(CATEGORIES).map(c => [c, bank.filter(q => q.category === c).length])), levels: Object.fromEntries(Object.keys(LEVELS).map(l => [l, bank.filter(q => q.difficulty === l).length])) };
+}
+
+
+// Oldest first, newest last. Visiting a question moves it to the tail.
+export function updateRecent(existing, visited, limit = 3000) {
+  if (limit <= 0) return [];
+  const order = new Set();
+  for (const id of [...(Array.isArray(existing) ? existing : []), ...visited]) {
+    if (typeof id !== 'string') continue;
+    order.delete(id); order.add(id);
+  }
+  return [...order].slice(-limit);
+}
+function quickDraw(pool, count, rng, recent, positions) {
+  const fresh = shuffle(pool.filter(q => !recent.has(q.id)), rng);
+  const old = pool.filter(q => recent.has(q.id)).sort((a,b) => positions.get(a.id)-positions.get(b.id));
+  const picked = [], used = new Set(), families = new Set();
+  const add = q => { picked.push(q); used.add(q.id); (q.families || [q.family || q.id]).forEach(f=>families.add(f)); };
+  const clashes = q => (q.families || [q.family || q.id]).some(f => families.has(f));
+  // Three story/surprise cards, one timeline duel and one wildcard per five.
+  const pattern = ['trivia','trivia','timeline','trivia','classic'];
+  for (let i=0; i<count; i++) {
+    const available = fresh.filter(q=>!used.has(q.id));
+    const kind = pattern[i % pattern.length];
+    const q = available.find(q=>(q.kind || 'classic')===kind && !clashes(q)) || available.find(q=>!clashes(q)) || available[0] || old.find(q=>!used.has(q.id));
+    if(q) add(q);
+  }
+  return shuffle(picked,rng);
+}
+export function resultTitle(report) {
+  if (report.score === 100) return {title:'库克看了都点头',line:'这场发布会，下一句交给你。',badge:'满分隐藏款',tone:'gold'};
+  if (report.score >= 80) return {title:'苹果店隐藏店员',line:'你一开口，Genius 都想听两句。',badge:'懂得有点多',tone:'violet'};
+  if (report.score >= 60) return {title:'发布会前排常客',line:'One more thing，你已经猜到一半。',badge:'熟悉的感觉',tone:'blue'};
+  if (report.score >= 40) return {title:'路过的果味侦探',line:'猜对靠知识，猜错收获新故事。',badge:'好奇心在线',tone:'mint'};
+  if (report.score > 0) return {title:'Apple 官网待逛选手',line:'你可能需要逛逛 Apple 官网。',badge:'还有惊喜',tone:'coral'};
+  return {title:'完美避开正确答案',line:'这种精准，也算一种天赋。',badge:'反向满分',tone:'coral'};
+}
+export function easterEggs(report) {
+  const eggs=[];
+  if (report.score===100) eggs.push('One more thing… 满分彩蛋已解锁。');
+  if (report.bestStreak>=3) eggs.push(`${report.bestStreak} 连对，灵感正在连线。`);
+  if (report.total>=5 && report.unanswered===0 && report.duration<=report.total*3) eggs.push('闪电手速：发布会还没开，你已经散场。');
+  return eggs;
 }

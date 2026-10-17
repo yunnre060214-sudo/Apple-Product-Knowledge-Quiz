@@ -3,32 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#f6f7f9">
-  <meta name="description" content="你有多了解 Apple？海量原创题、四档难度、随机组卷、详细解析，一次发现你的 Apple 知识版图。">
-  <meta property="og:title" content="Apple Product Knowledge Quiz">
-  <meta property="og:description" content="从第一台 Macintosh 到 Apple 芯片。测测你的 Apple 知识。">
-  <title>Apple Product Knowledge Quiz</title>
+  <meta name="theme-color" content="#f8f9fc">
+  <meta name="description" content="随机来 5 题！Apple 冷知识、反直觉小故事、iPhone 与 iPad 年份挑战。猜完领取趣味称号，生成图片，不服来战。">
+  <meta property="og:title" content="Apple Trivia · 来点苹果冷知识">
+  <meta property="og:description" content="你以为你很懂 Apple？5 题一局，猜完再说。">
+  <title>Apple Trivia · 来点苹果冷知识</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
-  <link rel="stylesheet" href="./assets/style.css?v=1.0.1">
-  <script type="module" src="./assets/app.mjs?v=1.0.1"></script>
+  <link rel="stylesheet" href="./assets/style.css?v=2.0.0">
+  <script type="module" src="./assets/app.mjs?v=2.0.0"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳至主要内容</a>
   <header class="site-header">
-    <a class="brand" href="./" aria-label="Apple Quiz 首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>Apple <b>Quiz</b><small>PRODUCT KNOWLEDGE</small></span></a>
-    <nav aria-label="主导航">
-      <button type="button" class="nav-link active" data-action="home">知识测验</button>
-      <button type="button" class="nav-link" data-action="wrongbook">错题本 <span id="wrong-count" class="tiny-count">0</span></button>
-      <button type="button" class="nav-link" data-action="history">答题记录</button>
-    </nav>
-    <button class="icon-button" type="button" id="theme-toggle" aria-label="切换深色外观" title="切换外观"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13.5A8.8 8.8 0 0 1 10.5 3.5a8.8 8.8 0 1 0 10 10Z"/></svg></button>
+    <a class="brand" href="./" aria-label="Apple Trivia 首页"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3Z"/></svg></span>Apple <b>Trivia</b></a>
+    <div class="header-actions"><button class="text-button" data-action="about">这是什么</button><button class="icon-button" data-action="theme" aria-label="切换明暗外观"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.5 13.5A8.8 8.8 0 0 1 10.5 3.5a8.8 8.8 0 1 0 10 10Z"/></svg></button></div>
   </header>
-  <main id="main" tabindex="-1">
-    <div class="initial-state"><span class="loader"></span><p>正在准备你的知识挑战…</p><button type="button" class="text-button" data-action="reload">重新加载</button></div>
-  </main>
-  <footer class="site-footer"><span>为好奇心而作。<span class="footer-en">Made for the curious.</span></span><span><button type="button" class="text-button" data-action="about">关于题库</button><a href="https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><span>v1.0.1</span></span></footer>
-  <dialog id="modal" aria-labelledby="modal-title"><div id="modal-content"></div><button type="button" class="modal-close icon-button" data-action="close-modal" aria-label="关闭对话框">×</button></dialog>
+  <main id="main" tabindex="-1"><div class="loading"><span class="loader"></span><p>正在拆封冷知识…</p></div></main>
+  <footer class="site-footer"><span>保持好奇，猜错也有意思。</span><a href="https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz" target="_blank" rel="noopener noreferrer">GitHub ↗</a></footer>
+  <dialog id="modal" aria-labelledby="modal-title"><button class="icon-button modal-close" data-action="close" aria-label="关闭对话框">×</button><div id="modal-content"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <noscript><p class="noscript">请启用 JavaScript 以进行随机组卷和答题。题库与网站代码均可在 GitHub 仓库查看。</p></noscript>
+  <div id="celebration" aria-hidden="true"></div>
+  <noscript><p>开启 JavaScript，就能来一局 Apple 冷知识。</p></noscript>
 </body>
 </html>

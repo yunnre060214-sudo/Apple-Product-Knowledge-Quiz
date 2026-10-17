@@ -1,9 +1,9 @@
 {
   "name": "apple-product-knowledge-quiz",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "An original, source-backed Apple knowledge quiz for GitHub Pages.",
+  "description": "A playful Apple trivia game with five-question rounds and shareable result cards.",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "build": "node scripts/build.mjs"

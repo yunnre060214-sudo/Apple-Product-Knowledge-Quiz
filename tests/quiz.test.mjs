@@ -7,7 +7,7 @@ const catalog=JSON.parse(await readFile(new URL('../src/catalog.json',import.met
 const bank=buildBank(catalog);
 const config={difficulty:'mixed',categories:Object.keys(CATEGORIES),count:100,mode:'exam',secondsPerQuestion:0};
 
-test('all original questions have distinct stems, four unique choices, explanations and official sources',()=>{
+test('all original questions have distinct stems, four unique choices, explanations and cited sources',()=>{
   const summary=validateBank(bank);
   assert.ok(summary.total>=1000);
   for(const [category,n] of Object.entries(summary.categories))assert.ok(n>=10,`${category}: ${n}`);

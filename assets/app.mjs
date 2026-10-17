@@ -1,268 +1,152 @@
-import { VERSION, CATEGORIES, LEVELS, drawQuestions, filterBank, createSession, hydrateSession, grade, updateWrongBook } from '../src/engine.mjs?v=1.0.1';
+import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=2.0.0';
+import {icon,scene} from './icons.mjs?v=2.0.0';
+import {SITE_URL,shareText,createShareCard,downloadBlob} from './share.mjs?v=2.0.0';
+const $=s=>document.querySelector(s), main=$('#main'), modal=$('#modal');
+const KEY='apple-quiz:v1:';
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(KEY+k))??f;}catch{return f;}};
+let storageWarning=false;
+const write=(k,v)=>{try{localStorage.setItem(KEY+k,JSON.stringify(v));}catch{if(!storageWarning){storageWarning=true;toast('本局可以照常玩，浏览器暂时无法保存进度。');}}};
+const remove=k=>{try{localStorage.removeItem(KEY+k);}catch{}};
+const arr=v=>Array.isArray(v)?v:[];
+const initial={count:20,difficulty:'mixed',categories:Object.keys(CATEGORIES),mode:'exam',secondsPerQuestion:0};
+let config={...initial,...read('config',{})};
+config.categories=arr(config.categories).filter(c=>CATEGORIES[c]);if(!config.categories.length)config.categories=[...initial.categories];
+if(!['mixed',...Object.keys(LEVELS)].includes(config.difficulty))config.difficulty='mixed';
+if(!['quick','exam','practice'].includes(config.mode))config.mode='exam';
+config.count=Math.min(500,Math.max(5,Math.floor(Number(config.count)||20)));
+if(![0,30,60,90].includes(Number(config.secondsPerQuestion)))config.secondsPerQuestion=0;
+let bank=[], meta={}, questions=[], session=null, report=null, view='home', seen=arr(read('seen',[])).filter(x=>typeof x==='string');
+let autoTimer, clockTimer, toastTimer, shareUrl, shareBlob, generation=0, paused=false, finishPending=false;
+const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fmt=n=>`${Math.floor(n/60)}:${String(n%60).padStart(2,'0')}`;
+const quickConfig=topic=>({count:5,difficulty:'mixed',categories:Object.keys(CATEGORIES),mode:'quick',secondsPerQuestion:0,...(topic?{topic}: {})});
+const sourceLinks=q=>q.sources.map((s,i)=>`<a href="${esc(s)}" target="_blank" rel="noopener noreferrer">${s.includes('macrumors.com')?'历史声明存档':'Apple 资料'}${q.sources.length>1?` ${i+1}`:''}${icon('external')}</a>`).join('');
+function toast(s){$('#toast').textContent=s;$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),3500);}
+function dialog(title,body){$('#modal-content').innerHTML=`<h2 id="modal-title">${title}</h2>${body}`;if(!modal.open)modal.showModal();}
+function cancelAuto(){clearTimeout(autoTimer);autoTimer=null;generation++;}
+function save(){if(session&&!finishPending)write('session',session);}
+function visit(q){seen=updateRecent(seen,[q.id],Math.max(3000,Math.floor(bank.length*.75)));write('seen',seen);}
+function enter(next){view=next;document.body.dataset.view=next;cancelAuto();clearInterval(clockTimer);main.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
+function animate(el){if(!reduced())el?.animate([{opacity:0,transform:'translateY(10px) scale(.995)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:330,easing:'cubic-bezier(.2,.75,.25,1)'});}
+function home(){
+  enter('home');if(shareUrl){URL.revokeObjectURL(shareUrl);shareUrl=null;}
+  const saved=hydrateSession(read('session',null),bank);
+  main.innerHTML=`<section class="hero"><div class="hero-copy"><p class="eyebrow"><span></span> ONE MORE QUESTION.</p><h1>你以为你<br>很懂 <span class="gradient-text">Apple？</span></h1><p class="hero-description">有些冷知识，连老果粉都得猜。<br>5 题一局，让好奇心先玩起来。</p><div class="hero-actions"><button class="primary-button hero-start" data-action="quick">${icon('shuffle')}随机来 5 题${icon('arrow')}</button><button class="custom-link" data-action="custom">自己选玩法${icon('sliders')}</button></div>${saved?`<button class="resume-link" data-action="resume">${icon('history')}接着上次玩 · ${Object.keys(saved.answers).length}/${saved.questions.length} 题${icon('arrow')}</button>`:`<p class="hero-note">不用登录，不用准备。猜就完了。</p>`}</div>${scene}</section><section class="topic-section"><div class="section-label"><span>今天想猜点什么</span><span>挑个口味，直接开玩</span></div><div class="topic-grid"><button class="topic-card lavender" data-topic="surprise"><span class="topic-icon">${icon('bulb')}</span><span class="topic-copy"><strong>有点反直觉</strong><span>熟悉的苹果，意外的答案</span></span>${icon('arrow','topic-arrow')}</button><button class="topic-card peach" data-topic="stories"><span class="topic-icon">${icon('history')}</span><span class="topic-copy"><strong>苹果旧事</strong><span>经典、弯路，还有那些名场面</span></span>${icon('arrow','topic-arrow')}</button><button class="topic-card mint" data-topic="timeline"><span class="topic-icon">${icon('clock')}</span><span class="topic-copy"><strong>时间旅行</strong><span>iPhone、iPad、iOS 谁先来</span></span>${icon('arrow','topic-arrow')}</button></div></section><div class="home-bottom"><span class="bank-count">${icon('spark')}<b>${bank.length.toLocaleString('en-US')}</b> 个提问，等你的好奇心</span><button class="text-button" data-action="about">看看题库${icon('external')}</button></div>`;
+  animate($('.hero-copy'));
+}
+function custom(){
+  dialog('按你的节奏来',`<form id="custom-form"><fieldset><legend>这一局，玩几题</legend><div class="segments counts">${[5,10,20,50,100,200,500].map(n=>`<button type="button" data-count="${n}" aria-pressed="${config.count===n}" class="${config.count===n?'selected':''}">${n}</button>`).join('')}</div><label class="custom-number">自定题数<input name="count" id="count-input" type="number" min="5" max="500" value="${config.count}" required inputmode="numeric"></label></fieldset><div class="form-row"><label>难度<select name="difficulty">${[['mixed','随缘混合'],['easy','轻松猜猜'],['medium','有点讲究'],['hard','细节控'],['expert','硬核一局']].map(([v,t])=>`<option value="${v}" ${config.difficulty===v?'selected':''}>${t}</option>`).join('')}</select></label><label>玩法<select name="mode" id="mode-select">${[['quick','选完自动下一题'],['exam','自由切题，最后揭晓'],['practice','每题确认，随时看解析']].map(([v,t])=>`<option value="${v}" ${config.mode===v?'selected':''}>${t}</option>`).join('')}</select></label></div><fieldset><legend>想猜哪些<span class="muted">可多选</span></legend><div class="category-pills">${Object.entries(CATEGORIES).map(([id,c])=>`<label><input type="checkbox" name="category" value="${id}" ${config.categories.includes(id)?'checked':''}><span>${c.name}</span></label>`).join('')}</div></fieldset><label class="timer-setting" ${config.mode!=='exam'?'hidden':''}>想加一点紧张感<select name="timer">${[[0,'不限时'],[30,'总时间 = 题数 × 30 秒'],[60,'总时间 = 题数 × 60 秒'],[90,'总时间 = 题数 × 90 秒']].map(([v,t])=>`<option value="${v}" ${Number(config.secondsPerQuestion)===v?'selected':''}>${t}</option>`).join('')}</select></label><p id="pool-hint" class="muted" aria-live="polite"></p><button type="submit" class="primary-button full-width">就这么玩${icon('arrow')}</button></form>`);updatePool();
+}
+function formConfig(){const f=$('#custom-form'),data=new FormData(f);return {count:Number(data.get('count')),difficulty:data.get('difficulty'),mode:data.get('mode'),categories:data.getAll('category'),secondsPerQuestion:Number(data.get('timer'))};}
+function updatePool(){const f=$('#custom-form');if(!f)return;const c=formConfig(),n=filterBank(bank,c).length;$('#pool-hint').textContent=n?`可选 ${n.toLocaleString('en-US')} 题${n<c.count?`，这局玩 ${n} 题`:''}`:'至少选一个你感兴趣的领域';f.querySelector('[type="submit"]').disabled=!n;}
+function start(next){
+  if(!bank.length)return;
+  cancelAuto();modal.close();const seed=crypto.getRandomValues(new Uint32Array(1))[0];
+  questions=drawQuestions(bank,next,seed,seen);if(!questions.length){toast('这个口味暂时没有题，换一组试试。');return;}
+  session=createSession(questions,{...next,count:questions.length},seed);report=null;finishPending=false;shareBlob=null;save();quiz();
+}
+function resume(){modal.close();const s=hydrateSession(read('session',null),bank);if(!s){remove('session');toast('这局进度已过期，再来一局吧。');home();return;}questions=s.hydratedQuestions;delete s.hydratedQuestions;session=s;finishPending=false;if(s.deadline&&s.deadline<=Date.now()){finish(true);return;}quiz();}
+function quiz(){
+  enter('quiz');const quick=session.config.mode==='quick';
+  main.innerHTML=`<section class="quiz-shell"><div class="quiz-top"><button class="back-button" data-action="home">${icon('back')}先歇会儿</button><span class="round-label">${quick?'好奇心小局':'按你的节奏'}<span id="quiz-clock" ${quick?'hidden':''}></span></span><button class="icon-button" data-action="map" aria-label="打开题目导航" ${quick?'hidden':''}>${icon('grid')}</button></div><div class="progress-row"><div class="progress-track" role="progressbar" aria-label="本局进度" aria-valuemin="0" aria-valuemax="${questions.length}" aria-valuenow="0"><span></span></div><span id="progress-label"></span></div><div id="question-stage"></div><p class="keyboard-note">${quick?'选完就走，猜错也能涨见识。':'1 至 4 选答案 · 方向键切题 · Enter 继续'}</p></section>`;
+  renderQuestion();clock();clockTimer=setInterval(clock,1000);
+}
+function renderQuestion(){
+  cancelAuto();paused=false;const q=questions[session.index],answer=session.answers[q.id],quick=session.config.mode==='quick';visit(q);
+  const locked=session.confirmed.includes(q.id);
+  $('#question-stage').innerHTML=`<article class="question-card" aria-labelledby="question-prompt"><div class="question-meta"><span class="question-topic">${icon(q.kind==='timeline'?'clock':q.topic==='stories'?'history':'spark')}${esc(q.tag||CATEGORIES[q.category].name)}</span>${quick?'<span class="small-dot"></span>':`<button class="flag-button" data-action="flag" aria-pressed="${session.flags.includes(q.id)}" aria-label="${session.flags.includes(q.id)?'取消留个记号':'留个记号'}">${icon('flag')}</button>`}</div><h1 id="question-prompt" tabindex="-1">${esc(q.prompt)}</h1><div class="answers" role="group" aria-label="选择一个答案">${q.options.map((o,i)=>`<button class="answer" data-answer="${i}" aria-pressed="${answer===o}"><span class="letter">${'ABCD'[i]}</span><span class="answer-text">${esc(o)}</span><span class="answer-mark"></span></button>`).join('')}</div><div id="answer-feedback" class="feedback" aria-live="polite"></div><div id="explanation-area"></div><div class="question-nav" ${quick?'hidden':''}><button class="text-button" data-action="previous" ${session.index===0?'disabled':''}>${icon('back')}上一题</button><button class="primary-button" id="advance" data-action="${session.config.mode==='practice'&&!locked?'confirm':'next'}">${session.config.mode==='practice'&&!locked?'就选这个':session.index===questions.length-1?'看看结果':'下一题'}${icon('arrow')}</button></div><div class="quick-controls" ${quick?'':'hidden'}><label class="auto-switch"><input id="auto-toggle" type="checkbox" ${read('auto',true)?'checked':''}>自动下一题</label><span id="auto-label"></span></div></article>`;
+  updateOptions();updateProgress();if(locked)showFeedback(false);animate($('.question-card'));
+  $('#question-prompt').focus({preventScroll:true});
+}
+// Selection changes four option nodes and the progress label. The shell, navigation and prompt survive.
+function selectAnswer(index){
+  if(view!=='quiz'||!session)return;const q=questions[session.index];if(session.confirmed.includes(q.id)||!q.options[index])return;
+  if(session.deadline&&session.deadline<=Date.now()){finish(true);return;}
+  session.answers[q.id]=q.options[index];
+  if(session.config.mode==='quick')session.confirmed.push(q.id);
+  save();updateOptions();updateProgress();
+  if(session.config.mode==='quick')showFeedback(true);
+}
+function updateOptions(){
+  const q=questions[session.index],answer=session.answers[q.id],locked=session.confirmed.includes(q.id);
+  document.querySelectorAll('[data-answer]').forEach((b,i)=>{const o=q.options[i];b.classList.toggle('selected',answer===o);b.classList.toggle('correct',locked&&o===q.answer);b.classList.toggle('wrong',locked&&answer===o&&o!==q.answer);b.classList.toggle('dimmed',locked&&o!==answer&&o!==q.answer);b.setAttribute('aria-pressed',String(answer===o));b.disabled=locked;b.querySelector('.answer-mark').innerHTML=locked&&o===q.answer?icon('check'):locked&&o===answer?icon('close'):answer===o?'<span class="selection-dot"></span>':'';});
+  const advance=$('#advance');if(advance&&session.config.mode==='practice')advance.disabled=!locked&&!answer;
+}
+function updateProgress(){
+  const n=Object.keys(session.answers).length,track=$('.progress-track');track.setAttribute('aria-valuenow',n);track.firstElementChild.style.width=`${n/questions.length*100}%`;$('#progress-label').textContent=`${session.index+1} / ${questions.length}`;
+  const btn=$(`[data-jump="${session.index}"]`);btn?.classList.toggle('answered',!!session.answers[questions[session.index].id]);
+}
+function confirmAnswer(){const q=questions[session.index];if(!session.answers[q.id])return;if(!session.confirmed.includes(q.id))session.confirmed.push(q.id);save();updateOptions();showFeedback(true);const b=$('#advance');b.dataset.action='next';b.innerHTML=`${session.index===questions.length-1?'看看结果':'下一题'}${icon('arrow')}`;b.disabled=false;}
+function showFeedback(fresh){
+  const q=questions[session.index],correct=session.answers[q.id]===q.answer,quick=session.config.mode==='quick';
+  let streak=0;for(let i=session.index;i>=0;i--){if(session.answers[questions[i].id]!==questions[i].answer)break;streak++;}
+  const line=correct?(streak>=3?`${streak} 连对，手感来了。`:'猜对了，有点东西。'):'这个答案，确实有点意外。';
+  const f=$('#answer-feedback');f.className=`feedback visible ${correct?'good':'oops'}`;f.innerHTML=`<div class="feedback-line">${icon(correct?'check':'bulb')}<strong>${line}</strong><button class="text-button" data-action="explain">看个究竟${icon('arrow')}</button></div>${quick?`<button class="quick-next" data-action="next">${session.index===questions.length-1?'揭晓称号':'下一题'}${icon('arrow')}</button>`:''}`;
+  if(fresh&&correct&&[3,5,10,20,50,100].includes(streak)){toast(`${streak} 连对！苹果雷达正在全速运转。`);if(streak===3)celebrate(12);}
+  if(quick&&fresh)scheduleNext();else if(quick)$('#auto-label').textContent='等你点下一题';
+}
+function scheduleNext(){
+  cancelAuto();if(view!=='quiz'||session.config.mode!=='quick')return;const q=questions[session.index];if(!session.confirmed.includes(q.id)||paused)return;
+  const enabled=$('#auto-toggle')?.checked;if(!enabled){$('#auto-label').textContent='等你点下一题';return;}
+  const token=generation;$('#auto-label').textContent='即将继续…';autoTimer=setTimeout(()=>{if(token===generation&&view==='quiz'&&!modal.open&&!document.hidden)nextQuestion();},1650);
+}
+function explain(){
+  cancelAuto();paused=true;$('#auto-label').textContent='已停下，慢慢看';
+  const q=questions[session.index];$('#explanation-area').innerHTML=`<div class="explanation"><p>${esc(q.explanation)}</p><div class="source-links">${sourceLinks(q)}</div></div>`;animate($('.explanation'));
+}
+function moveQuestion(index){
+  if(!session||view!=='quiz')return;if(session.deadline&&session.deadline<=Date.now()){finish(true);return;}
+  const stage=$('#question-stage');stage.style.minHeight=`${Math.max(stage.getBoundingClientRect().height,parseFloat(stage.style.minHeight)||0)}px`;
+  session.index=Math.max(0,Math.min(questions.length-1,index));save();renderQuestion();
+  const prompt=$('#question-prompt');if(prompt.getBoundingClientRect().bottom<24)window.scrollTo({top:Math.max(0,prompt.getBoundingClientRect().top+window.scrollY-24),behavior:'instant'});
+  // Small scroll offsets survive; only deep explanation scrolling is brought back to the new prompt.
+}
+function nextQuestion(){if(session.config.mode==='quick'&&!session.confirmed.includes(questions[session.index].id))return;if(session.index===questions.length-1)requestFinish();else moveQuestion(session.index+1);}
+function requestFinish(){
+  cancelAuto();const left=questions.length-Object.keys(session.answers).length;
+  if(left){dialog('这局先到这里？',`<p>还有 ${left} 题没猜。可以回去接着玩，也可以现在揭晓。</p><div class="dialog-actions"><button class="secondary-button" data-action="close">继续猜</button><button class="primary-button" data-action="finish">现在揭晓${icon('arrow')}</button></div>`);}else finish();
+}
+function clock(){if(view!=='quiz'||!session)return;if(session.deadline&&Date.now()>=session.deadline){finish(true);return;}const n=session.deadline?Math.max(0,Math.ceil((session.deadline-Date.now())/1000)):Math.floor((Date.now()-session.startedAt)/1000);const el=$('#quiz-clock');if(el)el.textContent=` · ${session.deadline?'还剩 ':''}${fmt(n)}`;}
+function map(){cancelAuto();paused=true;dialog('随便跳，慢慢猜',`<div class="map-summary">已猜 ${Object.keys(session.answers).length}/${questions.length} 题</div><div class="map-grid">${questions.map((q,i)=>`<button class="map-cell ${session.answers[q.id]?'answered':''} ${session.flags.includes(q.id)?'flagged':''} ${i===session.index?'current':''}" data-jump="${i}" aria-label="第 ${i+1} 题${session.answers[q.id]?'，已猜':''}${session.flags.includes(q.id)?'，有记号':''}" ${i===session.index?'aria-current="step"':''}>${i+1}</button>`).join('')}</div><button class="primary-button full-width" data-action="end-round">现在揭晓${icon('arrow')}</button>`);}
+function finish(timed=false){
+  if(finishPending||!session)return;finishPending=true;cancelAuto();modal.close();clearInterval(clockTimer);
+  report=grade(questions,session.answers,session.startedAt,Date.now());remove('session');results();if(timed)toast('时间到，这局的故事揭晓了。');
+}
+function results(){
+  enter('result');const t=resultTitle(report),eggs=easterEggs(report);
+  main.innerHTML=`<section class="result-shell"><p class="eyebrow">THAT WAS A GOOD GUESS.</p><div class="result-emblem ${t.tone}">${icon(report.score===100?'trophy':'spark')}</div><p class="result-badge">${t.badge}</p><h1 class="result-title">${t.title}</h1><p class="result-line">${t.line}</p><div class="score-row"><div class="result-score"><strong data-final="${report.score}">0</strong><span>分</span></div><span class="score-divider"></span><div class="result-stats"><span>猜对 <b>${report.correct} / ${report.total}</b> 题</span><span>这局用了 <b>${fmt(report.duration)}</b></span></div></div>${eggs.length?`<div class="egg-note">${icon('spark')}<span>${eggs.map(esc).join('<br>')}</span></div>`:''}<div class="result-actions"><button class="primary-button" data-action="quick">${icon('shuffle')}再来 5 题</button><button class="secondary-button" data-action="share-card">${icon('share')}晒晒战绩</button></div><div class="result-links"><button class="text-button" data-action="review">看看这局的冷知识${icon('arrow')}</button><button class="text-button" data-action="home">回到首页</button></div></section>`;
+  animate($('.result-shell'));countUp($('.result-score strong'),report.score);if(report.score===100)celebrate(64);
+}
+function countUp(el,value){if(reduced()){el.textContent=value;return;}const start=performance.now();function frame(now){const p=Math.min(1,(now-start)/850);el.textContent=Math.round(value*(1-Math.pow(1-p,3)));if(p<1&&el.isConnected)requestAnimationFrame(frame);}requestAnimationFrame(frame);}
+function review(){
+  enter('review');main.innerHTML=`<section class="review-shell"><button class="back-button" data-action="results">${icon('back')}回到战绩</button><h1>每个答案，都有个故事。</h1><p class="muted">这一局的所有冷知识，慢慢看。</p><div class="review-list">${questions.map((q,i)=>`<details class="review-item"><summary><span class="review-state ${session.answers[q.id]===q.answer?'good':'oops'}">${icon(session.answers[q.id]===q.answer?'check':'bulb')}</span><span><small>第 ${i+1} 题</small>${esc(q.prompt)}</span>${icon('arrow')}</summary><div class="review-body"><p class="review-answer">正确答案：<b>${esc(q.answer)}</b>${session.answers[q.id]!==q.answer?`<span>你猜的是：${esc(session.answers[q.id]||'还没猜')}</span>`:''}</p><p>${esc(q.explanation)}</p><div class="source-links">${sourceLinks(q)}</div></div></details>`).join('')}</div><button class="primary-button" data-action="quick">再来 5 题${icon('arrow')}</button></section>`;
+}
+async function showShare(){
+  const title=resultTitle(report);dialog('这一局，值得晒',`<p class="muted">带上你的称号，邀请朋友来猜。</p><div id="share-preview" class="share-preview"><span class="loader"></span></div><div class="share-buttons"><button class="primary-button" data-action="download" disabled>${icon('download')}保存图片</button><button class="secondary-button" data-action="native-share" disabled>${icon('share')}分享</button></div><button class="text-button full-width" data-action="copy">${icon('copy')}复制文字战绩</button>`);
+  const currentReport=report;
+  try{const generated=shareBlob || await createShareCard(report,title.title,title.line);if(report!==currentReport||!modal.open||!$('#share-preview'))return;shareBlob=generated;if(shareUrl)URL.revokeObjectURL(shareUrl);shareUrl=URL.createObjectURL(shareBlob);$('#share-preview').innerHTML=`<img src="${shareUrl}" alt="Apple 冷知识战绩：${report.score} 分，${esc(title.title)}，猜对 ${report.correct}/${report.total} 题，不服来战。">`;document.querySelectorAll('.share-buttons button').forEach(b=>b.disabled=false);}catch{if($('#share-preview'))$('#share-preview').innerHTML='<p>图片暂时没生成，先复制文字也能约朋友来猜。</p>';}
+}
+async function nativeShare(){if(!shareBlob)return;try{const file=new File([shareBlob],'apple-trivia.png',{type:'image/png'});if(navigator.canShare?.({files:[file]}))await navigator.share({files:[file],title:'Apple 冷知识，不服来战'});else if(navigator.share)await navigator.share({title:'Apple 冷知识',text:shareText(report,resultTitle(report).title),url:SITE_URL});else{downloadBlob(shareBlob,`apple-trivia-${report.score}.png`);toast('战绩图已生成，发给朋友就能开战。');}}catch(e){if(e.name!=='AbortError')toast('这次没分享成功，可以保存图片再发。');}}
+async function copy(){const s=shareText(report,resultTitle(report).title);try{await navigator.clipboard.writeText(s);toast('战绩已复制，不服来战。');}catch{dialog('复制你的战绩',`<textarea class="copy-text" readonly aria-label="战绩文字">${esc(s)}</textarea><p class="muted">长按或全选，即可复制。</p>`);$('.copy-text').select();}}
+function celebrate(n){if(reduced())return;const box=$('#celebration');box.replaceChildren();for(let i=0;i<n;i++){const p=document.createElement('i');p.style.cssText=`--x:${Math.random()*100}vw;--drift:${(Math.random()-.5)*280}px;--r:${Math.random()*900}deg;--delay:${Math.random()*.4}s;--c:${['#af9bff','#ffbd9f','#9adacb','#f0cf74','#83b9fb'][i%5]}`;box.append(p);}setTimeout(()=>box.replaceChildren(),2500);}
+function about(){dialog('为好奇心而作',`<div class="about-mark">${icon('spark')}</div><p>Apple Trivia 是一个非官方的 Apple 冷知识小游戏。默认 5 题，猜完就能领取称号。</p><p>目前有 <b>${bank.length.toLocaleString('en-US')}</b> 道题，包含产品故事、反直觉小知识、系统功能、发布年份和时间线。时间线题由产品与系统的年份记录组合生成，短局会优先抽趣味题。</p><p>每题都保留解析和 Apple 资料链接。年份采用首次发布或首次预览的公历年份，具体口径写在题目中。不同地区的上市时间可能不同。</p><p class="muted">进度仅保存在当前浏览器。无账户、无排行榜。与 Apple Inc. 无关联。v${VERSION}</p><a class="text-button" href="https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz" target="_blank" rel="noopener noreferrer">查看题库与源代码${icon('external')}</a>`);}
 
-const $ = s => document.querySelector(s);
-const main = $('#main');
-const modal = $('#modal');
-const KEY = 'apple-quiz:v1:';
-let storageFailed = false;
-const read = (name, fallback) => { try { return JSON.parse(localStorage.getItem(KEY + name)) ?? fallback; } catch { return fallback; } };
-const write = (name, value) => { try { localStorage.setItem(KEY + name, JSON.stringify(value)); } catch { if (!storageFailed) { storageFailed = true; toast('浏览器未允许本地存储，本次答题仍可继续，刷新后进度可能丢失。'); } } };
-const remove = name => { try { localStorage.removeItem(KEY + name); } catch { /* Storage is optional. */ } };
-const safeArray = value => Array.isArray(value) ? value : [];
-const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const icon = (name, cls = '') => `<svg viewBox="0 0 24 24" aria-hidden="true" class="${cls}">${({ arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>', back: '<path d="M19 12H5m6-6-6 6 6 6"/>', clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/>', flag: '<path d="M6 21V4m0 0c4-4 8 4 12 0v10c-4 4-8-4-12 0"/>', shuffle: '<path d="m17 3 4 4-4 4m0 2 4 4-4 4M3 7h3c5 0 7 10 12 10h3M3 17h3c2 0 3-2 4-4m3-2c1-2 3-4 5-4h3"/>', book: '<path d="M12 5c-3-2-6-2-10-1v15c4-1 7-1 10 1 3-2 6-2 10-1V4c-4-1-7-1-10 1Zm0 0v15"/>', shield: '<path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6l8-4Z"/><path d="m8 12 3 3 5-6"/>', download: '<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>', check: '<path d="m5 12 4 4L19 6"/>', history: '<path d="M3 11a9 9 0 1 1 2 7M3 4v7h7m2-4v6l4 2"/>', retry: '<path d="M20 7a9 9 0 1 0 1 8m-1-8V2m0 5h-5"/>', share: '<path d="M12 16V2m-5 5 5-5 5 5M6 9H3v13h18V9h-3"/>' })[name] || ''}</svg>`;
-const formatTime = seconds => { const n = Math.max(0, Math.floor(seconds)); return `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`; };
-const levelName = d => LEVELS[d]?.name || '综合';
-const countLabel = n => Number(n).toLocaleString('en-US');
-const initialConfig = { difficulty: 'mixed', count: 20, categories: Object.keys(CATEGORIES), mode: 'exam', secondsPerQuestion: 0 };
-const savedConfig = read('config', {});
-let config = { ...initialConfig, ...savedConfig };
-if (!['mixed', ...Object.keys(LEVELS)].includes(config.difficulty)) config.difficulty = 'mixed';
-config.categories = safeArray(config.categories).filter(c => CATEGORIES[c]);
-if (!config.categories.length) config.categories = [...initialConfig.categories];
-config.count = Math.min(500, Math.max(5, Number(config.count) || 20));
-if (!['exam', 'practice'].includes(config.mode)) config.mode = 'exam';
-if (![0, 30, 60, 90].includes(Number(config.secondsPerQuestion))) config.secondsPerQuestion = 0;
-let bank = [], lookup = new Map(), bankMeta = {}, session = null, questions = [], view = 'home', report = null;
-let wrongBook = safeArray(read('wrong', [])).filter(x => typeof x === 'string');
-let seen = safeArray(read('seen', [])).filter(x => typeof x === 'string');
-let history = safeArray(read('history', [])).filter(x => x && typeof x.id === 'string' && Number.isFinite(x.score) && x.config && Number.isFinite(x.endedAt));
-let reviewFilter = 'incorrect', reviewPage = 0, wrongPage = 0, timerHandle, toastHandle;
-let customCountOpen = ![10, 20, 50, 100, 200].includes(config.count);
-let pendingStart = null;
-
-function toast(message) { $('#toast').textContent = message; $('#toast').classList.add('visible'); clearTimeout(toastHandle); toastHandle = setTimeout(() => $('#toast').classList.remove('visible'), 4000); }
-function showDialog(title, body, buttons = '') { $('#modal-content').innerHTML = `<h2 id="modal-title">${title}</h2>${body}${buttons ? `<div class="dialog-actions">${buttons}</div>` : ''}`; if (!modal.open) modal.showModal(); }
-function closeDialog() { modal.close(); }
-function focusMain(scroll = true) { if (scroll) window.scrollTo({ top: 0, behavior: 'instant' }); main.focus({ preventScroll: true }); }
-function setView(next) { view = next; document.querySelectorAll('.nav-link').forEach(b => b.classList.toggle('active', b.dataset.action === (next === 'wrongbook' ? 'wrongbook' : next === 'history' ? 'history' : 'home'))); }
-function updateWrongCount() { $('#wrong-count').textContent = wrongBook.length; }
-function saveSession() { if (session) write('session', session); }
-function badge(q) { return `<div class="badges"><span class="badge category" style="--cat:${CATEGORIES[q.category].color}">${CATEGORIES[q.category].name}</span><span class="badge">${levelName(q.difficulty)}</span></div>`; }
-function sources(q) { return `<div class="sources">${q.sources.map((url, i) => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">Apple 官方资料${q.sources.length > 1 ? ` ${i + 1}` : ''} ↗</a>`).join('')}</div>`; }
-function explanation(q, correct) { return `<div class="explanation"><strong style="color:var(--${correct ? 'green' : 'red'})">${correct ? '回答正确' : '答案解析'}</strong><p>${escape(q.explanation)}</p>${sources(q)}</div>`; }
-
-function renderHome() {
-  setView('home'); stopTimer();
-  const saved = hydrateSession(read('session', null), bank);
-  main.innerHTML = `<section class="hero"><div class="hero-copy"><p class="eyebrow"><span class="live-dot"></span> A LITTLE CURIOSITY. A LOT TO DISCOVER.</p><h1>Think you<br>know <span class="gradient-word">Apple?</span></h1><p class="hero-description">从口袋里的 iPhone，到改变创作的 Mac。<br>那些你熟悉的产品，还有多少你没发现的细节？</p><div class="hero-stat"><div><strong>${countLabel(bank.length)}</strong>原创题目</div><span></span><div><strong>8</strong>知识领域</div><span></span><div><strong>4</strong>难度档位</div></div></div><div class="device-scene" aria-hidden="true"><div class="scene-halo"></div><div class="orbit"></div><div class="orbit two"></div><span class="scene-label">DESIGNED TO<br>MAKE YOU THINK.</span><div class="floating-chip">A / M</div><div class="laptop"><div class="laptop-screen"></div><div class="laptop-base"></div></div><div class="device-phone"><div class="phone-glass"><span class="phone-time">9:41</span><span class="phone-date">THINK DIFFERENT. THINK DEEPER.</span></div></div><div class="mini-watch"><i class="watch-rings"></i></div><span class="little-star">✧</span><span class="scene-caption">one more question.</span></div></section>
-  ${saved ? `<aside class="resume-banner">${icon('history')}<p>你还有一场未完成的测验<small>已答 ${Object.keys(saved.answers).length} / ${saved.questions.length} 题 · ${levelName(saved.config.difficulty)} · ${saved.config.mode === 'practice' ? '练习模式' : '测验模式'}</small></p><button class="secondary-button" data-action="resume">继续答题 ${icon('arrow')}</button></aside>` : ''}
-  <section class="setup panel" aria-labelledby="setup-title"><div class="setup-main"><div class="section-heading"><h2 id="setup-title">定制你的挑战</h2><small>全新组卷，每次都有新发现</small></div><fieldset><legend class="field-title"><span class="step-number">01</span>选择难度</legend><div class="difficulty-options">${[['mixed','综合','MIX'],['easy','入门','01'],['medium','进阶','02'],['hard','困难','03'],['expert','专家','04']].map(([id, name, label]) => `<button type="button" class="choice ${config.difficulty === id ? 'selected' : ''}" data-difficulty="${id}" aria-pressed="${config.difficulty === id}"><span>${label}</span>${name}</button>`).join('')}</div><p class="field-hint" id="difficulty-hint">${difficultyHint()}</p></fieldset><fieldset><legend class="field-title"><span class="step-number">02</span>选择题量</legend><div class="count-options">${[10,20,50,100,200].map(n => `<button type="button" class="choice ${config.count === n && !customCountOpen ? 'selected' : ''}" data-count="${n}" aria-pressed="${config.count === n && !customCountOpen}">${n}<small>题</small></button>`).join('')}<button type="button" class="choice ${customCountOpen ? 'selected' : ''}" data-action="custom-count" aria-pressed="${customCountOpen}">自定</button></div><div class="custom-count" ${customCountOpen ? '' : 'hidden'}><label for="custom-count">题目数量</label><input id="custom-count" type="number" min="5" max="500" step="1" value="${config.count}" inputmode="numeric"><small class="muted">5 至 500 题</small></div></fieldset><fieldset><legend class="field-title"><span class="step-number">03</span>选择知识领域 <button type="button" class="text-button category-all" data-action="all-categories">${config.categories.length === 8 ? '清空选择' : '全部选择'}</button></legend><div class="category-options">${Object.entries(CATEGORIES).map(([id,c]) => `<button type="button" class="category-chip ${config.categories.includes(id) ? 'selected' : ''}" data-category="${id}" style="--cat:${c.color}" aria-pressed="${config.categories.includes(id)}"><span class="cat-dot" aria-hidden="true"></span>${c.name}<b>${bank.filter(q => q.category === id).length}</b></button>`).join('')}</div><p class="field-hint" id="pool-hint"></p></fieldset></div><aside class="setup-side"><p class="eyebrow">YOUR NEXT CHALLENGE</p><h3 class="paper-title">准备好了吗？</h3><p class="paper-description">让熟悉变成了解。<br>选好设置，来一场知识探索。</p><div class="paper-facts"><div><span>本次题量</span><b id="paper-count"></b></div><div><span>难度</span><b id="paper-level">${levelName(config.difficulty)}</b></div><div><span>题型</span><b>四选一 · 单项选择</b></div></div><div class="separator"></div><div class="mode-switch" role="group" aria-label="答题模式"><button data-mode="exam" class="${config.mode === 'exam' ? 'selected' : ''}" aria-pressed="${config.mode === 'exam'}">测验模式</button><button data-mode="practice" class="${config.mode === 'practice' ? 'selected' : ''}" aria-pressed="${config.mode === 'practice'}">练习模式</button></div><p class="field-hint" id="mode-hint">${modeHint()}</p><label class="timer-select" ${config.mode === 'practice' ? 'hidden' : ''}>限时设置<select id="timer-select" aria-label="每题计入的总时限">${[[0,'不限时'],[30,'每题 30 秒'],[60,'每题 60 秒'],[90,'每题 90 秒']].map(([n,label]) => `<option value="${n}" ${Number(config.secondsPerQuestion) === n ? 'selected' : ''}>${label}</option>`).join('')}</select></label><div class="start-wrap"><button type="button" class="primary-button" id="start-button" data-action="start">开始挑战 ${icon('arrow')}</button><p class="start-footnote">无需登录 · 进度自动保存在此浏览器</p></div></aside></section><section class="features-strip" aria-label="测验特色"><div class="feature">${icon('shuffle')}<div><strong>每一场，都不一样</strong><p>题目、选项随机排列，优先抽取近期未答题。</p></div></div><div class="feature">${icon('book')}<div><strong>答完，更懂一点</strong><p>逐题解析与 Apple 官方来源，知识有据可查。</p></div></div><div class="feature">${icon('shield')}<div><strong>随时暂停，接着探索</strong><p>自动保存答题进度，错题可以反复练习。</p></div></div></section>`;
-  refreshPool();
-}
-function difficultyHint() { return config.difficulty === 'mixed' ? '四档难度混合，兼顾产品常识、型号细节与比较推理。' : ({ easy: '认识产品形态、接口和常见功能，适合轻松热身。', medium: '辨别产品代际、芯片和关键规格，考验你的熟悉程度。', hard: '深入显示技术、连接能力与兼容关系，留意题目的限定条件。', expert: '结合多个条件选型、比较或计算，需要把知识串联起来。' })[config.difficulty]; }
-function modeHint() { return config.mode === 'exam' ? '交卷后统一公布答案，可随时返回修改。' : '逐题确认并查看解析，确认后的答案会锁定。'; }
-function refreshPool() {
-  if (view !== 'home') return;
-  const n = filterBank(bank, config).length;
-  $('#pool-hint').textContent = !config.categories.length ? '至少选择一个知识领域。' : `符合条件 ${countLabel(n)} 题${n < config.count ? `，本次将抽取全部 ${n} 题。` : '，同一场测验不会重复。'}`;
-  $('#paper-count').textContent = `${Math.min(config.count, n)} 题`;
-  $('#start-button').disabled = n === 0;
-  write('config', config);
-}
-function startRequest(overrides = {}) {
-  const next = { ...config, ...overrides };
-  const pending = hydrateSession(read('session', null), bank);
-  if (pending) {
-    pendingStart = next;
-    showDialog('开始新的挑战？', '<p>新挑战会替换当前未完成的答题进度。你也可以继续完成上一场。</p>', '<button class="secondary-button" data-action="resume">继续上一场</button><button class="primary-button" data-action="replace-session">开始新挑战</button>');
-  } else startQuiz(next);
-}
-function startQuiz(next) {
-  closeDialog();
-  const random = new Uint32Array(1);
-  crypto.getRandomValues(random);
-  const seed = random[0];
-  questions = drawQuestions(bank, next, seed, seen);
-  if (!questions.length) { toast('当前条件下没有可抽取的题目。'); return; }
-  const actualConfig = { ...next, count: questions.length };
-  session = createSession(questions, actualConfig, seed);
-  saveSession();
-  renderQuiz(); focusMain(); startTimer();
-}
-function resumeQuiz() {
-  closeDialog();
-  const restored = hydrateSession(read('session', null), bank);
-  if (!restored) { remove('session'); toast('这份进度无法恢复，请开始新挑战。'); renderHome(); return; }
-  questions = restored.hydratedQuestions;
-  delete restored.hydratedQuestions;
-  session = restored;
-  if (session.deadline && session.deadline <= Date.now()) { finishQuiz(true); return; }
-  renderQuiz(); focusMain(); startTimer();
-}
-function renderQuiz() {
-  setView('quiz');
-  const q = questions[session.index];
-  const answer = session.answers[q.id];
-  const confirmed = session.confirmed.includes(q.id);
-  const practice = session.config.mode === 'practice';
-  const flag = session.flags.includes(q.id);
-  const answered = Object.keys(session.answers).length;
-  main.innerHTML = `<div class="quiz-header"><button class="back-button" data-action="leave-quiz">${icon('back')}保存并返回</button><div class="quiz-meta"><span>${levelName(session.config.difficulty)} · ${practice ? '练习' : '测验'}</span><span class="quiz-time mono" id="quiz-clock">${icon('clock')}<span></span></span></div></div><div class="quiz-progress"><div class="progress-track" role="progressbar" aria-label="已作答进度" aria-valuenow="${answered}" aria-valuemin="0" aria-valuemax="${questions.length}"><span style="width:${answered / questions.length * 100}%"></span></div><span class="progress-caption mono">已答 ${answered} / ${questions.length}</span></div><div class="quiz-layout"><section class="question-card panel" aria-labelledby="question-prompt"><div class="question-toolbar">${badge(q)}<button class="flag-button ${flag ? 'flagged' : ''}" data-action="flag" aria-pressed="${flag}">${icon('flag')}${flag ? '已标记' : '稍后复查'}</button></div><p class="question-number mono">QUESTION ${String(session.index + 1).padStart(2, '0')} <span class="muted">/ ${String(questions.length).padStart(2, '0')}</span></p><h1 class="question-prompt" id="question-prompt">${escape(q.prompt)}</h1><div class="answers" role="group" aria-label="单选答案">${q.options.map((o,i) => { const cls = confirmed ? o === q.answer ? 'correct' : answer === o ? 'wrong' : '' : answer === o ? 'selected' : ''; return `<button type="button" class="answer ${cls}" data-answer="${i}" aria-pressed="${answer === o}" ${confirmed ? 'disabled' : ''}><span class="letter" aria-hidden="true">${'ABCD'[i]}</span><span class="answer-text">${escape(o)}</span>${confirmed && o === q.answer ? '<span class="answer-state">正确答案</span>' : confirmed && answer === o ? '<span class="answer-state">你的答案</span>' : ''}</button>`; }).join('')}</div>${confirmed ? explanation(q, answer === q.answer) : ''}<div class="question-navigation"><button class="secondary-button" data-action="previous" ${session.index === 0 ? 'disabled' : ''}>${icon('back')}上一题</button>${practice && !confirmed ? `<button class="primary-button" data-action="confirm-answer" ${answer ? '' : 'disabled'}>确认答案 ${icon('check')}</button>` : `<button class="primary-button" data-action="${session.index === questions.length - 1 ? 'submit' : 'next'}">${session.index === questions.length - 1 ? '提交答卷' : '下一题'} ${icon('arrow')}</button>`}</div><p class="key-hint">键盘 1–4 选择 · ← → 切题 · Enter ${practice && !confirmed ? '确认答案' : '下一题'}</p></section><aside class="quiz-sidebar"><div class="question-map panel"><h3>答题卡 <span class="muted mono">${questions.length} 题</span></h3><div class="map-grid">${questions.map((item,i) => `<button type="button" class="map-cell ${session.answers[item.id] ? 'answered' : ''} ${i === session.index ? 'current' : ''} ${session.flags.includes(item.id) ? 'flagged' : ''}" data-jump="${i}" ${i === session.index ? 'aria-current="step"' : ''} aria-label="第 ${i + 1} 题，${session.answers[item.id] ? '已答' : '未答'}${session.flags.includes(item.id) ? '，已标记' : ''}">${i + 1}</button>`).join('')}</div><div class="map-legend"><span><i class="done"></i>已答</span><span><i></i>未答</span><span><i class="mark"></i>标记</span></div><button class="secondary-button map-submit" data-action="submit">提交答卷</button></div><p class="sidebar-note">${practice ? '确认后立即查看解析。你可以跳过暂时没有把握的题，交卷前再来思考。' : '所有题目均为单项选择。交卷前可以修改答案，未作答的题目按错误计入总分。'}${session.deadline ? '<br>限时为全卷共享，离开页面后仍继续计时。' : ''}</p></aside></div>`;
-  updateClock();
-}
-function selectAnswer(index) {
-  if (!session || session.confirmed.includes(questions[session.index].id)) return;
-  if (session.deadline && session.deadline <= Date.now()) { finishQuiz(true); return; }
-  const q = questions[session.index];
-  if (!q.options[index]) return;
-  session.answers[q.id] = q.options[index]; saveSession();
-  const focusedIndex = index;
-  renderQuiz(); document.querySelector(`[data-answer="${focusedIndex}"]`)?.focus({ preventScroll: true });
-}
-function moveQuestion(index) {
-  const { scrollX, scrollY } = window;
-  session.index = Math.max(0, Math.min(questions.length - 1, index));
-  saveSession(); renderQuiz();
-  const prompt = $('#question-prompt');
-  prompt.setAttribute('tabindex', '-1');
-  prompt.focus({ preventScroll: true });
-  // Keep the reading position; reveal the new prompt when leaving a lower section.
-  const promptTop = Math.max(0, prompt.getBoundingClientRect().top + window.scrollY - 24);
-  window.scrollTo({ left: scrollX, top: Math.min(scrollY, promptTop), behavior: 'instant' });
-}
-function confirmAnswer() {
-  const q = questions[session.index];
-  if (!session.answers[q.id]) return;
-  if (!session.confirmed.includes(q.id)) session.confirmed.push(q.id);
-  saveSession(); renderQuiz(); $('.explanation').setAttribute('tabindex', '-1'); $('.explanation').focus({ preventScroll: true });
-}
-function stopTimer() { clearInterval(timerHandle); }
-function startTimer() { stopTimer(); updateClock(); timerHandle = setInterval(updateClock, 1000); }
-function updateClock() {
-  if (view !== 'quiz' || !session) return;
-  if (session.deadline && session.deadline <= Date.now()) { finishQuiz(true); return; }
-  const clock = $('#quiz-clock'); if (!clock) return;
-  const seconds = session.deadline ? Math.ceil((session.deadline - Date.now()) / 1000) : Math.floor((Date.now() - session.startedAt) / 1000);
-  clock.querySelector('span').textContent = `${session.deadline ? '剩余 ' : ''}${formatTime(seconds)}`;
-  clock.classList.toggle('urgent', !!session.deadline && seconds < 60);
-  clock.setAttribute('aria-label', `${session.deadline ? '剩余' : '已用'} ${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`);
-}
-function requestSubmit() {
-  if (session.deadline && session.deadline <= Date.now()) { finishQuiz(true); return; }
-  const missing = questions.length - Object.keys(session.answers).length;
-  const unconfirmed = session.config.mode === 'practice' ? questions.filter(q => session.answers[q.id] && !session.confirmed.includes(q.id)).length : 0;
-  showDialog('提交这份答卷？', `<p>${missing ? `还有 <b>${missing}</b> 题未作答，未答题目按错误计入成绩。` : '你已完成所有题目。提交后可以查看成绩、逐题解析和官方资料。'}${session.flags.length ? ` 已标记 ${session.flags.length} 题待复查。` : ''}${unconfirmed ? ` 有 ${unconfirmed} 题已选择但未确认，将按所选答案计分。` : ''}</p>`, '<button class="secondary-button" data-action="close-modal">继续检查</button><button class="primary-button" data-action="finish">确认交卷</button>');
-}
-function finishQuiz(timedOut = false) {
-  if (!session) return;
-  closeDialog(); stopTimer();
-  const endedAt = timedOut && session.deadline ? session.deadline : Date.now();
-  report = { ...grade(questions, session.answers, session.startedAt, endedAt), id: session.id, config: session.config, endedAt, timedOut, questionIds: questions.map(q => q.id) };
-  wrongBook = updateWrongBook(wrongBook, report); write('wrong', wrongBook); updateWrongCount();
-  seen = [...new Set([...seen, ...questions.map(q => q.id)])].slice(-Math.max(400, Math.floor(bank.length * .7))); write('seen', seen);
-  const compact = { id: report.id, score: report.score, total: report.total, correct: report.correct, endedAt, duration: report.duration, config: { difficulty: session.config.difficulty, mode: session.config.mode, categories: session.config.categories } };
-  history = [compact, ...history.filter(h => h.id !== compact.id)].slice(0, 40); write('history', history);
-  write('last-report', report); remove('session'); session = null;
-  reviewFilter = 'incorrect'; reviewPage = 0; renderResults(); focusMain();
-  if (timedOut) toast('答题时间已到，已自动提交答卷。');
-}
-function statRows(groups, dictionary) { return Object.entries(groups).map(([id,n]) => `<div class="stat-row"><span>${dictionary[id]?.name || id}</span><div class="progress-track"><span style="width:${n.correct/n.total*100}%;${dictionary[id]?.color ? `background:${dictionary[id].color}` : ''}"></span></div><span>${n.correct} / ${n.total}</span></div>`).join(''); }
-function renderResults() {
-  if (!report) { renderHistory(); return; }
-  setView('results'); stopTimer();
-  const title = report.score === 100 ? '所有好奇，都有回响。' : report.score >= 80 ? '你很懂 Apple。' : report.score >= 60 ? '了解，比熟悉更进一步。' : '好奇心，才是最好的开始。';
-  main.innerHTML = `<div class="page-top"><div><p class="eyebrow">YOUR KNOWLEDGE, DISCOVERED.</p><h1>挑战完成</h1></div><button class="back-button" data-action="home">返回首页 ${icon('arrow')}</button></div><section class="result-hero panel"><div class="score-ring" style="--score:${report.score}" role="img" aria-label="总分 ${report.score} 分"><div class="score-number mono"><strong>${report.score}</strong><small>总分 / 100</small></div></div><div class="result-heading"><p class="eyebrow">${levelName(report.config.difficulty)} · ${report.config.mode === 'practice' ? '练习模式' : '测验模式'}${report.timedOut ? ' · 限时结束' : ''}</p><h2>${title}</h2><p>答对 ${report.correct} / ${report.total} 题。每一个新发现，都在扩展你的知识版图。</p><div class="result-facts"><div><strong>${report.score}%</strong>正确率</div><div><strong>${formatTime(report.duration)}</strong>本次用时</div><div><strong>${report.bestStreak}</strong>最长连续答对</div><div><strong>${report.weightedScore}</strong>难度加权分</div></div></div></section><div class="result-actions"><button class="primary-button" data-action="another">再挑战一次 ${icon('shuffle')}</button><button class="secondary-button" data-action="retry-result" ${report.correct === report.total ? 'disabled' : ''}>${icon('retry')}重练本次错题</button><button class="secondary-button" data-action="export">${icon('download')}导出答题报告</button><button class="secondary-button" data-action="share">${icon('share')}复制成绩</button></div><div class="result-grid"><section class="panel stats-panel"><h3>你的产品知识版图</h3><div class="stat-rows">${statRows(report.categories, CATEGORIES)}</div></section><section class="panel stats-panel"><h3>不同难度的表现</h3><div class="stat-rows">${statRows(report.levels, LEVELS)}</div><p class="field-hint">每题等权计入总分；加权分按入门至专家 1、2、3、4 分计算。未答 ${report.unanswered} 题。</p></section></div><section class="review-section"><div class="review-heading"><h2>把答案变成知识</h2><div class="filter-tabs" role="group" aria-label="解析筛选">${[['incorrect',`错题 ${report.total-report.correct}`],['all','全部题目']].map(([id,name]) => `<button data-review-filter="${id}" class="${reviewFilter === id ? 'selected' : ''}" aria-pressed="${reviewFilter === id}">${name}</button>`).join('')}</div></div><div id="review-list"></div></section>`;
-  renderReview();
-}
-function reviewCard(q, row, number, reveal = true) {
-  const state = row?.state;
-  return `<article class="review-card panel"><div class="question-toolbar">${badge(q)}<span>${number ? `第 ${number} 题 · ` : ''}${row ? `<span class="status-label ${state}">${state === 'correct' ? '回答正确' : state === 'unanswered' ? '未作答' : '回答错误'}</span>` : `<span class="mono">${escape(q.id)}</span>`}</span></div><h3>${escape(q.prompt)}</h3>${reveal ? `${row && state !== 'correct' ? `<p class="review-answer wrong">你的答案：${row.answer ? escape(row.answer) : '未作答'}</p>` : ''}<p class="review-answer correct">正确答案：${escape(q.answer)}</p><div class="explanation"><p>${escape(q.explanation)}</p>${sources(q)}</div>` : ''}</article>`;
-}
-function pagination(page, total, action) { return total > 1 ? `<div class="pagination"><button class="secondary-button" data-${action}="${page-1}" ${page===0?'disabled':''}>上一页</button><span>${page+1} / ${total}</span><button class="secondary-button" data-${action}="${page+1}" ${page===total-1?'disabled':''}>下一页</button></div>` : ''; }
-function renderReview() {
-  const rows = report.rows.map((r,i) => ({ row:r, q:lookup.get(r.id), i })).filter(x => x.q && (reviewFilter==='all' || x.row.state!=='correct'));
-  const total = Math.ceil(rows.length / 12); reviewPage=Math.max(0,Math.min(reviewPage,total-1));
-  $('#review-list').innerHTML = rows.length ? rows.slice(reviewPage*12,(reviewPage+1)*12).map(x => reviewCard(x.q,x.row,x.i+1)).join('') + pagination(reviewPage,total,'review-page') : '<div class="empty-state panel"><div class="empty-symbol">'+icon('check')+'</div><h2>这场挑战，没有错题。</h2><p>也可以切换到「全部题目」，回看每一道题的解析。</p></div>';
-}
-function renderWrongbook() {
-  setView('wrongbook'); stopTimer();
-  const wrong = wrongBook.map(id=>lookup.get(id)).filter(Boolean); const pages=Math.ceil(wrong.length/12); wrongPage=Math.max(0,Math.min(wrongPage,pages-1));
-  main.innerHTML=`<div class="page-top"><div><p class="eyebrow">A SECOND LOOK. A NEW DISCOVERY.</p><h1>错题本</h1><p>收藏每一次暂时的不确定。重练答对后，题目会自动移出。</p></div></div>${wrong.length?`<div class="wrongbook-toolbar"><p>共 ${wrong.length} 道待掌握的题 · 包含未作答题目</p><button class="primary-button" data-action="retry-all">重练错题 ${icon('arrow')}</button></div>${wrong.slice(wrongPage*12,(wrongPage+1)*12).map(q=>reviewCard(q,null)).join('')}${pagination(wrongPage,pages,'wrong-page')}`:`<div class="panel empty-state"><div class="empty-symbol">${icon('book')}</div><h2>下一次发现，从这里开始。</h2><p>完成一场测验，答错和未作答的题目会自动汇集到这里。</p><button class="primary-button" data-action="home">去挑战 ${icon('arrow')}</button></div>`}`;
-}
-function renderHistory() {
-  setView('history');stopTimer();
-  const total=history.reduce((n,r)=>n+r.total,0), correct=history.reduce((n,r)=>n+r.correct,0);
-  main.innerHTML=`<div class="page-top"><div><p class="eyebrow">EVERY QUESTION COUNTS.</p><h1>答题记录</h1><p>你的好奇心，值得被记录。最多保留最近 40 场，仅存于此浏览器。</p></div></div>${history.length?`<section class="panel history-summary"><div><strong>${history.length}</strong><span>已完成挑战</span></div><div><strong>${total}</strong><span>累计作答</span></div><div><strong>${Math.round(correct/total*100)}%</strong><span>累计正确率</span></div></section>${history.map(h=>`<article class="panel history-row"><div class="history-score mono">${h.score}<small class="muted"> 分</small></div><div class="history-info"><strong>${levelName(h.config.difficulty)} · ${h.total} 题 · ${h.config.mode==='practice'?'练习模式':'测验模式'}</strong><p>${new Date(h.endedAt).toLocaleString('zh-CN')} · 答对 ${h.correct} 题 · ${formatTime(h.duration)}</p></div>${h.id===read('last-report',null)?.id?'<button class="secondary-button" data-action="last-result">查看解析</button>':'<span>已完成</span>'}</article>`).join('')}`:`<div class="panel empty-state"><div class="empty-symbol">${icon('history')}</div><h2>第一场挑战，等你开始。</h2><p>完成答题后，可以在这里看到你的成绩与进步。</p><button class="primary-button" data-action="home">开始探索 ${icon('arrow')}</button></div>`}`;
-}
-function renderAbout() {
-  showDialog('关于这份题库', `<p>Apple Product Knowledge Quiz 是独立制作的知识测验，与 Apple Inc. 无隶属或赞助关系。题干、选项和解析为本项目原创，产品事实以对应的 Apple 技术规格、支持文档和 Newsroom 为依据。</p><div class="bank-overview">${Object.entries(CATEGORIES).map(([id,c])=>`<div><span>${c.name}</span><b>${bank.filter(q=>q.category===id).length} 题</b></div>`).join('')}</div><p class="about-text">当前共 ${countLabel(bank.length)} 题，资料核对日期 ${bankMeta.reviewedAt || '2026-10-15'}。型号题均指题目明确指定的设备；续航、显示尺寸、传输速率按题目所述官方测试或标称口径，功能可用性以当地官方资料为准。</p><p class="about-text">成绩与进度保存在当前浏览器，不设账户，不上传答题记录。更换设备或清除浏览器数据后，记录不会保留。<a href="https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues" target="_blank" rel="noopener noreferrer">发现题目问题？反馈到 GitHub ↗</a></p>`);
-}
-function exportReport() {
-  if (!report) return;
-  const lines=['# Apple Product Knowledge Quiz 答题报告','',`日期：${new Date(report.endedAt).toLocaleString('zh-CN')}`,`难度：${levelName(report.config.difficulty)}；模式：${report.config.mode==='practice'?'练习':'测验'}`,`成绩：${report.score}/100；答对 ${report.correct}/${report.total}；用时 ${formatTime(report.duration)}；难度加权分 ${report.weightedScore}`, '', '评分：每题等权计算百分制总分，未答计错；加权分按四档难度 1、2、3、4 分折算为百分制。', '', ...report.rows.flatMap((row,i)=>{const q=lookup.get(row.id);if(!q)return[];return [`## ${i+1}. ${q.prompt}`, '', `领域：${CATEGORIES[q.category].name}；难度：${levelName(q.difficulty)}`,`你的答案：${row.answer||'未作答'}；${row.state==='correct'?'正确':'错误'}`,`正确答案：${q.answer}`, '', `解析：${q.explanation}`, '', ...q.sources.map(u=>`来源：${u}`), ''];})];
-  const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/markdown;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Apple-Quiz-${new Date(report.endedAt).toISOString().slice(0,10)}-${report.score}.md`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('答题报告已导出。');
-}
-async function shareResult() {
-  const text=`我在 Apple Product Knowledge Quiz 的${levelName(report.config.difficulty)}挑战中答对了 ${report.correct}/${report.total} 题，获得 ${report.score} 分！\n${new URL('./',location.href).href}`;
-  try { await navigator.clipboard.writeText(text);toast('成绩已复制，可以分享了。'); } catch { showDialog('分享你的成绩',`<p>复制下面的文字即可分享：</p><textarea readonly aria-label="成绩分享文字" style="width:100%;height:135px;margin-top:15px;padding:12px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:9px">${escape(text)}</textarea>`); }
-}
-function navigate(action) { if (view==='quiz') saveSession(); if(action==='home')renderHome();else if(action==='wrongbook')renderWrongbook();else renderHistory(); focusMain(); }
-document.addEventListener('click',event=>{
-  const b=event.target.closest('button');if(!b||b.disabled)return;
-  if(b.dataset.difficulty){config.difficulty=b.dataset.difficulty;renderHome();return;}
-  if(b.dataset.count){config.count=Number(b.dataset.count);customCountOpen=false;renderHome();return;}
-  if(b.dataset.category){const id=b.dataset.category;config.categories=config.categories.includes(id)?config.categories.filter(c=>c!==id):[...config.categories,id];renderHome();return;}
-  if(b.dataset.mode){config.mode=b.dataset.mode;renderHome();return;}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||b.disabled)return;
   if(b.dataset.answer!==undefined){selectAnswer(Number(b.dataset.answer));return;}
-  if(b.dataset.jump!==undefined){moveQuestion(Number(b.dataset.jump));return;}
-  if(b.dataset.reviewFilter){reviewFilter=b.dataset.reviewFilter;reviewPage=0;renderResults();return;}
-  if(b.dataset.reviewPage!==undefined){reviewPage=Number(b.dataset.reviewPage);renderReview();$('.review-section').scrollIntoView();return;}
-  if(b.dataset.wrongPage!==undefined){wrongPage=Number(b.dataset.wrongPage);renderWrongbook();focusMain();return;}
-  const action=b.dataset.action;
-  if(['home','wrongbook','history'].includes(action)){navigate(action);return;}
-  switch(action){
-    case 'reload':location.reload();break;
-    case 'about':renderAbout();break;
-    case 'close-modal':closeDialog();break;
-    case 'custom-count':customCountOpen=true;renderHome();$('#custom-count').focus();break;
-    case 'all-categories':config.categories=config.categories.length===8?[]:Object.keys(CATEGORIES);renderHome();break;
-    case 'start':startRequest();break;
-    case 'replace-session':startQuiz(pendingStart);pendingStart=null;break;
-    case 'resume':resumeQuiz();break;
-    case 'leave-quiz':saveSession();renderHome();focusMain();break;
-    case 'previous':moveQuestion(session.index-1);break;
-    case 'next':moveQuestion(session.index+1);break;
-    case 'confirm-answer':confirmAnswer();break;
-    case 'flag':{const id=questions[session.index].id;session.flags=session.flags.includes(id)?session.flags.filter(i=>i!==id):[...session.flags,id];saveSession();renderQuiz();break;}
-    case 'submit':requestSubmit();break;
-    case 'finish':finishQuiz();break;
-    case 'another':startRequest({...report.config,ids:undefined});break;
-    case 'retry-result':startRequest({difficulty:'mixed',categories:Object.keys(CATEGORIES),ids:report.rows.filter(r=>r.state!=='correct').map(r=>r.id),count:report.total-report.correct,mode:'practice',secondsPerQuestion:0});break;
-    case 'retry-all':startRequest({difficulty:'mixed',categories:Object.keys(CATEGORIES),ids:wrongBook,count:Math.min(wrongBook.length,500),mode:'practice',secondsPerQuestion:0});break;
-    case 'last-result':report=read('last-report',null);reviewPage=0;renderResults();focusMain();break;
-    case 'export':exportReport();break;
-    case 'share':void shareResult();break;
-  }
+  if(b.dataset.topic){start(quickConfig(b.dataset.topic));return;}
+  if(b.dataset.count){config.count=Number(b.dataset.count);$('#count-input').value=b.dataset.count;document.querySelectorAll('[data-count]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b));});updatePool();return;}
+  if(b.dataset.jump!==undefined){modal.close();moveQuestion(Number(b.dataset.jump));return;}
+  const actions={home,quick:()=>start(quickConfig()),custom,resume,about,close:()=>{modal.close();},theme:()=>{const dark=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=dark?'dark':'light';write('theme',dark?'dark':'light');},next:nextQuestion,previous:()=>moveQuestion(session.index-1),confirm:confirmAnswer,explain,map,'end-round':requestFinish,finish:()=>finish(),results,review,'share-card':showShare,download:()=>shareBlob&&downloadBlob(shareBlob,`apple-trivia-${report.score}.png`),'native-share':nativeShare,copy,flag:()=>{const id=questions[session.index].id;session.flags=session.flags.includes(id)?session.flags.filter(x=>x!==id):[...session.flags,id];save();b.setAttribute('aria-pressed',String(session.flags.includes(id)));b.setAttribute('aria-label',session.flags.includes(id)?'取消留个记号':'留个记号');},reload:()=>location.reload()};actions[b.dataset.action]?.();
 });
-document.addEventListener('change',event=>{
-  if(event.target.id==='custom-count'){const n=Number(event.target.value);if(!Number.isInteger(n)||n<5||n>500){event.target.value=config.count;toast('自定义题量请输入 5 至 500 之间的整数。');return;}config.count=n;refreshPool();}
-  if(event.target.id==='timer-select'){config.secondsPerQuestion=Number(event.target.value);write('config',config);}
-});
-document.addEventListener('keydown',event=>{
-  if(view!=='quiz'||modal.open||event.ctrlKey||event.metaKey||event.altKey||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;
-  if(/^[1-4]$/.test(event.key)){event.preventDefault();selectAnswer(Number(event.key)-1);}
-  else if(event.key==='ArrowLeft'){event.preventDefault();moveQuestion(session.index-1);}
-  else if(event.key==='ArrowRight'){event.preventDefault();moveQuestion(session.index+1);}
-  else if(event.key==='Enter' && (!event.target.closest('button') || event.target.closest('[data-answer]'))){event.preventDefault();if(session.config.mode==='practice'&&!session.confirmed.includes(questions[session.index].id))confirmAnswer();else if(session.index===questions.length-1)requestSubmit();else moveQuestion(session.index+1);}
-});
-document.addEventListener('visibilitychange',()=>{if(view==='quiz'){saveSession();if(document.visibilityState==='visible')updateClock();}});
-window.addEventListener('pagehide',saveSession);
-const media=window.matchMedia('(prefers-color-scheme: dark)');
-let theme=read('theme',null);
-function applyTheme(){const dark=theme?theme==='dark':media.matches;document.documentElement.dataset.theme=dark?'dark':'light';$('#theme-toggle').setAttribute('aria-label',dark?'切换浅色外观':'切换深色外观');document.querySelector('meta[name="theme-color"]').content=dark?'#151619':'#f6f7f9';}
-$('#theme-toggle').addEventListener('click',()=>{theme=document.documentElement.dataset.theme==='dark'?'light':'dark';write('theme',theme);applyTheme();});media.addEventListener('change',applyTheme);applyTheme();
-
-async function init() {
-  try{
-    const response=await fetch(new URL('../questions.json?v='+VERSION,import.meta.url));
-    if(!response.ok)throw new Error(`HTTP ${response.status}`);
-    const data=await response.json();
-    if(data.version!==VERSION||!Array.isArray(data.questions)||!data.questions.length)throw new Error('题库版本与网站不匹配');
-    bank=data.questions;bankMeta=data;lookup=new Map(bank.map(q=>[q.id,q]));
-    wrongBook=wrongBook.filter(id=>lookup.has(id));write('wrong',wrongBook);seen=seen.filter(id=>lookup.has(id));updateWrongCount();
-    const saved=read('session',null);if(saved&&!hydrateSession(saved,bank)){remove('session');toast('题库已更新，已保留成绩与错题，请开始新挑战。');}
-    renderHome();
-  }catch(error){main.innerHTML=`<div class="empty-state panel" style="margin-top:60px"><h1 style="font-size:27px">题库暂时未能加载</h1><p>请检查网络后重试。首次部署需要等待 GitHub Pages 完成发布。</p><button class="primary-button" data-action="reload">重新加载</button><p class="source-label">${escape(error.message)}</p></div>`;}
-}
-void init();
+document.addEventListener('submit',e=>{if(e.target.id!=='custom-form')return;e.preventDefault();const next=formConfig();if(!Number.isInteger(next.count)||next.count<5||next.count>500||!next.categories.length)return;config=next;write('config',config);start(config);});
+document.addEventListener('change',e=>{if(e.target.closest('#custom-form')){if(e.target.id==='mode-select')$('.timer-setting').hidden=e.target.value!=='exam';updatePool();}if(e.target.id==='auto-toggle'){write('auto',e.target.checked);paused=false;scheduleNext();}});
+document.addEventListener('input',e=>{if(e.target.id==='count-input'){document.querySelectorAll('[data-count]').forEach(b=>{const active=Number(b.dataset.count)===Number(e.target.value);b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));});updatePool();}});
+document.addEventListener('keydown',e=>{if(view!=='quiz'||modal.open||e.repeat||/INPUT|SELECT|TEXTAREA|BUTTON|A/.test(document.activeElement.tagName)&&e.key==='Enter')return;if(/^[1-4]$/.test(e.key)){e.preventDefault();selectAnswer(Number(e.key)-1);}else if(e.key==='Enter'){e.preventDefault();if(session.config.mode==='practice'&&!session.confirmed.includes(questions[session.index].id))confirmAnswer();else nextQuestion();}else if(session.config.mode!=='quick'&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();e.key==='ArrowLeft'?moveQuestion(session.index-1):nextQuestion();}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAuto();else if(view==='quiz'){clock();scheduleNext();}});
+modal.addEventListener('close',()=>{if(view==='quiz'&&session?.config.mode==='quick'&&$('#auto-label'))$('#auto-label').textContent='等你点下一题';});
+window.addEventListener('pagehide',()=>{save();cancelAuto();});
+document.documentElement.dataset.theme=read('theme','light')==='dark'?'dark':'light';
+async function init(){try{const res=await fetch(`./questions.json?v=${VERSION}`);if(!res.ok)throw new Error('load');const data=await res.json();if(data.version!==VERSION||!Array.isArray(data.questions))throw new Error('version');bank=data.questions;meta=data;home();}catch{main.innerHTML=`<div class="loading"><h1>冷知识还在路上。</h1><p>网络刚刚打了个盹，重新拆封试试。</p><button class="primary-button" data-action="reload">再试一次${icon('arrow')}</button></div>`;}}
+init();

@@ -1336,7 +1336,8 @@
       "connector": "USB-C",
       "refresh": 120,
       "pencil": "第 2 代 + USB-C",
-      "gpu": 8
+      "gpu": 8,
+      "year": 2021
     }
   },
   {
@@ -1358,7 +1359,8 @@
       "connector": "USB-C",
       "refresh": 120,
       "pencil": "第 2 代 + USB-C",
-      "gpu": 8
+      "gpu": 8,
+      "year": 2021
     }
   },
   {
@@ -1379,7 +1381,8 @@
       "camera": 12.0,
       "connector": "USB-C",
       "refresh": 120,
-      "pencil": "第 2 代 + USB-C"
+      "pencil": "第 2 代 + USB-C",
+      "year": 2020
     }
   },
   {
@@ -1400,7 +1403,8 @@
       "camera": 12.0,
       "connector": "USB-C",
       "refresh": 120,
-      "pencil": "第 2 代 + USB-C"
+      "pencil": "第 2 代 + USB-C",
+      "year": 2020
     }
   },
   {
@@ -1420,7 +1424,8 @@
       "camera": 12.0,
       "connector": "USB-C",
       "refresh": 120,
-      "pencil": "第 2 代 + USB-C"
+      "pencil": "第 2 代 + USB-C",
+      "year": 2018
     }
   },
   {
@@ -1440,7 +1445,8 @@
       "camera": 12.0,
       "connector": "USB-C",
       "refresh": 120,
-      "pencil": "第 2 代 + USB-C"
+      "pencil": "第 2 代 + USB-C",
+      "year": 2018
     }
   },
   {
@@ -1460,7 +1466,8 @@
       "camera": 12.0,
       "connector": "Lightning",
       "refresh": 120,
-      "pencil": "第 1 代"
+      "pencil": "第 1 代",
+      "year": 2017
     }
   },
   {
@@ -1480,7 +1487,8 @@
       "camera": 12.0,
       "connector": "Lightning",
       "refresh": 120,
-      "pencil": "第 1 代"
+      "pencil": "第 1 代",
+      "year": 2017
     }
   },
   {
@@ -1499,7 +1507,8 @@
       "storage": 256,
       "camera": 12.0,
       "connector": "Lightning",
-      "pencil": "第 1 代"
+      "pencil": "第 1 代",
+      "year": 2016
     }
   },
   {
@@ -1518,7 +1527,8 @@
       "storage": 256,
       "camera": 8.0,
       "connector": "Lightning",
-      "pencil": "第 1 代"
+      "pencil": "第 1 代",
+      "year": 2015
     }
   },
   {
@@ -1694,7 +1704,8 @@
       "storage": 256,
       "camera": 12.0,
       "connector": "USB-C",
-      "pencil": "第 2 代 + USB-C"
+      "pencil": "第 2 代 + USB-C",
+      "year": 2020
     }
   },
   {
@@ -1713,7 +1724,8 @@
       "storage": 256,
       "camera": 8.0,
       "connector": "Lightning",
-      "pencil": "第 1 代"
+      "pencil": "第 1 代",
+      "year": 2019
     }
   },
   {
@@ -1730,7 +1742,8 @@
       "bluetooth": "4.2",
       "biometric": "Touch ID",
       "storage": 128,
-      "connector": "Lightning"
+      "connector": "Lightning",
+      "year": 2014
     }
   },
   {
@@ -1747,7 +1760,8 @@
       "bluetooth": "4.0",
       "biometric": "无内置生物识别",
       "storage": 128,
-      "connector": "Lightning"
+      "connector": "Lightning",
+      "year": 2013
     }
   },
   {
@@ -1788,7 +1802,8 @@
       "camera": 12.0,
       "connector": "USB-C",
       "pencil": "第 2 代 + USB-C",
-      "gpu": 5
+      "gpu": 5,
+      "year": 2021
     }
   },
   {
@@ -1807,7 +1822,8 @@
       "storage": 256,
       "camera": 8.0,
       "connector": "Lightning",
-      "pencil": "第 1 代"
+      "pencil": "第 1 代",
+      "year": 2019
     }
   },
   {
@@ -1825,7 +1841,8 @@
       "biometric": "Touch ID",
       "storage": 128,
       "camera": 8.0,
-      "connector": "Lightning"
+      "connector": "Lightning",
+      "year": 2015
     }
   },
   {
@@ -1842,7 +1859,8 @@
       "bluetooth": "4.0",
       "biometric": "Touch ID",
       "storage": 128,
-      "connector": "Lightning"
+      "connector": "Lightning",
+      "year": 2014
     }
   },
   {
@@ -1859,7 +1877,8 @@
       "bluetooth": "4.0",
       "biometric": "无内置生物识别",
       "storage": 128,
-      "connector": "Lightning"
+      "connector": "Lightning",
+      "year": 2013
     }
   },
   {
@@ -1874,7 +1893,8 @@
       "display": "LCD",
       "bluetooth": "4.0",
       "biometric": "无内置生物识别",
-      "connector": "Lightning"
+      "connector": "Lightning",
+      "year": 2012
     }
   },
   {
@@ -1914,7 +1934,8 @@
       "storage": 256,
       "camera": 12.0,
       "connector": "USB-C",
-      "pencil": "第 1 代 + USB-C"
+      "pencil": "第 1 代 + USB-C",
+      "year": 2022
     }
   },
   {
@@ -1934,7 +1955,8 @@
       "storage": 256,
       "camera": 8.0,
       "connector": "Lightning",
-      "pencil": "第 1 代"
+      "pencil": "第 1 代",
+      "year": 2021
     }
   },
   {
@@ -1953,7 +1975,8 @@
       "storage": 128,
       "camera": 8.0,
       "connector": "Lightning",
-      "pencil": "第 1 代"
+      "pencil": "第 1 代",
+      "year": 2020
     }
   },
   {
@@ -1971,7 +1994,8 @@
       "storage": 128,
       "camera": 8.0,
       "connector": "Lightning",
-      "pencil": "第 1 代"
+      "pencil": "第 1 代",
+      "year": 2019
     }
   },
   {
@@ -1990,7 +2014,8 @@
       "storage": 128,
       "camera": 8.0,
       "connector": "Lightning",
-      "pencil": "第 1 代"
+      "pencil": "第 1 代",
+      "year": 2018
     }
   },
   {
@@ -2008,7 +2033,8 @@
       "biometric": "Touch ID",
       "storage": 128,
       "camera": 8.0,
-      "connector": "Lightning"
+      "connector": "Lightning",
+      "year": 2017
     }
   },
   {
@@ -2023,7 +2049,8 @@
       "display": "LCD",
       "bluetooth": "4.0",
       "biometric": "无内置生物识别",
-      "connector": "Lightning"
+      "connector": "Lightning",
+      "year": 2012
     }
   },
   {
@@ -2038,7 +2065,8 @@
       "display": "LCD",
       "bluetooth": "4.0",
       "biometric": "无内置生物识别",
-      "connector": "30 针 Dock"
+      "connector": "30 针 Dock",
+      "year": 2012
     }
   },
   {
@@ -2053,7 +2081,8 @@
       "display": "LCD",
       "bluetooth": "2.1",
       "biometric": "无内置生物识别",
-      "connector": "30 针 Dock"
+      "connector": "30 针 Dock",
+      "year": 2011
     }
   },
   {
@@ -2069,7 +2098,8 @@
       "bluetooth": "2.1",
       "biometric": "无内置生物识别",
       "storage": 64,
-      "connector": "30 针 Dock"
+      "connector": "30 针 Dock",
+      "year": 2010
     }
   },
   {
@@ -2238,7 +2268,8 @@
       "wifi": "6E",
       "biometric": "Touch ID",
       "refresh": 120,
-      "display": "Mini-LED 背光 LCD"
+      "display": "Mini-LED 背光 LCD",
+      "year": 2023
     }
   },
   {
@@ -2543,7 +2574,8 @@
       "display": "LCD",
       "chip": "M1",
       "bluetooth": "5.0",
-      "wifi": "6"
+      "wifi": "6",
+      "year": 2021
     }
   },
   {
