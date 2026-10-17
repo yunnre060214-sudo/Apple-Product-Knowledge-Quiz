@@ -1,7 +1,8 @@
-import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=2.2.1';
-import {icon,scene} from './icons.mjs?v=2.2.1';
-import {replayHello} from './hello.mjs?v=2.2.1';
-import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=2.2.1';
+import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=2.2.2';
+import {icon,scene} from './icons.mjs?v=2.2.2';
+import {replayHello} from './hello.mjs?v=2.2.2';
+import {createThemeSwitcher} from './theme.mjs?v=2.2.2';
+import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=2.2.2';
 const $=s=>document.querySelector(s), main=$('#main'), modal=$('#modal');
 const KEY='apple-quiz:v1:';
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -139,7 +140,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.topic){start(quickConfig(b.dataset.topic));return;}
   if(b.dataset.count){config.count=Number(b.dataset.count);$('#count-input').value=b.dataset.count;document.querySelectorAll('[data-count]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b));});updatePool();return;}
   if(b.dataset.jump!==undefined){modal.close();moveQuestion(Number(b.dataset.jump));return;}
-  const actions={home,'replay-hello':()=>{modal.close();replayHello();},quick:()=>start(quickConfig()),custom,resume,about,close:()=>{modal.close();},theme:()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';write('theme',theme);applyTheme(theme);},next:nextQuestion,previous:()=>moveQuestion(session.index-1),confirm:confirmAnswer,explain,map,'end-round':requestFinish,finish:()=>finish(),results,review,'share-card':showShare,download:()=>shareBlob&&downloadBlob(shareBlob,`apple-trivia-${report.score}.png`),'native-share':nativeShare,copy,flag:()=>{const id=questions[session.index].id;session.flags=session.flags.includes(id)?session.flags.filter(x=>x!==id):[...session.flags,id];save();b.setAttribute('aria-pressed',String(session.flags.includes(id)));b.setAttribute('aria-label',session.flags.includes(id)?'取消标记':'标记题目');},reload:()=>location.reload()};actions[b.dataset.action]?.();
+  const actions={home,'replay-hello':()=>{modal.close();replayHello();},quick:()=>start(quickConfig()),custom,resume,about,close:()=>{modal.close();},theme:()=>{void switchTheme(b);},next:nextQuestion,previous:()=>moveQuestion(session.index-1),confirm:confirmAnswer,explain,map,'end-round':requestFinish,finish:()=>finish(),results,review,'share-card':showShare,download:()=>shareBlob&&downloadBlob(shareBlob,`apple-trivia-${report.score}.png`),'native-share':nativeShare,copy,flag:()=>{const id=questions[session.index].id;session.flags=session.flags.includes(id)?session.flags.filter(x=>x!==id):[...session.flags,id];save();b.setAttribute('aria-pressed',String(session.flags.includes(id)));b.setAttribute('aria-label',session.flags.includes(id)?'取消标记':'标记题目');},reload:()=>location.reload()};actions[b.dataset.action]?.();
 });
 document.addEventListener('submit',e=>{if(e.target.id!=='custom-form')return;e.preventDefault();const next=formConfig();if(!Number.isInteger(next.count)||next.count<5||next.count>500||!next.categories.length)return;config=next;write('config',config);start(config);});
 document.addEventListener('change',e=>{if(e.target.closest('#custom-form')){if(e.target.id==='mode-select')$('.timer-setting').hidden=e.target.value!=='exam';updatePool();}if(e.target.id==='auto-toggle'){write('auto',e.target.checked);paused=false;scheduleNext();}});
@@ -156,6 +157,7 @@ function applyTheme(theme){
   const toggle=$('#theme-toggle');toggle.innerHTML=icon(dark?'sun':'moon');
   toggle.setAttribute('aria-label',dark?'使用浅色外观':'使用深色外观');
 }
+const switchTheme=createThemeSwitcher({document,window,applyTheme,saveTheme:theme=>write('theme',theme),reducedMotion:reduced});
 function preferredTheme(){const saved=read('theme',null);return ['dark','light'].includes(saved)?saved:systemTheme.matches?'dark':'light';}
 applyTheme(preferredTheme());
 systemTheme.addEventListener('change',()=>applyTheme(preferredTheme()));

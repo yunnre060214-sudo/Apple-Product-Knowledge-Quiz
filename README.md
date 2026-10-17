@@ -2,13 +2,13 @@
 
 一个轻松的中文 Apple 冷知识小游戏。点「随机来 5 题」直接开玩，猜完领个趣味称号，生成战绩图片，邀请朋友「不服来战」。
 
-[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=2.2.1) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
+[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=2.2.2) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
 
-当前版本 **2.2.1**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
+当前版本 **2.2.2**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
 
 ## 界面
 
-亮色以中性灰白为底，紫色用于主按钮、蓝紫色用于进度，称号渐变随成绩变化。深色采用带蓝调的深灰，卡片通过描边区分层次；首次访问跟随系统外观，手动选择会保存，手机 `theme-color` 同步更新。支持 OKLCH 色阶、流体字号、等宽数字和减少动态效果。
+亮色以中性灰白为底，紫色用于主按钮、蓝紫色用于进度，称号渐变随成绩变化。深色采用带蓝调的深灰，卡片通过描边区分层次；首次访问跟随系统外观，手动选择会保存，手机 `theme-color` 同步更新。点击外观按钮时，新外观以按钮中心为圆心，在约 650ms 内扩散至全屏；连续点击会合并到当前过渡，减少动态效果或不支持 View Transitions 时直接切换。支持 OKLCH 色阶、流体字号、等宽数字和减少动态效果。
 
 选项保留至少 64px 高度，以底色、描边和图标同时显示已选、正确及错误状态。常用按钮和链接至少保留 44px 触控高度，解析使用独立底色区块。结算页和分享图片共用满分、普通及低分三套渐变，称号为视觉中心，分享图片保留约 8% 安全边距。
 
@@ -53,6 +53,7 @@
 - `src/bank.mjs`：构建完整题库。
 - `src/engine.mjs`：抽题、近期记录、恢复进度、结算和彩蛋规则。
 - `assets/app.mjs`：界面与玩法，选答案时局部更新按钮和进度，切题时只替换题目区域。
+- `assets/theme.mjs`：明暗外观的圆形扩散过渡与兼容处理。
 - `assets/hello.mjs`、`assets/hello.css`：每次进入必播的开场控制与关键样式，在构建时内联。手写路径改编自 [Chánh Đại Apple Hello Effect](https://github.com/ncdai/chanhdai.com/blob/main/src/registry/components/apple-hello-effect/apple-hello-effect-english.tsx)，MIT 许可保留于 `assets/hello-LICENSE.txt`。
 - `assets/icons.mjs`、`assets/share.mjs`：统一 SVG 图标、首页设备插画和 PNG 分享卡。品牌标识基于 Apple 官网的咬口苹果矢量轮廓，配以柔和渐变；不使用四角星。
 

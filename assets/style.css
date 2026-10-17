@@ -83,6 +83,17 @@ main { max-width:1160px; padding:0 var(--gutter); margin:auto; min-height:calc(1
 .gradient-text { background:linear-gradient(110deg,#5b50bf,#8c51a0 65%,#a94d5d); -webkit-background-clip:text; background-clip:text; color:transparent; }
 [data-theme=dark] .gradient-text { background-image:linear-gradient(110deg,#b1adff,#d4a4e9 65%,#ffb6ab); }
 
+/* Keep both snapshots opaque; only the new appearance expands from the button. */
+:root.theme-revealing::view-transition-group(root) { animation:none; }
+:root.theme-revealing::view-transition-old(root),
+:root.theme-revealing::view-transition-new(root) { mix-blend-mode:normal; }
+:root.theme-revealing::view-transition-old(root) { animation:none; z-index:1; }
+:root.theme-revealing::view-transition-new(root) { animation:theme-reveal .65s cubic-bezier(.2,.8,.2,1) both; z-index:2; }
+@keyframes theme-reveal {
+  from { clip-path:circle(0px at var(--theme-reveal-x) var(--theme-reveal-y)); }
+  to { clip-path:circle(var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y)); }
+}
+
 /* Home: one primary action, with neutral secondary cards. */
 .hero { display:grid; grid-template-columns:1.1fr 1fr; align-items:center; min-height:520px; padding:32px 0 40px; gap:16px; }
 .hero h1 { font-size:clamp(48px,5.4vw,72px); font-weight:700; line-height:1.18; letter-spacing:-.055em; }
