@@ -44,7 +44,6 @@ button { color:inherit; cursor:pointer; border:0; background:none; }
 a { color:inherit; text-decoration:none; }
 button:disabled { cursor:default; opacity:.45; }
 button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible,select:focus-visible,textarea:focus-visible { outline:2px solid var(--accent); outline-offset:5px; }
-button:active:not(:disabled) { transform:scale(.98); transition-duration:100ms; }
 svg { flex-shrink:0; }
 img { display:block; max-width:100%; }
 .icon { width:21px; height:21px; vertical-align:middle; }
@@ -61,7 +60,6 @@ main { width:100%; max-width:1240px; padding:0 var(--gutter); margin:0 auto; fle
 .brand b { font-weight:650; }
 .brand-symbol { width:30px; height:34px; margin-right:7px; }
 .brand-symbol img { width:30px; height:34px; transition:transform 240ms var(--ease); }
-.brand:hover .brand-symbol img { transform:rotate(-6deg); }
 .header-actions { display:flex; align-items:center; gap:20px; }
 .header-actions .text-button { color:var(--ink); }
 .icon-button { width:44px; height:44px; border:1px solid var(--line); border-radius:50%; display:inline-grid; place-items:center; transition:background 160ms,transform 220ms var(--ease); }
@@ -71,12 +69,10 @@ main { width:100%; max-width:1240px; padding:0 var(--gutter); margin:0 auto; fle
 .text-button .icon { width:16px; height:16px; }
 .primary-button,.secondary-button { min-height:54px; padding:0 23px; border:1px solid transparent; border-radius:var(--radius-button); display:inline-flex; align-items:center; justify-content:center; gap:10px; font-size:16px; font-weight:550; transition:background 180ms,transform 220ms var(--ease),border-color 180ms; }
 .primary-button { background:var(--button); color:var(--button-ink); }
-.primary-button:hover:not(:disabled) { transform:translateY(-2px); }
 .primary-button>.icon:last-child { transition:transform 220ms var(--ease); }
 .primary-button:hover>.icon:last-child { transform:translateX(3px); }
 .secondary-button { background:transparent; border-color:var(--line); }
 .secondary-button:hover:not(:disabled) { background:var(--soft); border-color:var(--muted); }
-.primary-button:active:not(:disabled),.secondary-button:active:not(:disabled) { transform:scale(.98); transition-duration:100ms; }
 .full-width { width:100%; }
 .muted { color:var(--muted); font-size:var(--text-label); line-height:1.65; }
 .site-footer { width:100%; max-width:1240px; padding:28px var(--gutter); margin:auto auto 0; display:flex; align-items:center; justify-content:space-between; gap:16px; color:var(--muted); font-size:var(--text-small); }
@@ -106,7 +102,6 @@ main { width:100%; max-width:1240px; padding:0 var(--gutter); margin:0 auto; fle
 .hero-start>.icon { width:19px; height:19px; }
 .button-disc { display:grid; place-items:center; width:38px; height:38px; margin-left:4px; border:1px solid currentColor; border-color:color-mix(in srgb,currentColor 30%,transparent); border-radius:50%; transition:transform 240ms var(--ease); }
 .button-disc .icon { width:19px; height:19px; }
-.hero-start:hover .button-disc { transform:rotate(-35deg); }
 .custom-link { display:flex; align-items:center; gap:8px; min-height:44px; padding:10px 0; color:var(--muted); font-size:14px; white-space:nowrap; transition:color 150ms; }
 .custom-link:hover { color:var(--ink); }
 .custom-link .icon { width:16px; height:16px; }
@@ -149,8 +144,6 @@ main { width:100%; max-width:1240px; padding:0 var(--gutter); margin:0 auto; fle
 .topic-symbol { display:grid; place-items:center; width:28px; height:28px; color:var(--muted); transition:color 200ms,transform 300ms var(--ease); }
 .topic-symbol .icon { width:24px; height:24px; }
 .topic-arrow { margin-left:auto; width:18px; height:18px; color:var(--muted); transition:transform 250ms var(--ease),color 150ms; }
-.topic-link:hover .topic-arrow { transform:translate(3px,-3px) rotate(-35deg); color:var(--ink); }
-.topic-link:hover .topic-symbol { color:var(--ink); transform:rotate(-8deg); }
 .topic-link:active { transform:none!important; background:var(--soft); }
 .hello-pending .hero-copy,.hello-pending .archive,.hello-pending .topic-section { animation-play-state:paused; }
 .hello-pending:has(.hello-leaving) .hero-copy,.hello-pending:has(.hello-leaving) .archive,.hello-pending:has(.hello-leaving) .topic-section { animation-play-state:running; }
@@ -203,7 +196,6 @@ main { width:100%; max-width:1240px; padding:0 var(--gutter); margin:0 auto; fle
 .feedback .text-button .icon { width:14px; height:14px; }
 .quick-next { display:flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:10px 0 10px 8px; font-size:14px; font-weight:550; color:var(--ink); white-space:nowrap; }
 .quick-next .icon { width:17px; height:17px; transition:transform 180ms var(--ease); }
-.quick-next:hover .icon { transform:translateX(3px); }
 .quick-controls { position:relative; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; min-height:60px; padding-top:5px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
 .quick-controls:after { content:""; position:absolute; left:0; top:-1px; height:2px; width:100%; background:var(--spectrum); transform:scaleX(0); transform-origin:left; }
 .quick-controls.counting:after { animation:auto-progress 1650ms linear both; }
@@ -323,7 +315,7 @@ legend .muted { font-weight:400; }
 @keyframes fade { from { opacity:0; } to { opacity:1; } }
 @keyframes dialog-in { from { opacity:0; transform:translateY(10px) scale(.99); } to { opacity:1; transform:translateY(0) scale(1); } }
 @media (hover:hover) and (pointer:fine) {
-  .answer:hover:not(:disabled) { border-color:var(--muted); transform:translateX(2px); }
+  .answer:hover:not(:disabled) { border-color:var(--muted); }
 }
 @media (max-width:1000px) and (min-width:761px) {
   .hero { gap:8px; min-height:460px; }
