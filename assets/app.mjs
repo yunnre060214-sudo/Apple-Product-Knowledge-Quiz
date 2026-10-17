@@ -1,9 +1,9 @@
-import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=3.0.1';
-import {icon} from './icons.mjs?v=3.0.1';
-import {archiveMarkup,mountArchive} from './gallery.mjs?v=3.0.1';
-import {replayHello} from './hello.mjs?v=3.0.1';
-import {createThemeSwitcher} from './theme.mjs?v=3.0.1';
-import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=3.0.1';
+import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=3.0.2';
+import {icon} from './icons.mjs?v=3.0.2';
+import {archiveMarkup,mountArchive} from './gallery.mjs?v=3.0.2';
+import {replayHello} from './hello.mjs?v=3.0.2';
+import {createThemeSwitcher,setBrowserTheme} from './theme.mjs?v=3.0.2';
+import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=3.0.2';
 const $=s=>document.querySelector(s), main=$('#main'), modal=$('#modal');
 const KEY='apple-quiz:v1:';
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -153,11 +153,11 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAuto(
 modal.addEventListener('close',()=>{if(view==='quiz'&&session?.config.mode==='quick'&&$('#auto-label'))$('#auto-label').textContent='手动切题';});
 window.addEventListener('pagehide',()=>{save();cancelAuto();});
 const systemTheme=matchMedia('(prefers-color-scheme: dark)');
-function syncBrowserTheme(theme){$('meta[name="theme-color"]').content=theme==='dark'?'#101216':'#f5f4f0';}
+function syncBrowserTheme(theme){setBrowserTheme(document,theme);}
 function applyTheme(theme,{syncChrome=true}={}){
   const dark=theme==='dark';
   document.documentElement.dataset.theme=dark?'dark':'light';
-  if(syncChrome)syncBrowserTheme(theme);
+  if(syncChrome&&!document.documentElement.classList.contains('theme-revealing'))syncBrowserTheme(theme);
   const toggle=$('#theme-toggle');toggle.innerHTML=icon(dark?'sun':'moon');
   toggle.setAttribute('aria-label',dark?'使用浅色外观':'使用深色外观');
 }

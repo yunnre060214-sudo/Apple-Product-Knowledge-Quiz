@@ -1,6 +1,7 @@
 /* Apple Trivia · Archive. Type, rules and the objects carry the identity. */
 :root {
   color-scheme:light;
+  --browser-bg:#f5f4f0; --page-scheme:light;
   --bg:#f5f4f0; --surface:#fdfcf9; --ink:#222622; --muted:#656b65;
   --line:#d9dcd3; --soft:#eaece5; --ghost:#d9ddd2;
   --accent:#245abe; --accent-hover:#16499f; --accent-soft:#e8edf8;
@@ -18,7 +19,7 @@
   font-synthesis:none; text-rendering:optimizeLegibility;
 }
 [data-theme=dark] {
-  color-scheme:dark;
+  --page-scheme:dark;
   --bg:#101216; --surface:#191d22; --ink:#efefe8; --muted:#a4ada6;
   --line:#363d3b; --soft:#242b2a; --ghost:#303832;
   --accent:#a2c4fa; --accent-hover:#c1d8ff; --accent-soft:#222f42;
@@ -27,13 +28,16 @@
   --red:#efb0a1; --red-soft:#342522; --red-line:#84584c;
   --shadow:0 2px 5px #0002,0 12px 28px #0002;
 }
+/* This state commits only after the page reveal finishes. Safari may sample
+   html/body for the area behind its toolbars instead of the transition layer. */
+:root[data-browser-theme=dark] { color-scheme:dark; --browser-bg:#101216; }
 @supports (color:oklch(50% .1 260)) {
   :root { --accent:oklch(48% .16 261); --accent-hover:oklch(41% .15 261); }
   [data-theme=dark] { --accent:oklch(81% .085 259); --accent-hover:oklch(88% .055 259); }
 }
 * { box-sizing:border-box; }
-html { min-height:100svh; min-height:100dvh; background:var(--bg); scrollbar-gutter:stable; }
-body { margin:0; min-width:280px; min-height:100svh; min-height:100dvh; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+html { min-height:100svh; min-height:100dvh; background:var(--browser-bg); scrollbar-gutter:stable; }
+body { margin:0; min-width:280px; min-height:100svh; min-height:100dvh; background:var(--browser-bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
 button,input,select,textarea { font:inherit; }
 button,a,input,select,summary { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 button { color:inherit; cursor:pointer; border:0; background:none; }
@@ -50,7 +54,7 @@ b,strong { font-weight:600; }
 [hidden] { display:none!important; }
 main:focus,h1:focus { outline:none; }
 .sr-only { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
-#site-content { display:flex; flex-direction:column; min-height:100svh; min-height:100dvh; }
+#site-content { display:flex; flex-direction:column; min-height:100svh; min-height:100dvh; background:var(--bg); color-scheme:var(--page-scheme); }
 main { width:100%; max-width:1240px; padding:0 var(--gutter); margin:0 auto; flex:1; }
 .site-header { width:100%; max-width:1240px; min-height:96px; padding:16px var(--gutter); margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; }
 .brand { display:flex; align-items:center; gap:5px; min-height:44px; font-size:19px; font-weight:450; letter-spacing:-.65px; }

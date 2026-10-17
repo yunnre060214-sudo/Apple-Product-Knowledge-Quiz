@@ -21,6 +21,17 @@ test('gallery includes nine chronological, locally drawn product studies', async
   assert.match(html, /aria-live="polite"/);
 });
 
+test('MacBook Air study keeps a 16:10 screen and individually drawn keyboard', async () => {
+  const svg = await readFile(new URL('../assets/macbook-air.svg', import.meta.url), 'utf8');
+  const display = svg.match(/<rect id="macbook-display"[^>]+width="([\d.]+)" height="([\d.]+)"/);
+  assert.ok(display);
+  assert.ok(Math.abs(Number(display[1]) / Number(display[2]) - 1.6) < .01);
+  const keyboard = svg.match(/<g id="keyboard"[^>]+>([\s\S]+?)<\/g>/);
+  assert.ok(keyboard);
+  assert.ok((keyboard[1].match(/<path /g) || []).length >= 60);
+  assert.doesNotMatch(keyboard[1], /<pattern/);
+});
+
 function fixture() {
   const listeners = new Map(), scrolls = [], caption = {}, focus = [];
   const buttons = devices.map((d, index) => ({
