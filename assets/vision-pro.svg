@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 440" fill="none">
+  <defs>
+    <linearGradient id="band" x1="152" y1="94" x2="330" y2="269" gradientUnits="userSpaceOnUse"><stop stop-color="#e7e7df"/><stop offset=".5" stop-color="#bfc5bd"/><stop offset="1" stop-color="#949e93"/></linearGradient>
+    <linearGradient id="seal" x1="117" y1="154" x2="341" y2="302" gradientUnits="userSpaceOnUse"><stop stop-color="#a0aaa1"/><stop offset=".45" stop-color="#717c72"/><stop offset="1" stop-color="#3e4c40"/></linearGradient>
+    <linearGradient id="frame" x1="84" y1="173" x2="375" y2="293" gradientUnits="userSpaceOnUse"><stop stop-color="#f0f2e9"/><stop offset=".18" stop-color="#b8c3b7"/><stop offset=".5" stop-color="#e3e8dd"/><stop offset=".8" stop-color="#77887a"/><stop offset="1" stop-color="#d6dfd1"/></linearGradient>
+    <linearGradient id="glass" x1="133" y1="173" x2="316" y2="299" gradientUnits="userSpaceOnUse"><stop stop-color="#303d44"/><stop offset=".35" stop-color="#202933"/><stop offset=".65" stop-color="#111f26"/><stop offset="1" stop-color="#34474a"/></linearGradient>
+    <linearGradient id="reflection" x1="166" y1="183" x2="241" y2="271" gradientUnits="userSpaceOnUse"><stop stop-color="#d3dfe0" stop-opacity=".43"/><stop offset=".55" stop-color="#779999" stop-opacity=".1"/><stop offset="1" stop-color="#779999" stop-opacity="0"/></linearGradient>
+    <radialGradient id="shadow"><stop stop-color="#24372a" stop-opacity=".2"/><stop offset="1" stop-color="#24372a" stop-opacity="0"/></radialGradient>
+    <pattern id="knit" width="5" height="5" patternUnits="userSpaceOnUse"><path d="m0 0 2.5 2.5L5 0M0 5l2.5-2.5L5 5" stroke="#f3f3e8" stroke-opacity=".45" stroke-width=".8"/></pattern>
+    <clipPath id="strap"><path d="M133 195c-12-34-11-65 11-86 28-28 85-33 143-12 55 20 85 60 70 107l-22 11c10-39-14-73-58-89-47-17-91-14-111 5-15 14-17 37-8 62l-25 2Z"/></clipPath>
+  </defs>
+  <ellipse cx="244" cy="364" rx="176" ry="22" fill="url(#shadow)"/>
+  <path d="M133 195c-12-34-11-65 11-86 28-28 85-33 143-12 55 20 85 60 70 107l-22 11c10-39-14-73-58-89-47-17-91-14-111 5-15 14-17 37-8 62l-25 2Z" fill="url(#band)" stroke="#adb7ab" stroke-width="1.2"/>
+  <g clip-path="url(#strap)"><path d="M120 85h259v140H120z" fill="url(#knit)"/><path d="M133 175c-5-27 0-48 17-63 26-23 77-27 134-7 48 17 79 52 68 89" stroke="#f7f8ec" stroke-width="1.5" opacity=".6"/></g>
+  <path d="M130 174c51-20 157-26 209 7 20 13 30 38 22 71-5 22-22 41-41 49-22 8-41 1-58-11-13-10-23-9-36-1-23 16-47 18-72 6-37-18-52-50-49-76 1-20 9-36 25-45Z" fill="url(#seal)" stroke="#718475"/>
+  <path d="M112 187c-11 10-17 23-15 40 2 23 16 44 39 58m217-93c13 18 16 46 3 68" stroke="#d6ded0" stroke-opacity=".5" stroke-width="5"/>
+  <path d="M116 183c56-24 163-23 222 3 24 11 35 33 29 60-7 31-29 58-52 63-28 6-43-17-66-19-21-1-42 23-66 19-31-4-70-27-86-56-15-28-9-57 19-70Z" fill="url(#frame)" stroke="#a7b8a8" stroke-width="1.4"/>
+  <path d="M118 190c56-23 159-23 216 3 20 9 29 28 24 51-7 27-25 51-46 56-24 5-42-17-62-18-24-1-43 22-66 18-29-5-64-25-79-52-13-24-8-46 13-58Z" fill="url(#glass)" stroke="#3f5650" stroke-width="1.2"/>
+  <path d="M119 193c50-20 134-21 188-4-17 4-24 14-35 29-22 30-61 46-122 45-17-3-31-8-43-18-10-21-6-40 12-52Z" fill="url(#reflection)"/>
+  <path d="M119 193c57-22 156-22 212 3" stroke="#deebe0" stroke-opacity=".55" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M111 253c15 24 47 40 74 44 23 4 44-20 65-18 23 1 40 23 61 18 20-5 37-27 44-50" stroke="#779e9a" stroke-opacity=".5" stroke-width="1.2"/>
+  <g fill="#0c171b" stroke="#5f7b73" stroke-width=".8"><ellipse cx="129" cy="251" rx="5" ry="7" transform="rotate(-27 129 251)"/><circle cx="167" cy="280" r="4"/><circle cx="308" cy="277" r="4"/><ellipse cx="340" cy="243" rx="4" ry="6" transform="rotate(17 340 243)"/></g>
+  <path d="m326 177 13 4 1 7-15-5 1-6Z" fill="#cfdbcb" stroke="#829783"/><path d="m328 178 10 3" stroke="#f3f5e7"/>
+  <path d="M101 222c-11 0-17 7-17 21v47c0 22-8 36-25 44" stroke="#98aa99" stroke-width="5" stroke-linecap="round"/>
+  <path d="M101 222c-11 0-17 7-17 21v47c0 22-8 36-25 44" stroke="#e9eddf" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

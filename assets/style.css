@@ -116,8 +116,15 @@ main { width:100%; max-width:1240px; padding:0 var(--gutter); margin:0 auto; fle
 .archive-year { position:absolute; top:0; right:0; font-size:clamp(90px,10vw,136px); line-height:1; font-weight:500; letter-spacing:-.07em; color:var(--ghost); z-index:-1; user-select:none; }
 .archive-object { position:absolute; inset:0; transform:rotateX(var(--art-x,0deg)) rotateY(var(--art-y,0deg)); transform-style:preserve-3d; }
 .archive-object img { width:100%; height:100%; object-fit:contain; user-select:none; }
-.archive-select { display:flex; justify-content:center; gap:16px; padding-top:3px; }
-.archive-select button { position:relative; min-height:48px; padding:9px 7px 16px; font-size:13px; color:var(--muted); transition:color 140ms,transform 180ms var(--ease); }
+.archive-controls { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:center; gap:4px; padding-top:3px; }
+.archive-arrow { display:grid; place-items:center; width:44px; min-height:48px; color:var(--muted); transition:color 140ms; }
+.archive-arrow:hover { color:var(--ink); }
+.archive-arrow svg { width:20px; height:20px; }
+.archive-arrow[data-archive-step="-1"] svg { transform:rotate(180deg); }
+.archive-select { position:relative; display:flex; min-width:0; gap:16px; overflow-x:auto; overscroll-behavior-x:contain; scrollbar-width:none; scroll-padding-inline:6px; }
+.archive-select::-webkit-scrollbar { display:none; }
+.archive-select button { position:relative; flex-shrink:0; min-height:48px; padding:9px 7px 16px; font-size:13px; color:var(--muted); white-space:nowrap; transition:color 140ms,transform 180ms var(--ease); }
+.archive-select button:focus-visible { outline-offset:-2px; }
 .archive-select button:hover,.archive-select button[aria-pressed=true] { color:var(--ink); }
 .archive-select button i { position:absolute; left:50%; bottom:7px; width:20px; height:3px; background:var(--spectrum); border-radius:1px; opacity:0; transform:translateX(-50%) scaleX(.4); transition:opacity 180ms,transform 280ms var(--ease); }
 .archive-select button[aria-pressed=true] i { opacity:1; transform:translateX(-50%) scaleX(1); }
@@ -256,8 +263,8 @@ main { width:100%; max-width:1240px; padding:0 var(--gutter); margin:0 auto; fle
 .review-answer { margin-bottom:16px; }
 .review-answer span { display:block; margin-top:4px; color:var(--muted); font-size:14px; }
 
-/* Dialogs. Native focus, escape and form semantics are retained. */
-dialog { width:min(620px,calc(100vw - 40px)); max-height:88svh; padding:32px; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:20px; box-shadow:0 8px 24px #00000014,0 30px 100px #00000026; overscroll-behavior:contain; }
+/* Reset the native modal width cap so mobile sheets can reach both edges. */
+dialog { position:fixed; inset:0; width:min(620px,calc(100% - 40px)); max-width:none; max-height:88svh; margin:auto; padding:32px; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:20px; box-shadow:0 8px 24px #00000014,0 30px 100px #00000026; overscroll-behavior:contain; }
 dialog[open] { animation:dialog-in 250ms var(--ease); }
 dialog::backdrop { background:#11161466; backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); animation:fade 180ms; }
 .modal-close { position:absolute; right:12px; top:12px; border:0; color:var(--muted); }
@@ -346,7 +353,8 @@ legend .muted { font-weight:400; }
   .archive-stage { height:274px; }
   .archive-year { font-size:94px; right:12px; top:4px; }
   .archive-stage:after { bottom:16px; left:10%; right:7%; }
-  .archive-select { gap:18px; padding-top:0; }
+  .archive-controls { padding-top:0; }
+  .archive-select { gap:12px; }
   .archive-select button { font-size:12px; }
   .topic-section { margin-bottom:0; }
   .section-label { min-height:52px; }
@@ -389,7 +397,7 @@ legend .muted { font-weight:400; }
   .review-shell h1 { font-size:28px; }
   .review-item summary { gap:12px; }
   .review-body { padding:0 0 24px 40px; }
-  dialog { width:100%; max-height:91svh; margin:auto 0 0; padding:28px max(24px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left)); border-radius:22px 22px 0 0; border-bottom:0; }
+  dialog { inset:auto 0 0; width:100%; max-height:91svh; margin:0 auto; padding:28px max(24px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left)); border-radius:22px 22px 0 0; border-bottom:0; }
   dialog h2 { font-size:25px; }
   dialog[open] { animation:sheet-in 280ms var(--ease); }
   .map-grid { grid-template-columns:repeat(6,minmax(44px,1fr)); }
