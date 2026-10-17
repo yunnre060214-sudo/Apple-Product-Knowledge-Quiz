@@ -1,3 +1,4 @@
+import {APPLE_PATH} from './brand.mjs?v=2.0.4';
 export const SITE_URL = 'https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/';
 export function shareText(report, title) {
   return `Apple 冷知识 · ${report.correct}/${report.total} 题 · ${report.score} 分\n「${title}」\n不服来战！\n${SITE_URL}`;
@@ -12,7 +13,9 @@ export async function createShareCard(report, title, line) {
   c.fillStyle='#ffffffd9';c.beginPath();c.roundRect(60,60,960,1320,48);c.fill();
   const font=(size,weight=500)=>{c.font=`${weight} ${size}px -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif`;};
   const center=(text,y,size,weight=500,color='#202137',max=850)=>{font(size,weight);while(c.measureText(text).width>max&&size>16)font(--size,weight);c.fillStyle=color;c.textAlign='center';c.fillText(text,540,y);};
-  center('Apple Trivia',160,38,750);center('来 点 苹 果 冷 知 识',212,22,500,'#72758b');
+  font(38,750);const brandText='Apple Trivia',brandWidth=c.measureText(brandText).width,brandLeft=(1080-brandWidth-52)/2;
+  c.save();c.translate(brandLeft-5,88);c.scale(2.2,2.2);const brandGradient=c.createLinearGradient(2,10,18,29);brandGradient.addColorStop(0,'#7b60d7');brandGradient.addColorStop(.5,'#a38add');brandGradient.addColorStop(1,'#e6a399');c.fillStyle=brandGradient;c.fill(new Path2D(APPLE_PATH));c.restore();
+  c.fillStyle='#202137';c.textAlign='left';c.fillText(brandText,brandLeft+52,160);center('来 点 苹 果 冷 知 识',212,22,500,'#72758b');
   c.strokeStyle='#e8e8f1';c.lineWidth=2;c.beginPath();c.moveTo(128,255);c.lineTo(952,255);c.stroke();
   center(String(report.score),560,244,800,'#6455da');center('分',615,30,600,'#858497');
   center(title,750,58,750);center(line,822,28,500,'#73758b');

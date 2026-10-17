@@ -2,9 +2,9 @@
 
 一个轻松的中文 Apple 冷知识小游戏。点「随机来 5 题」直接开玩，猜完领个趣味称号，生成战绩图片，邀请朋友「不服来战」。
 
-[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=2.0.3) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
+[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=2.0.4) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
 
-当前版本 **2.0.3**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
+当前版本 **2.0.4**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
 
 ## 玩法
 
@@ -45,7 +45,7 @@
 - `src/bank.mjs`：构建完整题库。
 - `src/engine.mjs`：抽题、近期记录、恢复进度、结算和彩蛋规则。
 - `assets/app.mjs`：界面与玩法，选答案时局部更新按钮和进度，切题时只替换题目区域。
-- `assets/icons.mjs`、`assets/share.mjs`：统一 SVG 图标、首页设备插画和 PNG 分享卡。
+- `assets/icons.mjs`、`assets/share.mjs`：统一 SVG 图标、首页设备插画和 PNG 分享卡。品牌标识基于 Apple 官网的咬口苹果矢量轮廓，配以柔和渐变；不使用四角星。
 
 题库在构建时生成，运行时不调用 AI 或第三方题库。分数为每题等权的百分制，未猜计错。引擎保留旧版计算字段以兼容已有逻辑，界面不再展示难度加权分或复杂领域统计。
 
