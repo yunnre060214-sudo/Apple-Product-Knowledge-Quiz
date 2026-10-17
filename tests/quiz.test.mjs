@@ -57,7 +57,7 @@ test('resume preserves chosen option order, answers, flags and total-paper deadl
   const qs=drawQuestions(bank,{...config,count:10},14);
   const s=createSession(qs,{...config,count:10,secondsPerQuestion:30},14,1000);
   s.answers[qs[0].id]=qs[0].answer;s.flags=[qs[1].id];s.index=4;
-  for (const version of ['1.0.0', '2.2.3', VERSION]) {
+  for (const version of ['1.0.0', '2.2.3', '3.0.0', VERSION]) {
     const restored=hydrateSession(JSON.parse(JSON.stringify({...s,version})),bank);
     assert.equal(restored.deadline,301000);assert.equal(restored.index,4);assert.deepEqual(restored.answers,s.answers);
     assert.deepEqual(restored.hydratedQuestions.map(q=>q.options),qs.map(q=>q.options));

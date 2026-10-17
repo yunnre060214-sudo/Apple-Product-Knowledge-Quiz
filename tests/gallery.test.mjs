@@ -1,0 +1,105 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { archiveMarkup, devices, mountArchive } from '../assets/gallery.mjs';
+
+test('gallery includes nine chronological, locally drawn product studies', async () => {
+  assert.equal(devices.length, 9);
+  assert.equal(new Set(devices.map(d => d.id)).size, 9);
+  assert.deepEqual(devices.map(d => Number(d.year)), [...devices.map(d => Number(d.year))].sort((a,b) => a-b));
+  for (const item of devices) {
+    const svg = await readFile(new URL(`../assets/${item.image}`, import.meta.url), 'utf8');
+    assert.match(svg, /viewBox="0 0 480 440"/);
+    assert.doesNotMatch(svg, /<script|<image|https?:\/\/(?!www\.w3\.org)/);
+  }
+  const html = archiveMarkup('test');
+  assert.equal((html.match(/data-device=/g) || []).length, 9);
+  assert.equal((html.match(/aria-pressed="true"/g) || []).length, 1);
+  assert.equal((html.match(/aria-hidden="true"><span class="archive-year"/g) || []).length, 9);
+  assert.match(html, /data-archive-step="-1" aria-label="上一款产品"/);
+  assert.match(html, /data-archive-step="1" aria-label="下一款产品"/);
+  assert.match(html, /aria-live="polite"/);
+});
+
+function fixture() {
+  const listeners = new Map(), scrolls = [], caption = {}, focus = [];
+  const buttons = devices.map((d, index) => ({
+    dataset:{device:d.id}, pressed:String(index === 0),
+    setAttribute(name,value) { if (name === 'aria-pressed') this.pressed = value; },
+    getBoundingClientRect() { return {left:54 + index * 92 - rail.scrollLeft, width:84}; },
+    closest(selector) { return selector === '[data-device]' ? this : null; },
+    focus(options) { focus.push({id:d.id, options}); },
+  }));
+  const layers = devices.map((d, index) => {
+    const layer = {dataset:{archiveLayer:d.id}, active:index === 0};
+    layer.classList = {toggle(name, value) { layer.active = value; }};
+    return layer;
+  });
+  const rail = {
+    scrollLeft:0, scrollWidth:824, clientWidth:220,
+    getBoundingClientRect:() => ({left:54, width:220}),
+    scrollTo(options) { scrolls.push(options); this.scrollLeft = options.left; },
+  };
+  const figure = {
+    isConnected:true,
+    querySelectorAll:selector => selector === '[data-device]' ? buttons : layers,
+    querySelector:selector => selector === '.archive-select' ? rail : caption,
+    addEventListener:(type, fn) => listeners.set(type, fn),
+    removeEventListener:(type, fn) => { if (listeners.get(type) === fn) listeners.delete(type); },
+  };
+  const click = target => listeners.get('click')({target});
+  const step = n => click({dataset:{archiveStep:String(n)}, closest:selector => selector === '[data-archive-step]' ? {dataset:{archiveStep:String(n)}} : null});
+  const key = (id, name, modifiers = {}) => {
+    let prevented = false;
+    listeners.get('keydown')({target:buttons.find(b => b.dataset.device === id), key:name, preventDefault:() => { prevented = true; }, ...modifiers});
+    return prevented;
+  };
+  return {figure, buttons, layers, rail, caption, focus, scrolls, listeners, click, step, key};
+}
+
+test('gallery arrows wrap, keys retain focus, and scrolling is confined to the product rail', () => {
+  const originalMatch = globalThis.matchMedia, originalCancel = globalThis.cancelAnimationFrame;
+  globalThis.matchMedia = () => ({matches:false});
+  globalThis.cancelAnimationFrame = () => {};
+  try {
+    const f = fixture();
+    const cleanup = mountArchive(f.figure, {reducedMotion:() => true});
+    const expect = id => {
+      assert.deepEqual(f.layers.filter(l => l.active).map(l => l.dataset.archiveLayer), [id]);
+      assert.deepEqual(f.buttons.filter(b => b.pressed === 'true').map(b => b.dataset.device), [id]);
+      const d = devices.find(item => item.id === id);
+      assert.equal(f.caption.textContent, `${d.name}，${d.year} 年`);
+    };
+    f.step(-1); expect('vision'); assert.equal(f.rail.scrollLeft, 604);
+    f.step(1); expect('mac'); assert.equal(f.rail.scrollLeft, 0);
+    for (const button of f.buttons) { f.click(button); expect(button.dataset.device); }
+    assert.equal(f.key('vision', 'ArrowRight'), true); expect('mac');
+    assert.deepEqual(f.focus.at(-1), {id:'mac', options:{preventScroll:true}});
+    f.key('mac', 'End'); expect('vision');
+    f.key('vision', 'Home'); expect('mac');
+    f.key('mac', 'ArrowLeft'); expect('vision');
+    assert.equal(f.key('vision', 'ArrowLeft', {altKey:true}), false); expect('vision');
+    assert.equal(f.key('vision', 'Tab'), false); expect('vision');
+    assert.ok(f.scrolls.every(s => s.behavior === 'auto' && s.left >= 0 && s.left <= 604 && !('top' in s)));
+    cleanup(); assert.equal(f.listeners.size, 0);
+  } finally {
+    if (originalMatch === undefined) delete globalThis.matchMedia; else globalThis.matchMedia = originalMatch;
+    if (originalCancel === undefined) delete globalThis.cancelAnimationFrame; else globalThis.cancelAnimationFrame = originalCancel;
+  }
+});
+
+test('gallery uses smooth horizontal scrolling unless reduced motion is requested', () => {
+  const originalMatch = globalThis.matchMedia, originalCancel = globalThis.cancelAnimationFrame;
+  globalThis.matchMedia = () => ({matches:false});
+  globalThis.cancelAnimationFrame = () => {};
+  try {
+    const f = fixture(), cleanup = mountArchive(f.figure);
+    f.step(1);
+    assert.equal(f.scrolls[0].behavior, 'smooth');
+    cleanup();
+    assert.equal(typeof mountArchive(null), 'function');
+  } finally {
+    if (originalMatch === undefined) delete globalThis.matchMedia; else globalThis.matchMedia = originalMatch;
+    if (originalCancel === undefined) delete globalThis.cancelAnimationFrame; else globalThis.cancelAnimationFrame = originalCancel;
+  }
+});
