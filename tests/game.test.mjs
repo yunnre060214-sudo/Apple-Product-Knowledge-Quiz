@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {buildBank} from '../src/bank.mjs';
-import {CATEGORIES,drawQuestions,updateRecent,createSession,hydrateSession,resultTitle,easterEggs} from '../src/engine.mjs';
+import {CATEGORIES,drawQuestions,updateRecent,createSession,hydrateSession,resultTitle,easterEggs,grade} from '../src/engine.mjs';
 import {iosReleases,iosFeatures} from '../src/trivia.mjs';
 const catalog=JSON.parse(await readFile(new URL('../src/catalog.json',import.meta.url),'utf8'));
 const bank=buildBank(catalog),cfg={mode:'quick',casual:true,count:5,difficulty:'mixed',categories:Object.keys(CATEGORIES)};
@@ -45,7 +45,14 @@ test('timeline answers are derived from their two source records without reverse
  for(const q of bank.filter(q=>q.id.startsWith('timeline-'))){const key=[...q.families].sort().join('|');assert.ok(!pairs.has(key));pairs.add(key);assert.ok(q.explanation.includes('前者'));assert.equal(q.options.filter(o=>o===q.answer).length,1);}
 });
 test('result names and surprises match score, streak and actual completed time',()=>{
- assert.equal(resultTitle({score:100}).title,'库克看了都点头');assert.equal(resultTitle({score:80}).title,'苹果店隐藏店员');assert.equal(resultTitle({score:0}).title,'完美避开正确答案');
- assert.equal(easterEggs({score:100,bestStreak:5,total:5,unanswered:0,duration:10}).length,3);
+ assert.equal(resultTitle({score:100,total:5,correct:5}).title,'库克看了都点头');assert.equal(resultTitle({score:80}).title,'苹果店隐藏店员');assert.equal(resultTitle({score:0}).title,'完美避开正确答案');
+ assert.equal(easterEggs({score:100,correct:5,bestStreak:5,total:5,unanswered:0,duration:10}).length,3);
  assert.equal(easterEggs({score:0,bestStreak:0,total:5,unanswered:5,duration:0}).length,0);
+});
+
+test('large rounds do not round a near-perfect result into a perfect title or confetti',()=>{
+ const qs=Array.from({length:500},(_,i)=>({id:String(i),answer:'yes',category:'iphone',difficulty:'easy'}));
+ const answers=Object.fromEntries(qs.slice(0,499).map(q=>[q.id,'yes']));const r=grade(qs,answers,1000,51000);
+ assert.equal(r.score,99.8);assert.notEqual(resultTitle(r).badge,'满分隐藏款');assert.ok(!easterEggs(r).some(s=>s.includes('满分')));
+ assert.notEqual(resultTitle({...r,score:100}).badge,'满分隐藏款');
 });

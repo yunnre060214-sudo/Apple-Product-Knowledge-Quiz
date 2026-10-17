@@ -1,4 +1,4 @@
-export const VERSION = '2.0.1';
+export const VERSION = '2.0.2';
 export const CATEGORIES = {
   iphone: { name: 'iPhone', short: 'iP', color: '#3478e7' },
   ipad: { name: 'iPad', short: 'iD', color: '#8958c7' },
@@ -79,7 +79,7 @@ export function createSession(questions, config, seed, now = Date.now()) {
   };
 }
 export function hydrateSession(saved, bank) {
-  if (!saved || saved.schema !== 1 || !['1.0.0', '1.0.1', '2.0.0', VERSION].includes(saved.version) || !Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(saved.startedAt)) return null;
+  if (!saved || saved.schema !== 1 || !['1.0.0', '1.0.1', '2.0.0', '2.0.1', VERSION].includes(saved.version) || !Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(saved.startedAt)) return null;
   if (!saved.config || !['quick', 'exam', 'practice'].includes(saved.config.mode)) return null;
   const lookup = new Map(bank.map(q => [q.id, q]));
   const ids = new Set();
@@ -122,7 +122,7 @@ export function grade(questions, answers, startedAt, endedAt) {
   });
   return {
     total: questions.length, correct, wrong: questions.length - correct - unanswered, unanswered,
-    score: questions.length ? Math.round(correct / questions.length * 100) : 0,
+    score: questions.length ? Math.round(correct / questions.length * 1000) / 10 : 0,
     weightedScore: possible ? Math.round(points / possible * 100) : 0,
     bestStreak, duration: Math.max(0, Math.floor((endedAt - startedAt) / 1000)),
     categories, levels, rows,
@@ -178,7 +178,7 @@ function quickDraw(pool, count, rng, recent, positions) {
   return shuffle(picked,rng);
 }
 export function resultTitle(report) {
-  if (report.score === 100) return {title:'库克看了都点头',line:'这场发布会，下一句交给你。',badge:'满分隐藏款',tone:'gold'};
+  if (report.total > 0 && report.correct === report.total) return {title:'库克看了都点头',line:'这场发布会，下一句交给你。',badge:'满分隐藏款',tone:'gold'};
   if (report.score >= 80) return {title:'苹果店隐藏店员',line:'你一开口，Genius 都想听两句。',badge:'懂得有点多',tone:'violet'};
   if (report.score >= 60) return {title:'发布会前排常客',line:'One more thing，你已经猜到一半。',badge:'熟悉的感觉',tone:'blue'};
   if (report.score >= 40) return {title:'路过的果味侦探',line:'猜对靠知识，猜错收获新故事。',badge:'好奇心在线',tone:'mint'};
@@ -187,7 +187,7 @@ export function resultTitle(report) {
 }
 export function easterEggs(report) {
   const eggs=[];
-  if (report.score===100) eggs.push('One more thing… 满分彩蛋已解锁。');
+  if (report.total>0 && report.correct===report.total) eggs.push('One more thing… 满分彩蛋已解锁。');
   if (report.bestStreak>=3) eggs.push(`${report.bestStreak} 连对，灵感正在连线。`);
   if (report.total>=5 && report.unanswered===0 && report.duration<=report.total*3) eggs.push('闪电手速：发布会还没开，你已经散场。');
   return eggs;
