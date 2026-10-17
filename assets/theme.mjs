@@ -1,3 +1,12 @@
+// Safari derives its under-page fill from html/body, outside the captured page.
+// Keep that fill and the root color-scheme separate from the page's appearance.
+export function setBrowserTheme(document, theme) {
+  const value = theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.dataset.browserTheme = value;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = value === 'dark' ? '#101216' : '#f5f4f0';
+}
+
 // Reveal the new appearance over the old page from the theme button's center.
 export function createThemeSwitcher({document, window, applyTheme, saveTheme, commitTheme = () => {}, reducedMotion = () => false}) {
   const root = document.documentElement;
@@ -52,7 +61,8 @@ export function createThemeSwitcher({document, window, applyTheme, saveTheme, co
       update();
       return true;
     } finally {
-      if (applied) commitTheme(theme);
+      // A system/storage change during the capture may supersede this request.
+      if (applied) commitTheme(root.dataset.theme);
       root.classList.remove('theme-revealing');
       properties.forEach(property => root.style.removeProperty(property));
       busy = false;

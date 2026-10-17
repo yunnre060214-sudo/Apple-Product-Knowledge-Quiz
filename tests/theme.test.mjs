@@ -1,22 +1,23 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {createThemeSwitcher} from '../assets/theme.mjs';
+import {createThemeSwitcher,setBrowserTheme} from '../assets/theme.mjs';
 
 function fixture({theme='light', supported=true, reduce=false, width=390, height=844, snapshotWidth=width, snapshotHeight=height, bounds={left:320,top:18,width:44,height:44}, fail}={}) {
   const values=new Map(), classes=new Set(), applied=[], saved=[], committed=[];
-  const root={dataset:{theme},style:{setProperty:(k,v)=>values.set(k,v),removeProperty:k=>values.delete(k)},classList:{add:v=>classes.add(v),remove:v=>classes.delete(v)}};
+  const root={dataset:{theme,browserTheme:theme},style:{setProperty:(k,v)=>values.set(k,v),removeProperty:k=>values.delete(k)},classList:{add:v=>classes.add(v),remove:v=>classes.delete(v)}};
   let finish, skipCount=0, captures=0;
   const finished=new Promise(resolve=>{finish=resolve;});
-  const document={documentElement:root};
+  const meta={content:theme==='dark'?'#101216':'#f5f4f0'};
+  const document={documentElement:root,querySelector:()=>meta};
   if(supported)document.startViewTransition=update=>{
     captures++;
     if(fail==='start')throw Error('unavailable');
     update();
     return {ready:fail==='ready'?Promise.reject(Error('skipped')):Promise.resolve(),finished,skipTransition(){skipCount++;finish();}};
   };
-  const window={innerWidth:width,innerHeight:height,getComputedStyle:(_,pseudo)=>pseudo?{width:`${snapshotWidth}px`,height:`${snapshotHeight}px`}:{getPropertyValue:()=>root.dataset.theme==='dark'?'#0b0e15':'#f7f8fb'}};
-  const switchTheme=createThemeSwitcher({document,window,applyTheme:v=>{root.dataset.theme=v;applied.push(v);},saveTheme:v=>saved.push(v),commitTheme:v=>committed.push(v),reducedMotion:()=>reduce});
-  return {switchTheme,button:{getBoundingClientRect:()=>bounds},root,values,classes,applied,saved,committed,finish,get skips(){return skipCount;},get captures(){return captures;}};
+  const window={innerWidth:width,innerHeight:height,getComputedStyle:(_,pseudo)=>pseudo?{width:`${snapshotWidth}px`,height:`${snapshotHeight}px`}:{getPropertyValue:()=>root.dataset.theme==='dark'?'#101216':'#f5f4f0'}};
+  const switchTheme=createThemeSwitcher({document,window,applyTheme:v=>{root.dataset.theme=v;applied.push(v);},saveTheme:v=>saved.push(v),commitTheme:v=>{setBrowserTheme(document,v);committed.push(v);},reducedMotion:()=>reduce});
+  return {switchTheme,button:{getBoundingClientRect:()=>bounds},root,meta,values,classes,applied,saved,committed,finish,get skips(){return skipCount;},get captures(){return captures;}};
 }
 
 test('both appearance directions reveal from the button center and cover every viewport corner',async()=>{
@@ -45,12 +46,16 @@ test('mobile toolbar areas remain covered when the snapshot exceeds the visible 
   for(const [cx,cy] of [[0,844],[390,844]])assert.ok(r>Math.hypot(cx-x,cy-y));
   f.finish();await pending;
 });
-test('old backing color survives the state change, and browser chrome commits after the reveal',async()=>{
+test('page appearance changes first while Safari backing and metadata remain old until completion',async()=>{
   for(const theme of ['light','dark']) {
     const f=fixture({theme}),pending=f.switchTheme(f.button);await Promise.resolve();
-    assert.equal(f.values.get('--theme-reveal-backdrop'),theme==='dark'?'#0b0e15':'#f7f8fb');
+    assert.equal(f.values.get('--theme-reveal-backdrop'),theme==='dark'?'#101216':'#f5f4f0');
     assert.notEqual(f.root.dataset.theme,theme);assert.deepEqual(f.committed,[]);
+    assert.equal(f.root.dataset.browserTheme,theme);
+    assert.equal(f.meta.content,theme==='dark'?'#101216':'#f5f4f0');
     f.finish();await pending;assert.deepEqual(f.committed,[theme==='dark'?'light':'dark']);
+    assert.equal(f.root.dataset.browserTheme,f.root.dataset.theme);
+    assert.equal(f.meta.content,theme==='dark'?'#f5f4f0':'#101216');
     assert.equal(f.values.size,0);
   }
 });
@@ -59,12 +64,27 @@ test('unsupported browsers and reduced motion still switch and save the appearan
     const f=fixture(options);assert.equal(await f.switchTheme(f.button),true);
     assert.deepEqual(f.applied,['dark']);assert.deepEqual(f.saved,['dark']);assert.equal(f.captures,0);assert.equal(f.classes.size,0);
     assert.deepEqual(f.committed,['dark']);
+    assert.equal(f.root.dataset.browserTheme,'dark');assert.equal(f.meta.content,'#101216');
   }
 });
 test('failed or skipped captures apply the appearance without leaving an overlay or lock',async()=>{
   for(const fail of ['start','ready']) {
     const f=fixture({fail});assert.equal(await f.switchTheme(f.button),true);
     assert.deepEqual(f.applied,['dark']);assert.deepEqual(f.saved,['dark']);assert.equal(f.values.size,0);assert.equal(f.classes.size,0);
+    assert.equal(f.root.dataset.browserTheme,'dark');assert.equal(f.meta.content,'#101216');
     await f.switchTheme(f.button);assert.equal(f.root.dataset.theme,'light');
+    assert.equal(f.root.dataset.browserTheme,'light');assert.equal(f.meta.content,'#f5f4f0');
   }
+});
+test('an external appearance change during capture commits the latest page state',async()=>{
+  const f=fixture(),pending=f.switchTheme(f.button);await Promise.resolve();
+  assert.equal(f.root.dataset.theme,'dark');assert.equal(f.root.dataset.browserTheme,'light');
+  f.root.dataset.theme='light';
+  f.finish();await pending;
+  assert.deepEqual(f.committed,['light']);assert.equal(f.root.dataset.browserTheme,'light');assert.equal(f.meta.content,'#f5f4f0');
+});
+test('browser-theme synchronization tolerates a missing theme-color meta element',()=>{
+  const document={documentElement:{dataset:{}},querySelector:()=>null};
+  setBrowserTheme(document,'dark');assert.equal(document.documentElement.dataset.browserTheme,'dark');
+  setBrowserTheme(document,'unknown');assert.equal(document.documentElement.dataset.browserTheme,'light');
 });
