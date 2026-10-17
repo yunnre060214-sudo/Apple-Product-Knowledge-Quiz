@@ -1,5 +1,5 @@
 import {APPLE_PATH} from './brand.mjs?v=3.1.0';
-export const SITE_URL = 'https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/';
+export const SITE_URL = 'https://yunnre060214-sudo.github.io/Apple-Trivia/';
 const PALETTES = {
   perfect:{title:['#88632d','#997645'],darkTitle:['#dec392','#e3cfaa'],wash:['#f3eddf','#f7f2e7'],ink:'#88632d'},
   regular:{title:['#39664c','#55785e'],darkTitle:['#aac7af','#bbd1bb'],wash:['#ebefe6','#f3f5ef'],ink:'#39664c'},
@@ -46,7 +46,7 @@ export async function createShareCard(report,title) {
   rule(1074);
   text('不服来战',88,1180,42,600);
   text('yunnre060214-sudo.github.io',88,1292,24,400,muted);
-  text('/Apple-Product-Knowledge-Quiz/',88,1332,24,400,muted);
+  text('/Apple-Trivia/',88,1332,24,400,muted);
   stripe(88,1370,66,3);
   return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('PNG encoding failed')),'image/png'));
 }
