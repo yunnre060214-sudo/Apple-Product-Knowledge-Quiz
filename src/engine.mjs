@@ -1,4 +1,4 @@
-export const VERSION = '2.0.4';
+export const VERSION = '2.1.0';
 export const CATEGORIES = {
   iphone: { name: 'iPhone', short: 'iP', color: '#3478e7' },
   ipad: { name: 'iPad', short: 'iD', color: '#8958c7' },
@@ -79,7 +79,7 @@ export function createSession(questions, config, seed, now = Date.now()) {
   };
 }
 export function hydrateSession(saved, bank) {
-  if (!saved || saved.schema !== 1 || !['1.0.0', '1.0.1', '2.0.0', '2.0.1', '2.0.2', '2.0.3', VERSION].includes(saved.version) || !Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(saved.startedAt)) return null;
+  if (!saved || saved.schema !== 1 || !['1.0.0', '1.0.1', '2.0.0', '2.0.1', '2.0.2', '2.0.3', '2.0.4', VERSION].includes(saved.version) || !Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(saved.startedAt)) return null;
   if (!saved.config || !['quick', 'exam', 'practice'].includes(saved.config.mode)) return null;
   const lookup = new Map(bank.map(q => [q.id, q]));
   const ids = new Set();
@@ -187,8 +187,8 @@ export function resultTitle(report) {
 }
 export function easterEggs(report) {
   const eggs=[];
-  if (report.total>0 && report.correct===report.total) eggs.push('One more thing… 满分彩蛋已解锁。');
-  if (report.bestStreak>=3) eggs.push(`${report.bestStreak} 连对，灵感正在连线。`);
-  if (report.total>=5 && report.unanswered===0 && report.duration<=report.total*3) eggs.push('闪电手速：发布会还没开，你已经散场。');
+  if (report.total>0 && report.correct===report.total) eggs.push('满分');
+  if (report.bestStreak>=3) eggs.push(`${report.bestStreak} 连对`);
+  if (report.total>=5 && report.unanswered===0 && report.duration<=report.total*3) eggs.push('闪电完成');
   return eggs;
 }

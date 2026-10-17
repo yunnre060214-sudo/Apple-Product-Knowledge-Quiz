@@ -15,11 +15,42 @@ dialog{background:var(--surface);color:var(--ink);border:1px solid var(--line);b
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 .scene-items{position:absolute;inset:0}
+.hero h1{margin-top:0;margin-bottom:0}
+.section-label{margin-bottom:18px}
+.topic-card{min-height:104px}
+.site-footer{justify-content:flex-end}
+.music-screen{justify-content:center}
+.music-bars{height:44px;align-items:center;justify-content:center;gap:5px}
+.music-bars i{width:5px;height:19px;border-radius:4px;background:#71856e}
+.music-bars i:nth-child(2n){height:30px}
+.music-bars i:nth-child(3n){height:38px}
+.result-title{margin-bottom:24px}
+.replay-intro{display:flex;margin-top:22px;min-height:44px;font-size:13px}
 .primary-button:active:not(:disabled),.secondary-button:active:not(:disabled){transform:scale(.97)}
 @media(max-width:760px){.hero{grid-template-columns:minmax(0,1fr)}.playground{width:100%;max-width:420px;height:287px;transform:none;margin:-4px auto 0;overflow:clip}.scene-items{width:420px;height:340px;left:50%;top:-14px;transform:translateX(-50%) scale(.75);transform-origin:50% 45%}}
 @media(max-width:380px){.playground{height:285px;margin-top:-8px;margin-bottom:0}.scene-items{transform:translateX(-50%) scale(.67);top:-10px}}
 
 @media(max-width:760px){.phone-device{right:22px}}
+
+/* First-visit handwriting. Only the two SVG strokes move; no font download. */
+.hello-intro{display:none;position:fixed;inset:0;z-index:100;place-items:center;background:var(--bg);isolation:isolate}
+.hello-pending{overflow:hidden}
+.hello-pending .hello-intro{display:grid}
+.hello-pending #site-content{pointer-events:none;visibility:hidden}
+.hello-word{width:min(560px,78vw);height:auto;overflow:visible;transform:translateY(-12px)}
+.hello-stroke{stroke-dasharray:1;stroke-dashoffset:1;opacity:0}
+.hello-playing .hello-first{animation:hello-write .9s .15s cubic-bezier(.45,0,.25,1) both}
+.hello-playing .hello-rest{animation:hello-write 2.8s .8s cubic-bezier(.45,0,.25,1) both}
+.hello-skip{position:absolute;bottom:max(42px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);min-width:80px;min-height:44px;padding:10px 24px;border:1px solid var(--line);border-radius:24px;color:var(--muted);font-size:13px;background:var(--surface);transition:color .2s,border-color .2s}
+.hello-skip:hover{color:var(--ink);border-color:var(--muted)}
+.hello-skip:active:not(:disabled){transform:translateX(-50%) scale(.96)}
+.hello-leaving{animation:hello-out .48s ease both;pointer-events:none}
+.hello-pending:has(.hello-leaving) #site-content{visibility:visible}
+.hello-leaving .hello-word{transition:transform .48s var(--ease);transform:translateY(-12px) scale(1.025)}
+@keyframes hello-write{0%{stroke-dashoffset:1;opacity:0}1%{opacity:1}100%{stroke-dashoffset:0;opacity:1}}
+@keyframes hello-out{to{opacity:0}}
+@media(max-width:760px){.hero{padding-top:35px}.hero h1{margin:0}.hero-actions{margin-top:28px}.topic-card{min-height:76px}.hello-word{width:80vw}.hello-skip{bottom:max(30px,env(safe-area-inset-bottom))}}
+@media(prefers-reduced-motion:reduce){.hello-stroke{stroke-dashoffset:0;opacity:1}.hello-leaving .hello-word{transform:none}}
 
 .brand-symbol{width:34px;height:36px;background:none;border-radius:0;color:inherit;margin-right:4px}
 .brand-symbol img{display:block;width:36px;height:36px;transition:transform .45s var(--ease);filter:drop-shadow(0 3px 5px #8b6ace18)}
