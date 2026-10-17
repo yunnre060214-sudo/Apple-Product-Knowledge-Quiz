@@ -2,9 +2,15 @@
 
 一个轻松的中文 Apple 冷知识小游戏。点「随机来 5 题」直接开玩，猜完领个趣味称号，生成战绩图片，邀请朋友「不服来战」。
 
-[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=2.1.0) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
+[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=2.2.0) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
 
-当前版本 **2.1.0**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
+当前版本 **2.2.0**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
+
+## 界面
+
+亮色以中性灰白为底，紫色用于主按钮、蓝紫色用于进度，称号渐变随成绩变化。深色采用带蓝调的深灰，卡片通过描边区分层次；首次访问跟随系统外观，手动选择会保存，手机 `theme-color` 同步更新。支持 OKLCH 色阶、流体字号、等宽数字和减少动态效果。
+
+选项保留至少 64px 高度，以底色、描边和图标同时显示已选、正确及错误状态。常用按钮和链接至少保留 44px 触控高度，解析使用独立底色区块。结算页和分享图片共用满分、普通及低分三套渐变，称号为视觉中心，分享图片保留约 8% 安全边距。
 
 ## 玩法
 
@@ -73,3 +79,4 @@ python3 -m http.server 8080 --directory dist
 每次发布同步 `package.json`、引擎版本、HTML 和模块资源参数、README 链接。`version.json` 提供线上版本、题目数量与整理日期。
 
 本项目与 Apple Inc. 无隶属或赞助关系。
+

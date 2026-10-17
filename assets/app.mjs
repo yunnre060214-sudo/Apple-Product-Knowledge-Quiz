@@ -1,7 +1,7 @@
-import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=2.1.0';
-import {icon,scene} from './icons.mjs?v=2.1.0';
-import {replayHello} from './hello.mjs?v=2.1.0';
-import {SITE_URL,shareText,createShareCard,downloadBlob} from './share.mjs?v=2.1.0';
+import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=2.2.0';
+import {icon,scene} from './icons.mjs?v=2.2.0';
+import {replayHello} from './hello.mjs?v=2.2.0';
+import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=2.2.0';
 const $=s=>document.querySelector(s), main=$('#main'), modal=$('#modal');
 const KEY='apple-quiz:v1:';
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -56,7 +56,7 @@ function quiz(){
 function renderQuestion(){
   cancelAuto();paused=false;const q=questions[session.index],answer=session.answers[q.id],quick=session.config.mode==='quick';visit(q);
   const locked=session.confirmed.includes(q.id);
-  $('#question-stage').innerHTML=`<article class="question-card" aria-labelledby="question-prompt"><div class="question-meta"><span class="question-topic">${icon(q.kind==='timeline'?'clock':q.topic==='stories'?'history':'apple')}${esc(q.tag||CATEGORIES[q.category].name)}</span>${quick?'<span class="small-dot"></span>':`<button class="flag-button" data-action="flag" aria-pressed="${session.flags.includes(q.id)}" aria-label="${session.flags.includes(q.id)?'取消标记':'标记题目'}">${icon('flag')}</button>`}</div><h1 id="question-prompt" tabindex="-1">${esc(q.prompt)}</h1><div class="answers" role="group" aria-label="选择一个答案">${q.options.map((o,i)=>`<button class="answer" data-answer="${i}" aria-pressed="${answer===o}"><span class="letter">${'ABCD'[i]}</span><span class="answer-text">${esc(o)}</span><span class="answer-mark"></span></button>`).join('')}</div><div id="answer-feedback" class="feedback" aria-live="polite"></div><div id="explanation-area"></div><div class="question-nav" ${quick?'hidden':''}><button class="text-button" data-action="previous" ${session.index===0?'disabled':''}>${icon('back')}上一题</button><button class="primary-button" id="advance" data-action="${session.config.mode==='practice'&&!locked?'confirm':'next'}">${session.config.mode==='practice'&&!locked?'确认':session.index===questions.length-1?'查看结果':'下一题'}${icon('arrow')}</button></div><div class="quick-controls" ${quick?'':'hidden'}><label class="auto-switch"><input id="auto-toggle" type="checkbox" ${read('auto',true)?'checked':''}>自动下一题</label><span id="auto-label"></span></div></article>`;
+  $('#question-stage').innerHTML=`<article class="question-card" aria-labelledby="question-prompt"><div class="question-meta"><span class="question-topic">${icon(q.kind==='timeline'?'clock':q.topic==='stories'?'history':'apple')}${esc(q.tag||CATEGORIES[q.category].name)}</span>${quick?'':`<button class="flag-button" data-action="flag" aria-pressed="${session.flags.includes(q.id)}" aria-label="${session.flags.includes(q.id)?'取消标记':'标记题目'}">${icon('flag')}</button>`}</div><h1 id="question-prompt" tabindex="-1">${esc(q.prompt)}</h1><div class="answers" role="group" aria-label="选择一个答案">${q.options.map((o,i)=>`<button class="answer" data-answer="${i}" aria-pressed="${answer===o}"><span class="letter">${'ABCD'[i]}</span><span class="answer-text">${esc(o)}</span><span class="answer-mark"></span></button>`).join('')}</div><div id="answer-feedback" class="feedback" aria-live="polite"></div><div id="explanation-area"></div><div class="question-nav" ${quick?'hidden':''}><button class="text-button" data-action="previous" ${session.index===0?'disabled':''}>${icon('back')}上一题</button><button class="primary-button" id="advance" data-action="${session.config.mode==='practice'&&!locked?'confirm':'next'}">${session.config.mode==='practice'&&!locked?'确认':session.index===questions.length-1?'查看结果':'下一题'}${icon('arrow')}</button></div><div class="quick-controls" ${quick?'':'hidden'}><label class="auto-switch"><input id="auto-toggle" type="checkbox" ${read('auto',true)?'checked':''}>自动下一题</label><span id="auto-label"></span></div></article>`;
   updateOptions();updateProgress();if(locked)showFeedback(false);animate($('.question-card'));
   $('#question-prompt').focus({preventScroll:true});
 }
@@ -71,11 +71,11 @@ function selectAnswer(index){
 }
 function updateOptions(){
   const q=questions[session.index],answer=session.answers[q.id],locked=session.confirmed.includes(q.id);
-  document.querySelectorAll('[data-answer]').forEach((b,i)=>{const o=q.options[i];b.classList.toggle('selected',answer===o);b.classList.toggle('correct',locked&&o===q.answer);b.classList.toggle('wrong',locked&&answer===o&&o!==q.answer);b.classList.toggle('dimmed',locked&&o!==answer&&o!==q.answer);b.setAttribute('aria-pressed',String(answer===o));b.disabled=locked;b.querySelector('.answer-mark').innerHTML=locked&&o===q.answer?icon('check'):locked&&o===answer?icon('close'):answer===o?'<span class="selection-dot"></span>':'';});
+  document.querySelectorAll('[data-answer]').forEach((b,i)=>{const o=q.options[i];b.classList.toggle('selected',answer===o);b.classList.toggle('correct',locked&&o===q.answer);b.classList.toggle('wrong',locked&&answer===o&&o!==q.answer);b.classList.toggle('dimmed',locked&&o!==answer&&o!==q.answer);b.setAttribute('aria-pressed',String(answer===o));b.disabled=locked;b.querySelector('.answer-mark').innerHTML=locked&&o===q.answer?`${icon('check')}<span class="sr-only">正确答案</span>`:locked&&o===answer?`${icon('close')}<span class="sr-only">回答错误</span>`:answer===o?`${icon('check')}<span class="sr-only">已选择</span>`:'';});
   const advance=$('#advance');if(advance&&session.config.mode==='practice')advance.disabled=!locked&&!answer;
 }
 function updateProgress(){
-  const n=Object.keys(session.answers).length,track=$('.progress-track');track.setAttribute('aria-valuenow',n);track.firstElementChild.style.width=`${n/questions.length*100}%`;$('#progress-label').textContent=`${session.index+1} / ${questions.length}`;
+  const n=Object.keys(session.answers).length,track=$('.progress-track');track.setAttribute('aria-valuenow',n);track.setAttribute('aria-valuetext',`已答 ${n} 题，共 ${questions.length} 题`);track.firstElementChild.style.width=`${n/questions.length*100}%`;$('#progress-label').textContent=`${session.index+1} / ${questions.length}`;
   const btn=$(`[data-jump="${session.index}"]`);btn?.classList.toggle('answered',!!session.answers[questions[session.index].id]);
 }
 function confirmAnswer(){const q=questions[session.index];if(!session.answers[q.id])return;if(!session.confirmed.includes(q.id))session.confirmed.push(q.id);save();updateOptions();showFeedback(true);const b=$('#advance');b.dataset.action='next';b.innerHTML=`${session.index===questions.length-1?'查看结果':'下一题'}${icon('arrow')}`;b.disabled=false;}
@@ -115,8 +115,8 @@ function finish(timed=false){
   report=grade(questions,session.answers,session.startedAt,Date.now());remove('session');results();if(timed)toast('时间到');
 }
 function results(){
-  enter('result');const t=resultTitle(report),eggs=easterEggs(report);
-  main.innerHTML=`<section class="result-shell"><div class="result-emblem ${t.tone}">${icon(report.correct===report.total?'trophy':'apple')}</div><h1 class="result-title">${t.title}</h1><div class="score-row"><div class="result-score"><strong data-final="${report.score}">0</strong><span>分</span></div><span class="score-divider"></span><div class="result-stats"><span>猜对 <b>${report.correct} / ${report.total}</b> 题</span><span>用时 <b>${fmt(report.duration)}</b></span></div></div>${eggs.length?`<div class="egg-note">${icon('apple')}<span>${eggs.map(esc).join('<br>')}</span></div>`:''}<div class="result-actions"><button class="primary-button" data-action="quick">${icon('shuffle')}再来 5 题</button><button class="secondary-button" data-action="share-card">${icon('share')}分享结果</button></div><div class="result-links"><button class="text-button" data-action="review">查看解析${icon('arrow')}</button><button class="text-button" data-action="home">回到首页</button></div></section>`;
+  enter('result');const t=resultTitle(report),eggs=easterEggs(report),palette=resultPalette(report);
+  main.innerHTML=`<section class="result-shell" style="--result-a:${palette.title[0]};--result-b:${palette.title[1]};--result-dark-a:${palette.darkTitle[0]};--result-dark-b:${palette.darkTitle[1]};--result-soft:${palette.wash[0]};--result-ink:${palette.ink}"><div class="result-emblem ${t.tone}">${icon(report.correct===report.total?'trophy':'apple')}</div><h1 class="result-title">${t.title}</h1><div class="score-row"><div class="result-score"><strong data-final="${report.score}">0</strong><span>分</span></div><span class="score-divider"></span><div class="result-stats"><span>猜对 <b>${report.correct} / ${report.total}</b> 题</span><span>用时 <b>${fmt(report.duration)}</b></span></div></div>${eggs.length?`<div class="egg-note">${icon('apple')}<span>${eggs.map(esc).join('<br>')}</span></div>`:''}<div class="result-actions"><button class="primary-button" data-action="quick">${icon('shuffle')}再来 5 题</button><button class="secondary-button" data-action="share-card">${icon('share')}分享结果</button></div><div class="result-links"><button class="text-button" data-action="review">查看解析${icon('arrow')}</button><button class="text-button" data-action="home">回到首页</button></div></section>`;
   animate($('.result-shell'));countUp($('.result-score strong'),report.score);if(report.correct===report.total)celebrate(64);
 }
 function countUp(el,value){if(reduced()){el.textContent=value;return;}const start=performance.now();function frame(now){const p=Math.min(1,(now-start)/850);el.textContent=Math.round(value*(1-Math.pow(1-p,3)));if(p<1&&el.isConnected)requestAnimationFrame(frame);else el.textContent=value;}requestAnimationFrame(frame);}
@@ -139,7 +139,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.topic){start(quickConfig(b.dataset.topic));return;}
   if(b.dataset.count){config.count=Number(b.dataset.count);$('#count-input').value=b.dataset.count;document.querySelectorAll('[data-count]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b));});updatePool();return;}
   if(b.dataset.jump!==undefined){modal.close();moveQuestion(Number(b.dataset.jump));return;}
-  const actions={home,'replay-hello':()=>{modal.close();replayHello();},quick:()=>start(quickConfig()),custom,resume,about,close:()=>{modal.close();},theme:()=>{const dark=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=dark?'dark':'light';write('theme',dark?'dark':'light');},next:nextQuestion,previous:()=>moveQuestion(session.index-1),confirm:confirmAnswer,explain,map,'end-round':requestFinish,finish:()=>finish(),results,review,'share-card':showShare,download:()=>shareBlob&&downloadBlob(shareBlob,`apple-trivia-${report.score}.png`),'native-share':nativeShare,copy,flag:()=>{const id=questions[session.index].id;session.flags=session.flags.includes(id)?session.flags.filter(x=>x!==id):[...session.flags,id];save();b.setAttribute('aria-pressed',String(session.flags.includes(id)));b.setAttribute('aria-label',session.flags.includes(id)?'取消标记':'标记题目');},reload:()=>location.reload()};actions[b.dataset.action]?.();
+  const actions={home,'replay-hello':()=>{modal.close();replayHello();},quick:()=>start(quickConfig()),custom,resume,about,close:()=>{modal.close();},theme:()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';write('theme',theme);applyTheme(theme);},next:nextQuestion,previous:()=>moveQuestion(session.index-1),confirm:confirmAnswer,explain,map,'end-round':requestFinish,finish:()=>finish(),results,review,'share-card':showShare,download:()=>shareBlob&&downloadBlob(shareBlob,`apple-trivia-${report.score}.png`),'native-share':nativeShare,copy,flag:()=>{const id=questions[session.index].id;session.flags=session.flags.includes(id)?session.flags.filter(x=>x!==id):[...session.flags,id];save();b.setAttribute('aria-pressed',String(session.flags.includes(id)));b.setAttribute('aria-label',session.flags.includes(id)?'取消标记':'标记题目');},reload:()=>location.reload()};actions[b.dataset.action]?.();
 });
 document.addEventListener('submit',e=>{if(e.target.id!=='custom-form')return;e.preventDefault();const next=formConfig();if(!Number.isInteger(next.count)||next.count<5||next.count>500||!next.categories.length)return;config=next;write('config',config);start(config);});
 document.addEventListener('change',e=>{if(e.target.closest('#custom-form')){if(e.target.id==='mode-select')$('.timer-setting').hidden=e.target.value!=='exam';updatePool();}if(e.target.id==='auto-toggle'){write('auto',e.target.checked);paused=false;scheduleNext();}});
@@ -148,6 +148,18 @@ document.addEventListener('keydown',e=>{if(document.documentElement.classList.co
 document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAuto();else if(view==='quiz'){clock();scheduleNext();}});
 modal.addEventListener('close',()=>{if(view==='quiz'&&session?.config.mode==='quick'&&$('#auto-label'))$('#auto-label').textContent='手动切题';});
 window.addEventListener('pagehide',()=>{save();cancelAuto();});
-document.documentElement.dataset.theme=read('theme','light')==='dark'?'dark':'light';
+const systemTheme=matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(theme){
+  const dark=theme==='dark';
+  document.documentElement.dataset.theme=dark?'dark':'light';
+  $('meta[name="theme-color"]').content=dark?'#0b0e15':'#f7f8fb';
+  const toggle=$('#theme-toggle');toggle.innerHTML=icon(dark?'sun':'moon');
+  toggle.setAttribute('aria-label',dark?'使用浅色外观':'使用深色外观');
+}
+function preferredTheme(){const saved=read('theme',null);return ['dark','light'].includes(saved)?saved:systemTheme.matches?'dark':'light';}
+applyTheme(preferredTheme());
+systemTheme.addEventListener('change',()=>applyTheme(preferredTheme()));
+window.addEventListener('storage',event=>{if(event.key===KEY+'theme'||event.key===null)applyTheme(preferredTheme());});
 async function init(){try{const res=await fetch(`./questions.json?v=${VERSION}`);if(!res.ok)throw new Error('load');const data=await res.json();if(data.version!==VERSION||!Array.isArray(data.questions))throw new Error('version');bank=data.questions;meta=data;home();}catch{main.innerHTML=`<div class="loading"><h1>加载失败</h1><p>请检查网络后重试。</p><button class="primary-button" data-action="reload">重试${icon('arrow')}</button></div>`;}}
 init();
+

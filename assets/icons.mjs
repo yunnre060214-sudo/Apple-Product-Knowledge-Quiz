@@ -1,4 +1,4 @@
-import {APPLE_PATH} from './brand.mjs?v=2.1.0';
+import {APPLE_PATH} from './brand.mjs?v=2.2.0';
 const paths = {
  arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',back:'<path d="M19 12H5m6-6-6 6 6 6"/>',
  shuffle:'<path d="M3 7h3c5 0 7 10 12 10h3m-4-4 4 4-4 4M3 17h3c2 0 3-2 4-4m3-2c1-2 3-4 5-4h3m-4-4 4 4-4 4"/>',
@@ -15,8 +15,10 @@ const paths = {
  flag:'<path d="M6 21V4c4-4 8 4 12 0v10c-4 4-8-4-12 0"/>',
  grid:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
  moon:'<path d="M20.5 13.5A8.8 8.8 0 0 1 10.5 3.5a8.8 8.8 0 1 0 10 10Z"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4m0-14.2-1.4 1.4M6.3 17.7l-1.4 1.4"/>',
  external:'<path d="M14 3h7v7m0-7L11 13M10 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-6"/>',
  pause:'<path d="M8 5v14M16 5v14"/>',play:'<path d="m8 4 12 8-12 8V4Z"/>',
 };
 export const icon = (name, cls='') => name==='apple' ? `<svg class="icon ${cls}" viewBox="0 9 20 22" fill="currentColor" aria-hidden="true"><path d="${APPLE_PATH}"/></svg>` : `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name]||paths.bulb}</svg>`;
 export const scene = `<div class="playground" aria-hidden="true"><div class="scene-items"><div class="scene-glow"></div><div class="scene-orbit"></div><div class="scene-orbit orbit-small"></div><div class="retro-device float-a"><div class="retro-screen"><span class="happy-mac"><i></i><i></i><b></b></span></div><div class="retro-slot"></div><div class="retro-foot"></div></div><div class="music-device float-b"><div class="music-screen"><div class="music-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="click-wheel"><span>MENU</span><b></b><i>Ⅱ</i></div></div><div class="phone-device float-c"><div class="phone-island"></div><div class="phone-time">9:41</div><div class="phone-art"><i></i><i></i><i></i></div><div class="phone-home"></div></div></div></div>`;
+

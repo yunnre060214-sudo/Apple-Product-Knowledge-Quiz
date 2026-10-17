@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#f8f9fc">
+  <meta name="theme-color" content="#f7f8fb">
   <script>
     (() => {
       let seen = false;
@@ -19,13 +19,22 @@
       }, 6500);
     })();
   </script>
+  <script>
+    (() => {
+      let saved;
+      try { saved = JSON.parse(localStorage.getItem('apple-quiz:v1:theme')); } catch {}
+      const dark = saved === 'dark' || (saved !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      document.querySelector('meta[name="theme-color"]').content = dark ? '#0b0e15' : '#f7f8fb';
+    })();
+  </script>
   <meta name="description" content="随机来 5 题！Apple 冷知识、反直觉小故事、iPhone 与 iPad 年份挑战。猜完领取趣味称号，生成图片，不服来战。">
   <meta property="og:title" content="Apple Trivia · 来点苹果冷知识">
   <meta property="og:description" content="你以为你很懂 Apple？5 题一局，猜完再说。">
   <title>Apple Trivia · 来点苹果冷知识</title>
-  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg?v=2.1.0">
-  <link rel="stylesheet" href="./assets/style.css?v=2.1.0">
-  <script type="module" src="./assets/app.mjs?v=2.1.0"></script>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg?v=2.2.0">
+  <link rel="stylesheet" href="./assets/style.css?v=2.2.0">
+  <script type="module" src="./assets/app.mjs?v=2.2.0"></script>
 </head>
 <body>
   <div id="hello-intro" class="hello-intro" role="dialog" aria-modal="true" aria-label="hello 开场动画">
@@ -39,17 +48,18 @@
   <div id="site-content">
   <a class="skip-link" href="#main">跳至主要内容</a>
   <header class="site-header">
-    <a class="brand" href="./" aria-label="Apple Trivia 首页"><span class="brand-symbol" aria-hidden="true"><img src="./assets/logo.svg?v=2.1.0" width="36" height="36" alt=""></span>Apple <b>Trivia</b></a>
-    <div class="header-actions"><button class="text-button" data-action="about">关于</button><button class="icon-button" data-action="theme" aria-label="切换明暗外观"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.5 13.5A8.8 8.8 0 0 1 10.5 3.5a8.8 8.8 0 1 0 10 10Z"/></svg></button></div>
+    <a class="brand" href="./" aria-label="Apple Trivia 首页"><span class="brand-symbol" aria-hidden="true"><img src="./assets/logo.svg?v=2.2.0" width="36" height="36" alt=""></span>Apple <b>Trivia</b></a>
+    <div class="header-actions"><button class="text-button" data-action="about">关于</button><button id="theme-toggle" class="icon-button" data-action="theme" aria-label="切换明暗外观"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 13.5A8.8 8.8 0 0 1 10.5 3.5a8.8 8.8 0 1 0 10 10Z"/></svg></button></div>
   </header>
   <main id="main" tabindex="-1"><div class="loading"><span class="loader"></span><p>加载中…</p></div></main>
   <footer class="site-footer"><a href="https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz" target="_blank" rel="noopener noreferrer">GitHub ↗</a></footer>
-  <dialog id="modal" aria-labelledby="modal-title"><button class="icon-button modal-close" data-action="close" aria-label="关闭对话框">×</button><div id="modal-content"></div></dialog>
+  <dialog id="modal" aria-labelledby="modal-title"><button class="icon-button modal-close" data-action="close" aria-label="关闭对话框"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button><div id="modal-content"></div></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
   <div id="celebration" aria-hidden="true"></div>
   <noscript><p>请启用 JavaScript。</p></noscript>
   </div>
   <script>if (document.documentElement.classList.contains('hello-pending')) document.getElementById('site-content').inert = true;</script>
-  <script type="module" src="./assets/hello.mjs?v=2.1.0"></script>
+  <script type="module" src="./assets/hello.mjs?v=2.2.0"></script>
 </body>
 </html>
+
