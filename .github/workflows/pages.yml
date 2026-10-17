@@ -48,16 +48,23 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Diagnose Pages URLs
+      - name: Verify deployed Pages site
         shell: bash
         run: |
-          for url in \
-            "https://yunnre060214-sudo.github.io/Apple-Trivia/" \
-            "https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/"; do
-            echo "Checking $url"
-            http_code="$(curl --silent --show-error --location --output /tmp/pages-response.html --write-out '%{http_code}' --connect-timeout 10 --max-time 20 "$url" || true)"
-            echo "HTTP status: $http_code"
-            if [ "$http_code" = "200" ]; then
-              grep -o '<title>[^<]*</title>' /tmp/pages-response.html | head -n 1 || true
+          site="https://yunnre060214-sudo.github.io/Apple-Trivia/"
+          for attempt in 1 2 3 4 5; do
+            http_code="$(curl --silent --show-error --location --output /tmp/apple-trivia-index.html --write-out '%{http_code}' --connect-timeout 10 --max-time 20 "$site" || true)"
+            asset_code="$(curl --silent --show-error --location --output /dev/null --write-out '%{http_code}' --connect-timeout 10 --max-time 20 "${site}assets/app.mjs" || true)"
+            version_code="$(curl --silent --show-error --location --output /tmp/apple-trivia-version.json --write-out '%{http_code}' --connect-timeout 10 --max-time 20 "${site}version.json" || true)"
+            if [ "$http_code" = "200" ] && [ "$asset_code" = "200" ] && [ "$version_code" = "200" ] \
+               && grep -q '<title>Apple Trivia' /tmp/apple-trivia-index.html \
+               && grep -q '"version"' /tmp/apple-trivia-version.json; then
+              echo "Verified live site, JavaScript and version.json: $site"
+              cat /tmp/apple-trivia-version.json
+              exit 0
             fi
+            echo "Attempt $attempt: index=$http_code app.mjs=$asset_code version.json=$version_code"
+            sleep 3
           done
+          echo "GitHub Pages public smoke test failed for $site" >&2
+          exit 1
