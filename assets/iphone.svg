@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 440" fill="none">
+  <defs>
+    <linearGradient id="chrome" x1="160" y1="45" x2="322" y2="390" gradientUnits="userSpaceOnUse"><stop stop-color="#afb2b0"/><stop offset=".17" stop-color="#fafbf8"/><stop offset=".4" stop-color="#8a9090"/><stop offset=".6" stop-color="#d9dedb"/><stop offset=".82" stop-color="#7a817f"/><stop offset="1" stop-color="#e4e7e3"/></linearGradient>
+    <linearGradient id="black" x1="163" y1="49" x2="307" y2="382" gradientUnits="userSpaceOnUse"><stop stop-color="#303633"/><stop offset=".35" stop-color="#101614"/><stop offset="1" stop-color="#070b09"/></linearGradient>
+    <linearGradient id="screen" x1="174" y1="107" x2="297" y2="318" gradientUnits="userSpaceOnUse"><stop stop-color="#233f40"/><stop offset=".52" stop-color="#0a232b"/><stop offset="1" stop-color="#142c3a"/></linearGradient>
+    <linearGradient id="shine" x1="171" y1="65" x2="309" y2="353" gradientUnits="userSpaceOnUse"><stop stop-color="#fff" stop-opacity=".13"/><stop offset=".52" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <radialGradient id="shadow"><stop stop-color="#17252a" stop-opacity=".22"/><stop offset="1" stop-color="#17252a" stop-opacity="0"/></radialGradient>
+    <clipPath id="display"><rect x="172" y="105" width="133" height="220" rx="2"/></clipPath>
+  </defs>
+  <ellipse cx="243" cy="391" rx="121" ry="19" fill="url(#shadow)"/>
+  <g transform="rotate(-8 240 220)">
+    <rect x="156" y="42" width="167" height="345" rx="29" fill="url(#chrome)" stroke="#858e89"/>
+    <rect x="160" y="46" width="159" height="337" rx="26" fill="url(#black)" stroke="#303833"/>
+    <path d="M163 72c0-14 8-23 21-23h111" stroke="#fff" stroke-opacity=".35" stroke-width="1.2"/>
+    <rect x="219" y="71" width="43" height="6" rx="3" fill="#030907" stroke="#5a625c" stroke-width=".8"/>
+    <rect x="172" y="105" width="133" height="220" rx="2" fill="url(#screen)"/>
+    <g clip-path="url(#display)">
+      <path d="M176 257c-27-29 1-96 43-99 66-4 91 127 31 147-34 11-49-47-28-78 23-32 82-35 106 28" stroke="#647f86" stroke-opacity=".27" stroke-width="25"/>
+      <path d="M176 248c-15-23 1-67 28-68 47-2 63 91 31 100-20 6-31-27-17-47" stroke="#aec5be" stroke-opacity=".2" stroke-width="3"/>
+      <path d="M172 105h133v15H172z" fill="#0c1413" fill-opacity=".85"/>
+      <g fill="#c4d0c9"><path d="M177 113h2v4h-2zm3-2h2v6h-2zm3-2h2v8h-2z"/><rect x="289" y="109" width="11" height="5" rx="1"/></g>
+      <text x="239" y="153" fill="#edf3eb" text-anchor="middle" font-family="sans-serif" font-size="29" font-weight="300" letter-spacing="-1">9:42</text>
+      <text x="239" y="169" fill="#c1d0cb" text-anchor="middle" font-family="sans-serif" font-size="8">Tuesday, January 9</text>
+      <path d="M172 286h133v39H172z" fill="#0a1110" fill-opacity=".8"/>
+      <rect x="181" y="295" width="115" height="22" rx="5" stroke="#82938b" stroke-opacity=".55"/>
+      <rect x="183" y="297" width="27" height="18" rx="3" fill="#a5b4ac"/>
+      <path d="M190 306h13m-5-4 5 4-5 4" stroke="#324d43" stroke-width="1.7" stroke-linejoin="round"/>
+      <text x="250" y="309" fill="#b7c8bf" text-anchor="middle" font-family="sans-serif" font-size="8">slide to unlock</text>
+    </g>
+    <rect x="172" y="105" width="133" height="220" rx="2" stroke="#020906" stroke-width="2"/>
+    <circle cx="240" cy="353" r="17" fill="#111815" stroke="#47534b" stroke-width="1"/>
+    <rect x="234" y="347" width="12" height="12" rx="3" stroke="#a5b3a9" stroke-width="1"/>
+    <rect x="160" y="46" width="159" height="337" rx="26" fill="url(#shine)"/>
+  </g>
+</svg>
