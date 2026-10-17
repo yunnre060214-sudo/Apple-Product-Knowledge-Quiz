@@ -38,7 +38,8 @@
   [data-theme=dark] { --accent: oklch(81% .11 295); --accent-hover: oklch(87% .08 295); --accent-soft: oklch(26% .04 295); }
 }
 * { box-sizing: border-box; }
-body { margin:0; min-width:280px; min-height:100svh; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+html { min-height:100svh; min-height:100dvh; background:var(--bg); }
+body { margin:0; min-width:280px; min-height:100svh; min-height:100dvh; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
 button,input,select,textarea { font:inherit; }
 button,a,input,select,summary { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 button { color:inherit; cursor:pointer; border:0; background:none; }
@@ -84,11 +85,13 @@ main { max-width:1160px; padding:0 var(--gutter); margin:auto; min-height:calc(1
 [data-theme=dark] .gradient-text { background-image:linear-gradient(110deg,#b1adff,#d4a4e9 65%,#ffb6ab); }
 
 /* Keep both snapshots opaque; only the new appearance expands from the button. */
+:root.theme-revealing::view-transition { background:var(--theme-reveal-backdrop); }
 :root.theme-revealing::view-transition-group(root) { animation:none; }
+:root.theme-revealing::view-transition-image-pair(root) { isolation:isolate; }
 :root.theme-revealing::view-transition-old(root),
 :root.theme-revealing::view-transition-new(root) { mix-blend-mode:normal; }
-:root.theme-revealing::view-transition-old(root) { animation:none; z-index:1; }
-:root.theme-revealing::view-transition-new(root) { animation:theme-reveal .65s cubic-bezier(.2,.8,.2,1) both; z-index:2; }
+:root.theme-revealing::view-transition-old(root) { animation:none; z-index:1; background:var(--theme-reveal-backdrop); }
+:root.theme-revealing::view-transition-new(root) { animation:theme-reveal .65s cubic-bezier(.2,.8,.2,1) both; z-index:2; background:var(--bg); }
 @keyframes theme-reveal {
   from { clip-path:circle(0px at var(--theme-reveal-x) var(--theme-reveal-y)); }
   to { clip-path:circle(var(--theme-reveal-radius) at var(--theme-reveal-x) var(--theme-reveal-y)); }

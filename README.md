@@ -2,9 +2,9 @@
 
 一个轻松的中文 Apple 冷知识小游戏。点「随机来 5 题」直接开玩，猜完领个趣味称号，生成战绩图片，邀请朋友「不服来战」。
 
-[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=2.2.2) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
+[来猜 5 题](https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/?v=2.2.3) · [反馈题目](https://github.com/yunnre060214-sudo/Apple-Product-Knowledge-Quiz/issues)
 
-当前版本 **2.2.2**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
+当前版本 **2.2.3**，题库 **4,576 道**，资料整理日期 **2026-10-17**。
 
 ## 界面
 
@@ -53,7 +53,7 @@
 - `src/bank.mjs`：构建完整题库。
 - `src/engine.mjs`：抽题、近期记录、恢复进度、结算和彩蛋规则。
 - `assets/app.mjs`：界面与玩法，选答案时局部更新按钮和进度，切题时只替换题目区域。
-- `assets/theme.mjs`：明暗外观的圆形扩散过渡与兼容处理。
+- `assets/theme.mjs`：明暗外观的圆形扩散过渡与兼容处理。扩散半径包含移动端完整快照范围，以旧背景覆盖过渡底层，动画完成后同步浏览器主题色。
 - `assets/hello.mjs`、`assets/hello.css`：每次进入必播的开场控制与关键样式，在构建时内联。手写路径改编自 [Chánh Đại Apple Hello Effect](https://github.com/ncdai/chanhdai.com/blob/main/src/registry/components/apple-hello-effect/apple-hello-effect-english.tsx)，MIT 许可保留于 `assets/hello-LICENSE.txt`。
 - `assets/icons.mjs`、`assets/share.mjs`：统一 SVG 图标、首页设备插画和 PNG 分享卡。品牌标识基于 Apple 官网的咬口苹果矢量轮廓，配以柔和渐变；不使用四角星。
 

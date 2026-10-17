@@ -1,4 +1,4 @@
-import {APPLE_PATH} from './brand.mjs?v=2.2.2';
+import {APPLE_PATH} from './brand.mjs?v=2.2.3';
 export const SITE_URL = 'https://yunnre060214-sudo.github.io/Apple-Product-Knowledge-Quiz/';
 const PALETTES = {
   perfect: {title:['#9d4e20','#ad3563'],darkTitle:['#f5c57e','#f1a9ca'],wash:['#fff3da','#fbe5ee'],ink:'#9d4e20'},

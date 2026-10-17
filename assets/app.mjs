@@ -1,8 +1,8 @@
-import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=2.2.2';
-import {icon,scene} from './icons.mjs?v=2.2.2';
-import {replayHello} from './hello.mjs?v=2.2.2';
-import {createThemeSwitcher} from './theme.mjs?v=2.2.2';
-import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=2.2.2';
+import {VERSION,CATEGORIES,LEVELS,drawQuestions,filterBank,createSession,hydrateSession,grade,updateRecent,resultTitle,easterEggs} from '../src/engine.mjs?v=2.2.3';
+import {icon,scene} from './icons.mjs?v=2.2.3';
+import {replayHello} from './hello.mjs?v=2.2.3';
+import {createThemeSwitcher} from './theme.mjs?v=2.2.3';
+import {SITE_URL,shareText,createShareCard,downloadBlob,resultPalette} from './share.mjs?v=2.2.3';
 const $=s=>document.querySelector(s), main=$('#main'), modal=$('#modal');
 const KEY='apple-quiz:v1:';
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -150,14 +150,15 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAuto(
 modal.addEventListener('close',()=>{if(view==='quiz'&&session?.config.mode==='quick'&&$('#auto-label'))$('#auto-label').textContent='手动切题';});
 window.addEventListener('pagehide',()=>{save();cancelAuto();});
 const systemTheme=matchMedia('(prefers-color-scheme: dark)');
-function applyTheme(theme){
+function syncBrowserTheme(theme){$('meta[name="theme-color"]').content=theme==='dark'?'#0b0e15':'#f7f8fb';}
+function applyTheme(theme,{syncChrome=true}={}){
   const dark=theme==='dark';
   document.documentElement.dataset.theme=dark?'dark':'light';
-  $('meta[name="theme-color"]').content=dark?'#0b0e15':'#f7f8fb';
+  if(syncChrome)syncBrowserTheme(theme);
   const toggle=$('#theme-toggle');toggle.innerHTML=icon(dark?'sun':'moon');
   toggle.setAttribute('aria-label',dark?'使用浅色外观':'使用深色外观');
 }
-const switchTheme=createThemeSwitcher({document,window,applyTheme,saveTheme:theme=>write('theme',theme),reducedMotion:reduced});
+const switchTheme=createThemeSwitcher({document,window,applyTheme:theme=>applyTheme(theme,{syncChrome:false}),commitTheme:syncBrowserTheme,saveTheme:theme=>write('theme',theme),reducedMotion:reduced});
 function preferredTheme(){const saved=read('theme',null);return ['dark','light'].includes(saved)?saved:systemTheme.matches?'dark':'light';}
 applyTheme(preferredTheme());
 systemTheme.addEventListener('change',()=>applyTheme(preferredTheme()));
